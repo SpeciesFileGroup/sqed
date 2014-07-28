@@ -11,6 +11,18 @@
            class Sqed::OcrParser::Labels
 =end 
 
+# Given a single image return all text
 class Sqed::OcrParser
+
+  attr_accessor :image, :text
+
+  def initialize(image)
+    @image = image 
+  end
+
+  def text
+    # process the images, spit out the text 
+    return 'lorum ipsum'
+  end
 
 end

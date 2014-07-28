@@ -4,8 +4,6 @@ describe Sqed::QuadrantParser do
 
   skip '#find_axes(method = :centered)' 
 
-  specify 'foo'
-
 end 
 
 # include Magick
