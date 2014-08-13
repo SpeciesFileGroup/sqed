@@ -1,3 +1,3 @@
-module Sqed
+class Sqed
   VERSION = "0.0.1"
 end

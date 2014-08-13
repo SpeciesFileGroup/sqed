@@ -1,5 +1,7 @@
  include Magick
 
+ # Recieve a image (memory) that has already been cropped.
+ #
  # May be useful 
  #   # http://www.imagemagick.org/Usage/morphology/#intro
  # 
@@ -9,7 +11,8 @@
  #      3 | 4
  #
  # A class to split an Image into 4 pieces, that's all.
-class Sqed::QuadrantParser
+class Sqed
+  class QuadrantParser
 
    QUADRANTS = {
      1 => :identfier,
@@ -41,23 +44,10 @@ class Sqed::QuadrantParser
      # Code here...
    end
 
-
    def find_axes(axes_method: :centered) 
      @center_x, @center_y = self.send("axes_by_#{method}")
    end
 
-   def autocrop(crop_method: :trim ) 
-     @image = self.send("crop_by_#{method}")
-   end
-
-   # Returns an image that has been cropped down
-   def crop_by_trim
-     # use -shave option with crop to just trim down the image 
-   end
-
-   #  def crop_by_border_find
-   #    #https://gist.github.com/EmmanuelOga/2476153 (does't work ?!)
-   #  end 
  
    # Computes center of the image only
    # returns x int, y int 
@@ -77,4 +67,5 @@ class Sqed::QuadrantParser
     return [false, false] 
    end
 
+  end
 end

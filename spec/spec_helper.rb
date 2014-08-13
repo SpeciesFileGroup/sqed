@@ -1,4 +1,7 @@
 require 'sqed'
+require 'support/image_helpers'
+require 'byebug'
+require 'awesome_print'
 
 RSpec.configure do |config|
 

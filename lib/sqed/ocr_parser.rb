@@ -9,6 +9,8 @@
               # as parent, but narrow down logic to focus on known patterns
 
            class Sqed::OcrParser::Labels
+
+          # maybe: some registration
 =end 
 
 # Given a single image return all text

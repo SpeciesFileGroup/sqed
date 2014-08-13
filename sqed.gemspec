@@ -6,7 +6,7 @@ require 'sqed/version'
 Gem::Specification.new do |spec|
   spec.name          = "sqed"
   spec.version       = Sqed::VERSION
-  spec.authors       = ["Matt Yoder"]
+  spec.authors       = ["Matt Yoder", "Rich Flood"]
   spec.email         = ["diapriid@gmail.com"]
   spec.summary       = %q{Specimens Quickly Extracted and Digitized, or just "squid". A ruby gem for image related specimen accessioning.}
   spec.description   = %q{A utility gem to aid in the processing of images taken in the process of digitizing natural history collections.}
@@ -23,5 +23,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "byebug"
   spec.add_development_dependency "rspec"
+  spec.add_development_dependency "awesome_print"
   spec.add_dependency "rmagick"
 end
+
