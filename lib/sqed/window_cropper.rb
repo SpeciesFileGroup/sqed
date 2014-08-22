@@ -1,4 +1,4 @@
-include Magick
+require 'rmagick'
 
 
 # a = Sqed::WindowCropper.new(image: InMemoryImage, method: :default)
@@ -15,13 +15,19 @@ class Sqed::WindowCropper
 
   # image = ImageList.new('white_black.jpg')
   def initialize(image: image, stage_locator: :default)
-    @initial_image = image
+    @initial_image =  Magick::Image.read('testImage.JPG.jpeg').first
+
     @cropped_image = nil
-    @stage_locator = stage_locator 
-    @x_offset = 0
-    @y_offset = 0
-    @width = 100 # just to make things work
-    @height = 100 # just to make things work
+    # @stage_locator = stage_locator
+    @x_offset = @initial_image.columns/2
+    @y_offset = @initial_image.rows/2  # half the height
+    @width = @x_offset # half the width to start off
+    @height = @initial_image.rows/2  # half the height
+    #WindowCropper.crop(@x_offset, @y_offset, @width, @height)
+    @cropped_image = @initial_image.crop(@x_offset, @y_offset, @width, @height)
+    @cropped_image.write('croppedImage.JPG')
+    @tess_image = RTesseract.new('croppedImage.JPG')
+    puts(@tess_image.to_s)
   end
  
   def method=(value)
@@ -63,7 +69,7 @@ class Sqed::WindowCropper
   end
 
   def result
-    @cropped_imge
+    @cropped_image
   end
 
 end
