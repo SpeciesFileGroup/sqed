@@ -1,5 +1,5 @@
 
-module ImageHelper
+module ImageHelpers
 
   def self.test0_image
     Image.read(File.expand_path('../files/test0.jpg', __FILE__)).first

@@ -14,17 +14,22 @@
 =end 
 
 # Given a single image return all text
-class Sqed::OcrParser
+class Sqed
+  class OcrParser
 
-  attr_accessor :image, :text
+    attr_accessor :image, :text
 
-  def initialize(image)
-    @image = image 
+    def initialize(image)
+      @image = image 
+    end
+
+    def text
+      r = RTesseract.new(@image) do |img|
+        img = img.white_threshold(255)
+        img = img.quantize(256, Magick::GRAYColorspace)
+      end
+      @text = r.to_s 
+    end
+
   end
-
-  def text
-    # process the images, spit out the text 
-    return 'lorum ipsum'
-  end
-
 end

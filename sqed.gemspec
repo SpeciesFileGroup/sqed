@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "byebug"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "awesome_print"
-  spec.add_dependency 'rmagick'
+  spec.add_dependency 'rmagick', '~> 2.13.2'
   spec.add_dependency 'rtesseract'
 end
 

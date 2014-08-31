@@ -3,7 +3,7 @@
 recent_ruby = RUBY_VERSION >= '2.1.1'
 raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
 
-require "rmagick"
+require "RMagick"
 # require_relative "sqed/version" # check to see this is right/wrong vs. rubyBHL
 require_relative "sqed/quadrant_parser"
 require_relative "sqed/ocr_parser"
@@ -18,7 +18,6 @@ class Sqed
 
   def initialize(image: image)
     @image = image
-    @image = Magick::Image.read('testImage.JPG.jpeg')
   end
 
   # This is called

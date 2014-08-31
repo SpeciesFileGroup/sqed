@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Sqed::WindowCropper do
 
   let(:wc) {Sqed::WindowCropper.new}
-  let(:image) { ImageHelper.test0_image }
+  let(:image) { ImageHelpers.test0_image }
 
   context '.new' do
     specify 'accepts an image' do
