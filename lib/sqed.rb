@@ -5,10 +5,10 @@ raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
 
 require "rmagick"
 # require_relative "sqed/version" # check to see this is right/wrong vs. rubyBHL
-require_relative "lib/sqed/quadrant_parser"
-require_relative "lib/sqed/ocr_parser"
-require_relative "lib/sqed/barcode_parser"
-require_relative "lib/sqed/window_cropper"
+require_relative "sqed/quadrant_parser"
+require_relative "sqed/ocr_parser"
+require_relative "sqed/barcode_parser"
+require_relative "sqed/window_cropper"
 
 class Sqed
 
