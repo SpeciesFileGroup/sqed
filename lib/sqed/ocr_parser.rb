@@ -27,10 +27,21 @@ class Sqed
     end
 
     def text
-      r = RTesseract.new(@image) do |img|
-        img = img.white_threshold(255)
-        img = img.quantize(256, Magick::GRAYColorspace)
-      end
+      img = @image #.white_threshold(245)
+    
+      # @jrflood: this is where you will have to do some research, tuning images so that they can be better ocred, 
+      # all of these methods are from RMagick.
+      img = img.quantize(256, Magick::GRAYColorspace)
+      img = img.scale(2.0) 
+      img = img.sharpen(1.0, 0.2)
+  
+      img.write('foo.jpg') # for debugging purposes, this is the image that is sent to OCR
+
+      r = RTesseract.new(img, lang: 'eng', psm: 3) 
+     
+
+      # img = img.white_threshold(245)
+      
       @text = r.to_s 
     end
 

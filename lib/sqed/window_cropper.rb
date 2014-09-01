@@ -33,7 +33,8 @@ class Sqed
       send(@stage_locator)
     end
 
-    # The default stage locator boundries method, returns the whole image with nothing cropped right now
+    # The default stage locator boundries method, returns the whole image with nothing cropped right now.
+    # TODO: @jrflood, make this actually crop something, the image is in @intial_image, you need not hard code anything, just run the specs.
     def default
       @x_offset = 0
       @y_offset = 0

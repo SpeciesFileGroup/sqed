@@ -20,6 +20,7 @@ describe Sqed do
   specify 'all together' do
     eg = Sqed.new(image: ImageHelpers.ocr_image)
     expect(eg.text_from_quadrant(3)).to match(/Amazon/)
+    expect(eg.text_from_quadrant(3)).to match(/Choose your Prime delivery option/)
   end
 
 end 
