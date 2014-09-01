@@ -16,4 +16,10 @@ describe Sqed do
       expect(a.image ==  ImageHelpers.test0_image).to be_truthy
     end
   end
+
+  specify 'all together' do
+    eg = Sqed.new(image: ImageHelpers.ocr_image)
+    expect(eg.text_from_quadrant(3)).to match(/Amazon/)
+  end
+
 end 

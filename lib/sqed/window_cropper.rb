@@ -33,16 +33,12 @@ class Sqed
       send(@stage_locator)
     end
 
-    # The default stage locator boundries method
+    # The default stage locator boundries method, returns the whole image with nothing cropped right now
     def default
-      equal_quarters
-    end
-
-    def equal_quarters
-      @x_offset = @initial_image.columns/2
-      @y_offset = @initial_image.rows/2  # half the height
-      @width = @x_offset # half the width to start off
-      @height = @initial_image.rows/2  # half the height
+      @x_offset = 0
+      @y_offset = 0
+      @width = @initial_image.columns
+      @height = @initial_image.rows
     end
 
     # Another potential @stage_locator method (:fiji_process)
@@ -59,6 +55,7 @@ class Sqed
     end
 
     def result
+      crop if @cropped_image.nil?
       @cropped_image
     end
 

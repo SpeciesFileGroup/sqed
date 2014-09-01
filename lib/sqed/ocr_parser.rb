@@ -14,6 +14,9 @@
 =end 
 
 # Given a single image return all text
+
+require 'rtesseract' 
+
 class Sqed
   class OcrParser
 
@@ -30,6 +33,8 @@ class Sqed
       end
       @text = r.to_s 
     end
+
+    # Need to provide tuning methods here, i.e. image transormations that facilitate OCR
 
   end
 end
