@@ -19,7 +19,6 @@ tmp
 *~
 .DS_Store
 *.swp
-idea/
 .idea/
 local/
 foo.jpg
