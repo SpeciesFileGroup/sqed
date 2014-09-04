@@ -21,4 +21,4 @@ tmp
 *.swp
 .idea/
 local/
-foo.jpg
+foo*.jpg
