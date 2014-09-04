@@ -31,8 +31,12 @@ class Sqed
     
       # @jrflood: this is where you will have to do some research, tuning images so that they can be better ocred, 
       # all of these methods are from RMagick.
-      img = img.quantize(256, Magick::GRAYColorspace)
-      img = img.scale(2.0) 
+      img = img.quantize(32, Magick::GRAYColorspace)
+      img.write('foo0.jpg') # for debugging purposes, this is the image that is sent to OCR
+      img = img.equalize #(32, Magick::GRAYColorspace)
+      img.write('foo1.jpg') # for debugging purposes, this is the image that is sent to OCR
+      img = img.scale(2.0)
+      img.write('foo2.jpg') # for debugging purposes, this is the image that is sent to OCR
       img = img.sharpen(1.0, 0.2)
   
       img.write('foo.jpg') # for debugging purposes, this is the image that is sent to OCR
