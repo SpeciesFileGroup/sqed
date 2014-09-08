@@ -10,10 +10,13 @@ describe Sqed do
       expect(s).to respond_to(:image)
     end
 
-    specify 'Sqed.new(image: file) assigns to image' do
+    specify 'Sqed.new(image:file) "works"' do
       expect(Sqed.new(image: ImageHelpers.test0_image)).to be_truthy
+    end
+
+    specify 'Sqed.new(image: file) assigns to image' do
       a = Sqed.new(image: ImageHelpers.test0_image)
-      expect(a.image ==  ImageHelpers.test0_image).to be_truthy
+      expect(a.image == ImageHelpers.test0_image).to be(true)
     end
   end
 
@@ -24,3 +27,5 @@ describe Sqed do
   end
 
 end 
+
+
