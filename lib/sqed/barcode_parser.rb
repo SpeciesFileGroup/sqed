@@ -1,10 +1,14 @@
 # Given an image, return an ordered array of detectable barcodes
+require jruby
+require zxing
+
 class Sqed::BarcodParser
 
   attr_accessor :image, :barcodes
 
   def initialize(image)
-    @image = image 
+    @image = image
+    @image =
     @barcodes = []
   end
 
