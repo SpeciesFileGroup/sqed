@@ -1,6 +1,4 @@
 # Given an image, return an ordered array of detectable barcodes
-#require 'jruby'
-#require 'zxing'
 
 class Sqed::BarcodeParser
 
