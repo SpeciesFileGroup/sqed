@@ -16,14 +16,21 @@ describe Sqed do
     end
 
     specify 'Sqed.new(image: file) assigns to image' do
-    specify 'Sqed.new(image:file) "works"' do
-      expect(Sqed.new(image: ImageHelpers.test0_image)).to be_truthy
+      specify 'Sqed.new(image:file) "works"' do
+        expect(Sqed.new(image: ImageHelpers.test0_image)).to be_truthy
+      end
     end
 
     specify 'Sqed.new(image: file) assigns to image' do
       a = Sqed.new(image: ImageHelpers.test0_image)
       expect(a.image == ImageHelpers.test0_image).to be(true)
     end
+  end
+
+  specify 'zbar barcode decodes' do
+    eb = Sqed::BarcodeParser.new(image: ImageHelpers.barcode_image)
+    bc = eb.bar_codes
+    expect(bc).to be_truthy
   end
 
   specify 'all together' do

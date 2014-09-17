@@ -11,7 +11,7 @@ module ImageHelpers
   end
 
   def self.barcode_image
-    Image.read(File.expand_path('../files/test4.jpg', __FILE__)).first
+    Image.read(File.expand_path('../files/test_barcode.jpg', __FILE__)).first
   end
 
   def self.get_image(path)
