@@ -4,11 +4,11 @@ class Sqed::BarcodParser
   attr_accessor :image, :barcodes
 
   def initialize(image)
-    @image = image 
+    @image    = image
     @barcodes = []
   end
 
-  def barcodes 
+  def barcodes
     # process the images, spit out the barcodes
     return ['ABC 123', 'DEF 456']
   end
