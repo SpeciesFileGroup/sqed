@@ -8,7 +8,7 @@ class Sqed::BarcodeParser
     @image = image
 
     @barf_codes = []
-    @barf_codes = bar_codes
+    @barcodes = bar_codes
     @b = 1    #breakpoint
 
   end
@@ -16,8 +16,8 @@ class Sqed::BarcodeParser
   def bar_codes
     # process the images, spit out the barcodes
     # return ZXing.decode_all(@image)   #['ABC 123', 'DEF 456']
-    a = `/usr/local/Cellar/zbar/0.10_1/bin/zbarimg ~/src/sqed/spec/support/files/test_barcode.JPG`
-    b = a.split("\n")
+    # a = `/usr/local/Cellar/zbar/0.10_1/bin/zbarimg ~/src/sqed/spec/support/files/test_barcode.JPG`
+    # b = a.split("\n")
     f = 'SessionID_BarcodeImage.JPG'
     i = @image[:image]
     i.write(f)

@@ -29,9 +29,16 @@ describe Sqed do
 
   specify 'zbar barcode decodes' do
     eb = Sqed::BarcodeParser.new(image: ImageHelpers.barcode_image)
-    bc = eb.bar_codes
+    bc = eb.barcodes
     expect(bc).to be_truthy
+    expect(bc[0]).to eq('CODE-128:013117001040986')
+    expect(bc[1]).to eq('CODE-128:SDLXHD1QTDVGJ')
+    expect(bc[2]).to eq('CODE-128:1PPD368LL/A')
+    expect(bc[3]).to eq('EAN-13:0885909541171')
+    expect(bc[4]).to be(nil)
+    expect(bc[5]).to be(nil)
   end
+
 
   specify 'all together' do
     eg = Sqed.new(image: ImageHelpers.ocr_image)
