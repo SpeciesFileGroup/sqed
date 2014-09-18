@@ -6,8 +6,8 @@ module ImageHelpers
   end
 
   def self.ocr_image
-    # Image.read(File.expand_path('../files/test_ocr0.jpg', __FILE__)).first
-    Image.read(File.expand_path('../files/test3.jpg', __FILE__)).first
+    Image.read(File.expand_path('../files/Quadrant_2_3.jpg', __FILE__)).first
+    # Image.read(File.expand_path('../files/test3.jpg', __FILE__)).first
   end
 
   def self.barcode_image

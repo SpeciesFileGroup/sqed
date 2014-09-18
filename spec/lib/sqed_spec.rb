@@ -47,7 +47,8 @@ describe Sqed do
     expect(eg.text_from_quadrant(3)).to match(/Amazon/)
     expect(eg.text_from_quadrant(3)).to match(/Choose your Prime delivery option:/)
 
-
+    egb = eg.text_from_quadrant(2)
+    u = 1
   end
 
 end 
