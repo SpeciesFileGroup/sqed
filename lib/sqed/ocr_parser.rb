@@ -35,15 +35,15 @@ class Sqed
       new_color = img.pixel_color(1, 1)
       # img = img.scale(2)
       # img.write('foo0.jpg')
-      img = img.enhance
-      img = img.enhance
-      img = img.enhance
-      img = img.enhance
-      img.write('foo1.jpg')
+      # img = img.enhance
+      # img = img.enhance
+      # img = img.enhance
+      # img = img.enhance
+      # img.write('foo1.jpg')
       # img = img.quantize(8, Magick::GRAYColorspace)
       # img.write('foo1.jpg')
-      img = img.sharpen(1.0, 0.2)
-      img.write('foo2.jpg')
+      # img = img.sharpen(1.0, 0.2)
+      # img.write('foo2.jpg')
       border_color = img.pixel_color(img.columns - 1, img.rows - 1)
       img = img.color_floodfill(img.columns - 1, img.rows - 1, new_color)
       img.write('foo3.jpg')

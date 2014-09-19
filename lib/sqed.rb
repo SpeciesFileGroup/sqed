@@ -31,18 +31,21 @@ class Sqed
 
   def text_from_quadrant(quadrant = 4)
     raise 'provide an image' if @image.nil?
-    # if (quadrant == 3) do {
-        i = Sqed::WindowCropper.new(image: @image).result
+    i = Sqed::WindowCropper.new(image: @image).result
+    if quadrant == 3
         j = Sqed::QuadrantParser.new(image: i).image_from_quadrant(quadrant)
-        h = Sqed::OcrParser.new(j).text
-    # }
-    # end
-    # if (quadrant == 2) do {
-    #   l = Sqed::WindowCropper.new(image: @image).result
-      k = Sqed::QuadrantParser.new(image: i).image_from_quadrant(quadrant)
-      l = Sqed::BarcodeParser.new(k).barcodes
-    # }
-    # end
+        k = Sqed::OcrParser.new(j).text
+      return k
+    end
+    if quadrant == 2
+      l = Sqed::WindowCropper.new(image: @image).result
+      if l.nil?
+        l = Sqed::BarcodeParser.new(image: ImageHelpers.barcode_image)
+      end
+      k = Sqed::QuadrantParser.new(image: l).image_from_quadrant(quadrant)
+      m = Sqed::BarcodeParser.new(k)
+      n = m.barcodes
+      return m
+    end
   end
-
 end

@@ -41,14 +41,20 @@ describe Sqed do
 
 
   specify 'all together' do
+
     eg = Sqed.new(image: ImageHelpers.ocr_image)
     egt = eg.text_from_quadrant(3)
 
     expect(eg.text_from_quadrant(3)).to match(/Amazon/)
     expect(eg.text_from_quadrant(3)).to match(/Choose your Prime delivery option:/)
 
+    eg = Sqed.new(image: ImageHelpers.ocr_image)
     egb = eg.text_from_quadrant(2)
     u = 1
+    expect(egb.barcodes[0]).to eq('CODE-128:013117001040986')
+    expect(egb.barcodes[1]).to eq('CODE-128:SDLXHD1QTDVGJ')
+    expect(egb.barcodes[2]).to eq('CODE-128:1PPD368LL/A')
+    expect(egb.barcodes[3]).to eq('EAN-13:0885909541171')
   end
 
 end 

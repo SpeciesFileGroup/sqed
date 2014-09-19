@@ -20,6 +20,9 @@ class Sqed::BarcodeParser
     # b = a.split("\n")
     f = 'SessionID_BarcodeImage.JPG'
     i = @image[:image]
+    if i.nil?
+      i = @image
+    end
     i.write(f)
     c = `/usr/local/Cellar/zbar/0.10_1/bin/zbarimg #{f}`
     d = c.split("\n")
