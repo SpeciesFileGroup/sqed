@@ -20,6 +20,7 @@ class Sqed
 
   def initialize(image: image)
     @image = image
+    @image =Sqed::AutoCropper.new(@image).img
   end
 
   # This is called
@@ -31,14 +32,14 @@ class Sqed
 
   def text_from_quadrant(quadrant = 4)
     raise 'provide an image' if @image.nil?
-    i = Sqed::WindowCropper.new(image: @image).result
+    i = @image #Sqed::WindowCropper.new(image: @image).result
     if quadrant == 3
         j = Sqed::QuadrantParser.new(image: i).image_from_quadrant(quadrant)
         k = Sqed::OcrParser.new(j).text
       return k
     end
     if quadrant == 2
-      l = Sqed::WindowCropper.new(image: @image).result
+      l = @image #Sqed::WindowCropper.new(image: @image).result
       if l.nil?
         l = Sqed::BarcodeParser.new(image: ImageHelpers.barcode_image)
       end

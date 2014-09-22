@@ -34,7 +34,7 @@ class Sqed
       # get potential border pixel color (based on quadrant?)
       new_color = img.pixel_color(1, 1)
       # img = img.scale(2)
-      # img.write('foo0.jpg')
+      # img.write('foo0.jpg.jpg')
       # img = img.enhance
       # img = img.enhance
       # img = img.enhance
@@ -46,7 +46,7 @@ class Sqed
       # img.write('foo2.jpg')
       border_color = img.pixel_color(img.columns - 1, img.rows - 1)
       img = img.color_floodfill(img.columns - 1, img.rows - 1, new_color)
-      img.write('foo3.jpg')
+      img.write('foo4.jpg')
       # img = img.quantize(2, Magick::GRAYColorspace)
       # #img = img.threshold(0.5)
       # img.write('foo4.jpg') # for debugging purposes, this is the image that is sent to OCR

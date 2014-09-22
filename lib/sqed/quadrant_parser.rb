@@ -43,6 +43,10 @@ class Sqed
      @images[1] = @initial_image.crop(@center_x, 0 , @center_x, @center_y)
      @images[2] = @initial_image.crop(0, @center_y , @center_x, @center_y)
      @images[3] = @initial_image.crop(@center_x, @center_y , @center_x, @center_y)
+     @images[0].write('foo0.jpg')
+     @images[1].write('foo1.jpg')
+     @images[2].write('foo2.jpg')
+     @images[3].write('foo3.jpg')
    end
 
    def find_axes(axes_method: :centered ) 
