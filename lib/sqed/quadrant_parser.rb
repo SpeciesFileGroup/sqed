@@ -73,8 +73,8 @@ class Sqed
    end
 
    def image_from_quadrant(quadrant = 0)
-     raise if quadrant < 0 or quadrant > 3
-     divide_image if !@images[0] 
+     raise if quadrant < 0 or quadrant > 3  # range check
+     divide_image if !@images[0]  #if not exists images[0] means images = []
      @images[quadrant] 
    end
 

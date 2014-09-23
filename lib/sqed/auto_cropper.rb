@@ -36,8 +36,6 @@ require 'RMagick'
 
   def output
     @img = @img.crop(x0, y0, width, height, true)
-    @img.write('foo6.jpg')
-    @img
   end
 
   # Returns a Proc that, given a set of pixels (an edge of the image) decides
