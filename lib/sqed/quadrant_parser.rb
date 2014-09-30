@@ -11,6 +11,10 @@
  #      2 | 3
  #
  # A class to split an Image into 4 pieces, that's all.
+ #
+ #  a = Sqed::QuadrantParser.new(image: <some_image>)
+ #  a.images[0]
+ #
 class Sqed
   class QuadrantParser
 
@@ -43,10 +47,14 @@ class Sqed
      @images[1] = @initial_image.crop(@center_x, 0 , @center_x, @center_y)
      @images[2] = @initial_image.crop(0, @center_y , @center_x, @center_y)
      @images[3] = @initial_image.crop(@center_x, @center_y , @center_x, @center_y)
-     @images[0].write('foo0.jpg')
-     @images[1].write('foo1.jpg')
-     @images[2].write('foo2.jpg')
-     @images[3].write('foo3.jpg')
+
+     write_quadrants
+   end
+
+   def write_quadrants
+     (0..3).each do |i|
+       @images[i].write("foo_#{i}.jpg")
+     end
    end
 
    def find_axes(axes_method: :centered ) 
@@ -72,9 +80,11 @@ class Sqed
     return [false, false] 
    end
 
+   # Return an image from a quadrant.  Divides the 
+   # image if it hasn't been previously divided.
    def image_from_quadrant(quadrant = 0)
      raise if quadrant < 0 or quadrant > 3  # range check
-     divide_image if !@images[0]  #if not exists images[0] means images = []
+     divide_image if @images.empty?
      @images[quadrant] 
    end
 

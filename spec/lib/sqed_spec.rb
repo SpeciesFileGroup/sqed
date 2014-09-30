@@ -12,10 +12,10 @@ describe Sqed do
 
     specify 'autocropper/edgeDetector works' do
       this_image = ImageHelpers.ocr_image
-      expect(AutoCropper.new(this_image)).to be_truthy
+      expect(Sqed::AutoCropper.new(this_image)).to be_truthy
     end
 
-    specify 'Sqed.new(image: file) assigns to image' do
+    context 'Sqed.new(image: file) assigns to image' do
       specify 'Sqed.new(image:file) "works"' do
         expect(Sqed.new(image: ImageHelpers.test0_image)).to be_truthy
       end
@@ -39,22 +39,22 @@ describe Sqed do
     expect(bc[5]).to be(nil)
   end
 
+  context "foo" do
+    let(:eg) { Sqed.new(image: ImageHelpers.ocr_image) }
 
-  specify 'all together' do
+    specify 'all together' do
+      egt = eg.text_from_quadrant(3)
 
-    eg = Sqed.new(image: ImageHelpers.ocr_image)
-    egt = eg.text_from_quadrant(3)
+      expect(egt).to match(/Amazon/)
+      expect(egt).to match(/Choose your Prime delivery option:/)
 
-    expect(eg.text_from_quadrant(3)).to match(/Amazon/)
-    expect(eg.text_from_quadrant(3)).to match(/Choose your Prime delivery option:/)
-
-    eg = Sqed.new(image: ImageHelpers.ocr_image)
-    egb = eg.text_from_quadrant(2)
-    u = 1
-    expect(egb.barcodes[0]).to eq('CODE-128:013117001040986')
-    expect(egb.barcodes[1]).to eq('CODE-128:SDLXHD1QTDVGJ')
-    expect(egb.barcodes[2]).to eq('CODE-128:1PPD368LL/A')
-    expect(egb.barcodes[3]).to eq('EAN-13:0885909541171')
+      egb = eg.text_from_quadrant(2)
+      u = 1
+      expect(egb.barcodes[0]).to eq('CODE-128:013117001040986')
+      expect(egb.barcodes[1]).to eq('CODE-128:SDLXHD1QTDVGJ')
+      expect(egb.barcodes[2]).to eq('CODE-128:1PPD368LL/A')
+      expect(egb.barcodes[3]).to eq('EAN-13:0885909541171')
+    end
   end
 
 end 
