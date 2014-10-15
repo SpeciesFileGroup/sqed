@@ -73,7 +73,7 @@ class Sqed
     return [false, false] 
    end
 
-   # Finds a center marker (shape/etc. to be determined, likely a spherical object in contrast in "center") 
+   # Finds a center marker (shape/etc. to be determined, likely a spherical object in contrast in "center")
    # returns x int, y int 
    # TODO: @jrflood
    def axes_by_center_marker

@@ -1,12 +1,11 @@
 require 'RMagick'
 
-# Auto crop an image by detecting solid edges around them.  Adapted from Emmanuel Oga/autocrop.rb
+# Find a (mostly) solid-color cross delineating quadrants.  Adapted from Emmanuel Oga/autocrop.rb
 
-  class Sqed::AutoCropper
+class Sqed::CrossFinder
 
-  # How small we accept a cropped picture to be. E.G. if it was 100x100 and
-  # ratio 0.1, min output should be 10x10
-  MIN_CROP_RATIO = 0.1    # constant of this class
+# this function should operate after image is border cropped
+
   # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
   attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :is_border
 
@@ -61,7 +60,7 @@ require 'RMagick'
   private
 
   def find_edges
-    return unless is_border #return if no process defined or set for @is_border
+    return unless is_border
 
     u = x1 - 1
     x0.upto(u)     { |x| width_croppable?  && is_border[vline(x)] ? @x0 = x + 1 : break }

@@ -11,6 +11,7 @@ require_relative "sqed/ocr_parser"
 require_relative "sqed/barcode_parser"
 require_relative "sqed/window_cropper"
 require_relative "sqed/auto_cropper"
+require_relative "sqed/green_line_finder"
 
 class Sqed
 
