@@ -18,11 +18,17 @@ class Sqed::GreenLineFinder
     # Coordinates
     @x0, @y0 = 0, 0; @x1, @y1 = img.columns, img.rows # total image area
     @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
-
+    @columns, @rows = img.columns, img.rows
     # We need a band finder proc. Provide one if none was given.
+    # @green_pixel = Pixel.new(13000,30000,5000)
+    green_pixel = img.pixel_color(2514,1319)
+    # @target = Image.new( 20, @columns/1000) { self.background_color = green_pixel }
+    @target = Image.new(img.get_pixels(2500, 1300, 20, 5))
+    # @target.fuzz = 0.39
+    # img.fuzz = 0.39
+    @target.write('fool.jpg')
+    r = img.find_similar_region(@target, 0,0)
     @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
-    @green_pixel = Pixel.new(13000,30000,5000)
-    @target = Image.new(20, @columns/1000) { self.background_color = @green_pixel}
 
     find_edges
     output
@@ -48,7 +54,7 @@ class Sqed::GreenLineFinder
     # works for 0.5, >0.137; 0.60, >0.14 0.65, >0.146; 0.70, >0.1875; 0.75, >0.1875; 0.8, >0.237; 0.85, >0.24; 0.90, >0.28; 0.95, >0.25
     # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
     fuzz = (2**16 * fuzz).to_i  #same fuzz? not really, according to object_id
-    r = @img.find_similar_region(@target, 0,0)
+    r = img.find_similar_region(@target, 0,0)
         # Returns true if the edge is a band. (?)
     # want to return true if find a green line
     # first priority is get vertical line
