@@ -23,11 +23,15 @@ class Sqed::GreenLineFinder
     # @green_pixel = Pixel.new(13000,30000,5000)
     green_pixel = img.pixel_color(2514,1319)
     # @target = Image.new( 20, @columns/1000) { self.background_color = green_pixel }
-    @target = Image.new(img.get_pixels(2500, 1300, 20, 5))
-    # @target.fuzz = 0.39
-    # img.fuzz = 0.39
+    @target = Image.new(20, 5)
+    t = img.export_pixels(2500, 1300, 20, 5)
+    @target = @target.import_pixels(0,0,20,5,'RGB',t)
+    # @target = @target.gaussian_blur(0.0, 3.0)
+    # @target.fuzz = 0.09
+    # img.fuzz = 0.09
     @target.write('fool.jpg')
-    r = img.find_similar_region(@target, 0,0)
+    r = img.find_similar_region(@target,0,0)
+    #so, it can find this EXACT region, but not one right next door!
     @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
 
     find_edges
