@@ -58,7 +58,7 @@ class Sqed::GreenLineFinder
     # works for 0.5, >0.137; 0.60, >0.14 0.65, >0.146; 0.70, >0.1875; 0.75, >0.1875; 0.8, >0.237; 0.85, >0.24; 0.90, >0.28; 0.95, >0.25
     # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
     fuzz = (2**16 * fuzz).to_i  #same fuzz? not really, according to object_id
-    r = img.find_similar_region(@target, 0,0)
+    # r = img.find_similar_region(@target, 0,0)
         # Returns true if the edge is a band. (?)
     # want to return true if find a green line
     # first priority is get vertical line
@@ -67,8 +67,8 @@ class Sqed::GreenLineFinder
 
       pixels = (0...samples).map { |n| edge[n * edge.length / samples] }
       # want ~1% of pixels to be like the model green red<13000, green>30000, blue<5000
-      # pixels.combination(2).each { |a, b| a.fcmp(b, fuzz) ? band += 1 : non_border += 1 }
-      pixels.combination(5).each { |a| a.fcmp(@green_pixel, fuzz) ? band += 1 : non_border += 1 }
+      pixels.combination(2).each { |a, b| a.fcmp(b, fuzz) ? band += 1 : non_border += 1 }
+      # pixels.combination(5).each { |a| a.fcmp(@green_pixel, fuzz) ? band += 1 : non_border += 1 }
 
       band.to_f / (band + non_border) > threshold
     end
