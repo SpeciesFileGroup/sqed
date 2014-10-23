@@ -23,7 +23,8 @@ describe Sqed do
 
     specify 'green line parser does something' do
       this_image = ImageHelpers.greenline_image
-      a = Sqed::GreenLineFinder.new(this_image)
+      cropped_image = Sqed::AutoCropper.new(this_image).img
+      a = Sqed::GreenLineFinder.new(cropped_image)
       b = 0
     end
 
