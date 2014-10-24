@@ -89,16 +89,16 @@ class Sqed::GreenLineFinder
     u = x1 - 1
     x0.upto(u) do |x|
       if width_croppable? && is_border[vline(x)] then
-        @x0 = x + 1
-      else
         break
+      else
+        @x0 = x + 1
       end
     end
-    (u).downto(x0) { |x| width_croppable?  && is_border[vline(x)] ? @x1 = x - 1 : break }
+    (u).downto(x0) { |x| width_croppable?  && is_border[vline(x)] ? break : @x1 = x - 1 }
 
     u = y1 - 1
-    0.upto(u)      { |y| height_croppable? && is_border[hline y] ? @y0 = y + 1 : break }
-    (u).downto(y0) { |y| height_croppable? && is_border[hline y] ? @y1 = y - 1 : break }
+    0.upto(u)      { |y| height_croppable? && is_border[hline y] ? break : @y0 = y + 1 }
+    (u).downto(y0) { |y| height_croppable? && is_border[hline y] ? break : @y1 = y - 1 }
     u = 0
   end
 

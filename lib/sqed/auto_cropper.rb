@@ -35,7 +35,11 @@ require 'RMagick'
   end
 
   def output
-    @img = @img.crop(x0, y0, width, height, true)
+    delta_x = width/33    # 3% of cropped image to make up for trapezoidal distortion
+    delta_y = height/33    # 3% of cropped image to make up for trapezoidal distortion
+    @img = @img.crop(x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y, true)
+# 2*delta_s for 3rd and 4th args
+    @img.write('cropped.jpg')
   end
 
   # Returns a Proc that, given a set of pixels (an edge of the image) decides
