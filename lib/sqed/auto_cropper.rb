@@ -26,7 +26,7 @@ require 'RMagick'
     output
   end
 
-  def width   #
+  def width   #   # dynamically varying
     @x1 - @x0   # actually + 1
   end
 

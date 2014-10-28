@@ -67,7 +67,8 @@ class Sqed
    end
 
    # Detects green lines 
-   # returns x int, y int 
+   # returns x int, y int (only valid if lines are full width/height and horizontal/vertical)
+   # test case only has horizontal line to right of vertical line
    # TODO: @jrflood
    def axes_by_green_line
     return [false, false] 
