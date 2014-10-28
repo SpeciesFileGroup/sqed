@@ -27,7 +27,7 @@ require 'RMagick'
   end
 
   def width   #   # dynamically varying
-    @x1 - @x0   # actually + 1
+    @x1 - @x0   # actually + 1, since 0..1000 is 1001
   end
 
   def height

@@ -89,6 +89,7 @@ class Sqed::GreenLineFinder
 
   def find_bands
     return unless is_band
+    corners = []
 
     u = x1 - 1
     x0.upto(u) do |x|     # scan from left to right
@@ -100,7 +101,10 @@ class Sqed::GreenLineFinder
     end
     (u).downto(x0) { |x| is_band[vline(x)] ? break : @x1 = x - 1 }  # scan from right to left
 # handle not found case
-
+  if x0 == x1 then
+    corners[0] = [0,0],[@columns, @rows]
+    return
+  end
 # if vertical band found, scan left and right divisions for (single) horizontal band
 
     u = y1 - 1    # u is not changed, so re-use as max y
@@ -120,13 +124,17 @@ class Sqed::GreenLineFinder
       end
     end
 
-  if @y0 == @y1 && @y1 == img.rows then
+  if @y0 == @y1 && @y1 == @rows then
     @y0 = 0   # no solid line found in left division
+    corners[0] = [0,0],[@x0, @rows]
+
   else
     y0l = @y0   # found line, record bounds
     y1l = @y1
     @y0 = 0     # and reset limits for right
     @y1 = u
+    corners[0] = [0,0],[@x0, y0l]
+    corners[1] = [0,y1l],[@x0, @rows]
   end
 
 #  do right side
@@ -134,14 +142,22 @@ class Sqed::GreenLineFinder
     (u).downto(y0) { |y| is_band[hliner y] ? break : @y1 = y - 1 }    #scan from bottom to top
 # handle not found case
 
-    if @y0 == @y1 && @y1 == img.rows then
+    if @y0 == @y1 && @y1 == @rows
       @y0 = 0   # no solid line found in right division
+      corners[3] = [@x1, 0],[@columns, @rows]
     else
       y0r = @y0   # found line, record bounds
       y1r = @y1
+      corners[3] = [x1,0],[@columns,y0r]
+      corners[4] = [x1, y1r],[@columns,@rows]
     end
     u = 0
-  end
+    (0..4).each do |i|
+      if !corners[i].nil?
+        area = img.crop(corners[i][0][0], corners[i][0][1], corners[i][1][0], corners[i][1][1]); area.write("area#{i}.jpg")
+      end
+    end
+   end
 
   def vline(x)
     img.get_pixels x, y0, 1, height - 1
@@ -156,14 +172,7 @@ class Sqed::GreenLineFinder
   end
 
   def hliner(y)
-    img.get_pixels x1, y, img.columns - x1, 1    #xoffset, yoffset, width, height
+    img.get_pixels x1, y, @columns - x1, 1    #xoffset, yoffset, width, height
   end
 
-  def width_croppable?
-    width > min_width
-  end
-
-  def height_croppable?
-    height > min_height
-  end
 end
