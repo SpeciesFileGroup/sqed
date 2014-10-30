@@ -1,4 +1,3 @@
-
 module ImageHelpers
 
   def self.test0_image

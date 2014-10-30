@@ -4,7 +4,7 @@ recent_ruby = RUBY_VERSION >= '2.1.1'
 raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
 
 require "RMagick"
-
+include Magick
 require_relative 'sqed_config'
 require_relative "sqed/extractor"
 require_relative "sqed/result"
@@ -30,16 +30,19 @@ class Sqed
   end
 
   def result
+    return false if @image.nil? || @pattern.nil? 
     crop_image
-    Sqed::Extractor.new(boundaries: boundaries, layout: EXTRACTION_PATTERNS[@pattern][:layout], image: image).result
+    Sqed::Extractor.new(boundaries: boundaries, layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout], image: image).result
   end
 
   def boundaries
-    EXTACTION_PATTERNS[@pattern][:boundry_finder].new(image: @image).boundaries
+    SqedConfig::EXTACTION_PATTERNS[@pattern][:boundry_finder].new(image: @image).boundaries
   end
 
   def crop_image
-    @stage_image = Sqed::ImageExtractor(boundry_finder: :stage_finder, image: @image).img
+    boundaries =  Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
+    # meh, have to think about extracting a single image (extractor gets it all) 
+    @stage_image = false # Sqed::Extractor.new(boundaries: boundaries, image: @image).img
   end
 
 end

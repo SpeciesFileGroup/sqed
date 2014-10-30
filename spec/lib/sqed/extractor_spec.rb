@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Sqed do
+describe Sqed::Extractor do
 
-  let(:s) {Sqed.new}
+  let(:s) {Sqed::Extractor.new}
 
   context 'attributes' do
     specify '#image' do
