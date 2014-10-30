@@ -10,16 +10,17 @@ class Sqed::BoundaryFinder
   # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
   attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
 
-  def initialize(img, is_border_proc = nil, min_ratio = MIN_CROP_RATIO) # img must bef supplied, others overridable
-    @img, @min_ratio = img, min_ratio
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO) # img must bef supplied, others overridable
+    @img, @min_ratio = image, min_ratio
 
     # Coordinates
     @x0, @y0 = 0, 0; @x1, @y1 = img.columns, img.rows # total image area
     @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
 
+    @columns, @rows = img.columns, img.rows
+
     # We need a border finder proc. Provide one if none was given.
     @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
-
   end
 
   # actually  + 1 (starting at zero?)
@@ -32,9 +33,12 @@ class Sqed::BoundaryFinder
     @y1 - @y0 
   end
 
-  # TODO Rich:  This needs to change throught to return the co-ordinates of the boundries (x1, y1, x2, y2), not an image.
-  def output
-    @img = @img.crop(x0, y0, width, height, true)
+  # Defined in subclasses
+  def boundaries
+  end
+
+  def cropped_image
+    @img.crop(x0, y0, width, height, true)
   end
 
   # Returns a Proc that, given a set of pixels (an edge of the image) decides

@@ -1,21 +1,18 @@
 require 'RMagick'
 
-# Auto crop an image by detecting solid edges around them.  Adapted from Emmanuel Oga/autocrop.rb
-
+# Auto crop an image by detecting solid edges around them.  
+# Assume white-ish image on dark-ish background
 class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   # How small we accept a cropped picture to be. E.G. if it was 100x100 and
   # ratio 0.1, min output should be 10x10
   MIN_BOUNDARY_RATIO = 0.01    # constant of this class
-  # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
+  
   attr_reader :is_band
-
-  # assume white-ish image on dark-ish background
 
   def initialize(img, is_band_proc = nil, min_ratio = MIN_BOUNDARY_RATIO) # img must be supplied, others overridable
     super 
 
-    @columns, @rows = img.columns, img.rows
     # We need a band finder proc. Provide one if none was given.
     green_pixel = Pixel.new(13000,30000,5000)
     # @green_pixel = img.pixel_color(2514,1319)

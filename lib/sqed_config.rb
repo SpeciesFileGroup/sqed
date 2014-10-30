@@ -35,6 +35,7 @@ require_relative "sqed/boundary_finder/stage_finder"
 module SqedConfig
   
   LAYOUT_SECTION_TYPES = [
+    :stage,                 # the image contains the full stage 
     :specimen,              # the specimen only, no metadata should be present
     :annotated_specimen,    # a specimen is present, and metadata is too
     :determination_labels,  # the section contains text that determines the specimen
@@ -58,6 +59,10 @@ module SqedConfig
     standard_cross: {
       boundry_finder: Sqed::BoundaryFinder::CrossFinder,
       layout: {0 => :labels, 1 => :specimen, 2 => :identifier, 3 => :specimen_deteriminations }
+    },
+    stage: {
+      boundry_finder: Sqed::BoundaryFinder::StageFinder,
+      layout: {0 => :stage}
     }
     # etc. ...
   }

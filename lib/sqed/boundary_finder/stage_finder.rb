@@ -7,34 +7,32 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   # ratio 0.1, min output should be 10x10
   MIN_CROP_RATIO = 0.1    # constant of this class
   # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :is_border
+  attr_reader  :is_border
 
   # assume white-ish image on dark-ish background
 
-  def initialize(img, is_border_proc = nil, min_ratio = MIN_CROP_RATIO) # img must bef supplied, others overridable
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
     super 
 
     # We need a border finder proc. Provide one if none was given.
     @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
 
     find_edges
-    output
+    # output
   end
 
-  def width   #   # dynamically varying
-    @x1 - @x0   # actually + 1, since 0..1000 is 1001
-  end
-
-  def height
-    @y1 - @y0  # actually  + 1
+  def boundaries
+    b = Sqed::Boundaries.new( SqedConfig::EXTRACTION_PATTERNS[:stage][:layout] )
+    b.coordinates[:stage] = [x0, y0, width, height]
+    b
   end
 
   def output
     delta_x = width/33    # 3% of cropped image to make up for trapezoidal distortion
-    delta_y = height/33    # 3% of cropped image to make up for trapezoidal distortion
+    delta_y = height/33    # 3% of cropped image to make up for trapezoidal distortion <- NOT 3%
     @img = @img.crop(x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y, true)
     # 2*delta_s for 3rd and 4th args
-    @img.write('cropped.jpg')
+    # @img.write('cropped.jpg')
   end
 
   # Returns a Proc that, given a set of pixels (an edge of the image) decides
@@ -61,6 +59,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   private
 
+  # TODO: If this is the same as superclass remove.
   def find_edges
     return unless is_border #return if no process defined or set for @is_border
 
@@ -76,19 +75,6 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     u = 0
   end
 
-  def vline(x)
-    img.get_pixels x, y0, 1, height - 1
-  end
+ 
 
-  def hline(y)
-    img.get_pixels x0, y, width - 1, 1
-  end
-
-  def width_croppable?
-    width > min_width
-  end
-
-  def height_croppable?
-    height > min_height
-  end
 end

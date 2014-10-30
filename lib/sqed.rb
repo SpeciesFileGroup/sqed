@@ -9,7 +9,6 @@ require_relative 'sqed_config'
 require_relative "sqed/extractor"
 require_relative "sqed/result"
 
-
 # Instants take the following
 # 1) A base image @image
 # 2) A target extraction pattern
@@ -32,7 +31,11 @@ class Sqed
   def result
     return false if @image.nil? || @pattern.nil? 
     crop_image
-    Sqed::Extractor.new(boundaries: boundaries, layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout], image: image).result
+    extractor = Sqed::Extractor.new(
+      boundaries: boundaries,
+      layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout],
+      image: image)
+    extractor.result
   end
 
   def boundaries
@@ -41,8 +44,7 @@ class Sqed
 
   def crop_image
     boundaries =  Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
-    # meh, have to think about extracting a single image (extractor gets it all) 
-    @stage_image = false # Sqed::Extractor.new(boundaries: boundaries, image: @image).img
+    @stage_image = @image.crop(*boundaries.for(:stage))
   end
 
 end
