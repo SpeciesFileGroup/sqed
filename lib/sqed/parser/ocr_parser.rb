@@ -50,4 +50,3 @@ class Sqed::Parser::OcrParser < Sqed::Parser
   # Need to provide tuning methods here, i.e. image transormations that facilitate OCR
 
 end
-end

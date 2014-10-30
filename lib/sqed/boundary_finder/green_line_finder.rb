@@ -2,7 +2,7 @@ require 'RMagick'
 
 # Auto crop an image by detecting solid edges around them.  Adapted from Emmanuel Oga/autocrop.rb
 
-class Sqed::BoundryFinder::GreenLineFinder < Sqed::BounrdyFinder
+class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   # How small we accept a cropped picture to be. E.G. if it was 100x100 and
   # ratio 0.1, min output should be 10x10

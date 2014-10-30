@@ -2,7 +2,7 @@ require 'RMagick'
 
 # Find a (mostly) solid-color cross delineating quadrants.  Adapted from Emmanuel Oga/autocrop.rb
 
-class Sqed::BoundryFinder::CrossFinder < Sqed::BoundryFinder
+class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
 
   # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
