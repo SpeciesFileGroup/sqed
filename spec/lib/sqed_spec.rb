@@ -52,31 +52,31 @@ describe Sqed do
     eg.image.rotate!(270.0)
     eg.image.write('foo5.jpg')
     egt = eg.text_from_quadrant(3)
-   expect(egt).to match(/529 234/)
+    expect(egt).to match(/529 234/)
   end
-context "foo" do
+
+  context "foo" do
     let(:eg) { Sqed.new(image: ImageHelpers.ocr_image) }
 
-  specify 'all together' do
+    specify 'all together' do
+      # eg = Sqed.new(image: ImageHelpers.ocr_image)
+      egt = eg.text_from_quadrant(3)
 
-    # eg = Sqed.new(image: ImageHelpers.ocr_image)
-    egt = eg.text_from_quadrant(3)
+      expect(egt).to match(/Designed by Apple in California/)
+      expect(egt).to match(/8 85909 27035/)
+      expect(egt).to match(/EASY/)
+      expect(eg.text_from_quadrant(3)).to match(/013‘1700104U986/)  #ACTUALLY 013117001040986
 
-    expect(egt).to match(/Designed by Apple in California/)
-    expect(egt).to match(/8 85909 27035/)
-    expect(egt).to match(/EASY/)
-    expect(eg.text_from_quadrant(3)).to match(/013‘1700104U986/)  #ACTUALLY 013117001040986
-
-    eg = Sqed.new(image: ImageHelpers.ocr_image)
-    egb = eg.text_from_quadrant(2)
-    u = 1  #pre-test breakpoint
-    expect(egb.barcodes[0]).to eq('QR-Code:http://youtu.be/h9fkPPp8Y1c')
-    expect(egb.barcodes[1]).to eq('EAN-13:0885909270354')
-    expect(egb.barcodes[2]).to eq('CODE-128:013117001040986')
-    expect(egb.barcodes[3]).to eq('CODE-128:SDLXHD1QTDVGJ')
-    expect(egb.barcodes[4]).to eq('CODE-128:1PPD368LL/A')
-    expect(egb.barcodes[5]).to eq('EAN-13:0885909541171')
-    expect(egb.barcodes[6]).to be(nil)
+      eg = Sqed.new(image: ImageHelpers.ocr_image)
+      egb = eg.text_from_quadrant(2)
+      u = 1  #pre-test breakpoint
+      expect(egb.barcodes[0]).to eq('QR-Code:http://youtu.be/h9fkPPp8Y1c')
+      expect(egb.barcodes[1]).to eq('EAN-13:0885909270354')
+      expect(egb.barcodes[2]).to eq('CODE-128:013117001040986')
+      expect(egb.barcodes[3]).to eq('CODE-128:SDLXHD1QTDVGJ')
+      expect(egb.barcodes[4]).to eq('CODE-128:1PPD368LL/A')
+      expect(egb.barcodes[5]).to eq('EAN-13:0885909541171')
+      expect(egb.barcodes[6]).to be(nil)
+    end
   end
-end
 end 

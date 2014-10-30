@@ -1,8 +1,7 @@
 require 'RMagick'
 
-# Auto crop an image by detecting solid edges around them.  Adapted from Emmanuel Oga/autocrop.rb
-
-  class Sqed::AutoCropper
+# Was autocropper
+class Sqed::BoundryFinder::StageFinder < Sqed::BoundryFinder
 
   # How small we accept a cropped picture to be. E.G. if it was 100x100 and
   # ratio 0.1, min output should be 10x10
@@ -38,7 +37,7 @@ require 'RMagick'
     delta_x = width/33    # 3% of cropped image to make up for trapezoidal distortion
     delta_y = height/33    # 3% of cropped image to make up for trapezoidal distortion
     @img = @img.crop(x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y, true)
-# 2*delta_s for 3rd and 4th args
+    # 2*delta_s for 3rd and 4th args
     @img.write('cropped.jpg')
   end
 

@@ -23,3 +23,5 @@ tmp
 local/
 foo*.jpg
 SessionID_BarcodeImage.JPG
+
+/*.jpg

@@ -1,15 +1,14 @@
 require 'RMagick'
 
-# Find a (mostly) solid-color cross delineating quadrants.  Adapted from Emmanuel Oga/autocrop.rb
+# Sqed Boundry Finders find boundries on images and return co-ordinates of those boundries.  They do not
+# return derivative images. Finders operate on cropped images, i.e. only the "stage".
+#
+# This core of this code is from Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
+#
+class Sqed::BoundryFinder
 
-class Sqed::CrossFinder
-
-# this function should operate after image is border cropped
-
-  # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :is_border
-
-  # assume white-ish image on dark-ish background
+  # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
+  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
 
   def initialize(img, is_border_proc = nil, min_ratio = MIN_CROP_RATIO) # img must bef supplied, others overridable
     @img, @min_ratio = img, min_ratio
@@ -25,14 +24,17 @@ class Sqed::CrossFinder
     output
   end
 
-  def width   #
-    @x1 - @x0   # actually + 1
+  # actually  + 1 (starting at zero?)
+  def width   
+    @x1 - @x0  
   end
-
+ 
+  # actually  + 1 (starting at zero?)
   def height
-    @y1 - @y0  # actually  + 1
+    @y1 - @y0 
   end
 
+  # TODO Rich:  This needs to change throught to return the co-ordinates of the boundries (x1, y1, x2, y2), not an image.
   def output
     @img = @img.crop(x0, y0, width, height, true)
   end

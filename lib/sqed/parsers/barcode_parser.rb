@@ -1,16 +1,11 @@
 # Given an image, return an ordered array of detectable barcodes
 
-class Sqed::BarcodeParser
-
-  attr_accessor :image, :barcodes
+class Sqed::Parser::BarcodeParser < Sqed::Parser
+  attr_accessor :barcodes
 
   def initialize(image)
-    @image = image
-
-    @barf_codes = []
+    super
     @barcodes = bar_codes
-    @b = 1    #breakpoint
-
   end
 
   def bar_codes
