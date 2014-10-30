@@ -12,11 +12,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   # assume white-ish image on dark-ish background
 
   def initialize(img, is_border_proc = nil, min_ratio = MIN_CROP_RATIO) # img must bef supplied, others overridable
-    @img, @min_ratio = img, min_ratio
-
-    # Coordinates
-    @x0, @y0 = 0, 0; @x1, @y1 = img.columns, img.rows # total image area
-    @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
+    super 
 
     # We need a border finder proc. Provide one if none was given.
     @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below

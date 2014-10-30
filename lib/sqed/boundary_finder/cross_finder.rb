@@ -4,7 +4,6 @@ require 'RMagick'
 
 class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
-
   # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
   attr_reader  :is_border
 

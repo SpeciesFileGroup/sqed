@@ -20,8 +20,6 @@ class Sqed::BoundaryFinder
     # We need a border finder proc. Provide one if none was given.
     @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
 
-    find_edges
-    output
   end
 
   # actually  + 1 (starting at zero?)

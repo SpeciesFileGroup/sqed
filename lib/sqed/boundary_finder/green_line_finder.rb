@@ -8,16 +8,13 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
   # ratio 0.1, min output should be 10x10
   MIN_BOUNDARY_RATIO = 0.01    # constant of this class
   # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :is_band
+  attr_reader :is_band
 
   # assume white-ish image on dark-ish background
 
   def initialize(img, is_band_proc = nil, min_ratio = MIN_BOUNDARY_RATIO) # img must be supplied, others overridable
-    @img, @min_ratio = img, min_ratio
+    super 
 
-    # Coordinates
-    @x0, @y0 = 0, 0; @x1, @y1 = img.columns, img.rows # total image area
-    @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
     @columns, @rows = img.columns, img.rows
     # We need a band finder proc. Provide one if none was given.
     green_pixel = Pixel.new(13000,30000,5000)
