@@ -1,6 +1,5 @@
 
 # An Extractor takes Boundries object and a layout pattern and returns a Sqed::Result
-#
 # 
 class Sqed::Extractor
 

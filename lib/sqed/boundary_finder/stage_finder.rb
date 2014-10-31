@@ -11,7 +11,8 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   # assume white-ish image on dark-ish background
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: {0 => :stage})
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
+    @layout = :internal_box
     super 
 
     # We need a border finder proc. Provide one if none was given.

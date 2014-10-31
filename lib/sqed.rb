@@ -39,11 +39,14 @@ class Sqed
   end
 
   def boundaries
-    SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundry_finder].new(image: @image).boundaries
+    SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder].new(
+      image: @image, 
+      layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout]
+    ).boundaries
   end
 
   def crop_image
-    boundaries =  Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
+    boundaries = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
     @stage_image = @image.crop(*boundaries.for(:stage))
   end
 

@@ -25,8 +25,8 @@ class Sqed::Boundaries
   end
 
   def initialize_coordinates
-    @layout.keys.each do |k|
-      @coordinates.merge!(@layout[k] => [nil, nil, nil, nil] )
+    SqedConfig::LAYOUTS[@layout].each do |k|
+      @coordinates.merge!(k => [nil, nil, nil, nil] )
     end
   end
 

@@ -42,12 +42,9 @@ class Sqed::BoundaryFinder
     @y1 - @y0 
   end
 
-  # Defined in subclasses
+  # Returns a Sqed::Boundaries instance
   def boundaries
-  end
-
-  def cropped_image
-    @img.crop(x0, y0, width, height, true)
+    # defined in subclasses
   end
 
   # Returns a Proc that, given a set of pixels (an edge of the image) decides
