@@ -31,11 +31,21 @@ describe Sqed do
     end
   end
 
-  specify '#crop_image' do
-    a = ImageHelpers.test0_image
-    s.image = a
-    expect(s.crop_image).to be_truthy
-    expect(s.stage_image.columns < a.columns).to be(true)
-    expect(s.stage_image.rows < a.rows).to be(true)
+  context 'with a test image' do
+    let(:a) { ImageHelpers.test0_image }  
+    before {
+      s.image = a
+    } 
+
+    specify '#crop_image' do
+      expect(s.crop_image).to be_truthy
+      expect(s.stage_image.columns < a.columns).to be(true)
+      expect(s.stage_image.rows < a.rows).to be(true)
+    end
+
+    specify '#boundaries returns a Sqed::Boundaries instance' do
+      s.pattern = :standard_cross
+      expect(s.boundaries.class).to eq(Sqed::Boundaries)
+    end
   end
 end 

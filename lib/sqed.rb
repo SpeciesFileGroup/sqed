@@ -39,7 +39,7 @@ class Sqed
   end
 
   def boundaries
-    SqedConfig::EXTACTION_PATTERNS[@pattern][:boundry_finder].new(image: @image).boundaries
+    SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundry_finder].new(image: @image).boundaries
   end
 
   def crop_image

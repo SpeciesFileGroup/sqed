@@ -11,7 +11,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   # assume white-ish image on dark-ish background
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: {0 => :stage})
     super 
 
     # We need a border finder proc. Provide one if none was given.
@@ -22,7 +22,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   end
 
   def boundaries
-    b = Sqed::Boundaries.new( SqedConfig::EXTRACTION_PATTERNS[:stage][:layout] )
+    b = Sqed::Boundaries.new( @layout )
     b.coordinates[:stage] = [x0, y0, width, height]
     b
   end

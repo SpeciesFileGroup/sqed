@@ -4,14 +4,12 @@ require 'RMagick'
 # Assume white-ish image on dark-ish background
 class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
-  # How small we accept a cropped picture to be. E.G. if it was 100x100 and
-  # ratio 0.1, min output should be 10x10
-  MIN_BOUNDARY_RATIO = 0.01    # constant of this class
-  
   attr_reader :is_band
 
   def initialize(img, is_band_proc = nil, min_ratio = MIN_BOUNDARY_RATIO) # img must be supplied, others overridable
     super 
+
+    # !! This should initialize a Boundaries instance and use it to store "corners" below
 
     # We need a band finder proc. Provide one if none was given.
     green_pixel = Pixel.new(13000,30000,5000)
@@ -28,15 +26,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     @is_band = is_band_proc || self.class.default_line_finder(img)  # if no proc specified, use default below
 
     find_bands
-    output
-  end
-
-  def width   # dynamically varying
-    @x1 - @x0   # actually + 1
-  end
-
-  def height
-    @y1 - @y0  # actually  + 1
+    # output
   end
 
   def output
@@ -146,16 +136,14 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
       corners[4] = [x1, y1r],[@columns,@rows]
     end
     u = 0
+
     (0..4).each do |i|
       if !corners[i].nil?
         area = img.crop(corners[i][0][0], corners[i][0][1], corners[i][1][0], corners[i][1][1]); area.write("area#{i}.jpg")
       end
     end
-   end
 
-  def vline(x)
-    img.get_pixels x, y0, 1, height - 1
-  end
+   end
 
   # def hline(y)
   #   img.get_pixels x0, y, width - 1, 1

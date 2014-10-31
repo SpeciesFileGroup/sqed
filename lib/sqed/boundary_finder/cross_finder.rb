@@ -7,8 +7,6 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
   # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
   attr_reader  :is_border
 
-  # assume white-ish image on dark-ish background
-
   # Returns a Proc that, given a set of pixels (an edge of the image) decides
   # whether that edge is a border or not.
   def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz = 0.20)   # initially 0.95, 0.05
@@ -27,6 +25,12 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
       border.to_f / (border + non_border) > threshold
     end
+  end
+
+  def boundaries
+    b = Sqed::Boundaries.new( SqedConfig::EXTRACTION_PATTERNS[:stage][:layout] )
+    b.coordinates[:stage] = [x0, y0, width, height]
+    b
   end
 
   private

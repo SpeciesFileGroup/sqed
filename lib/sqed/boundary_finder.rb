@@ -7,10 +7,19 @@ require 'RMagick'
 #
 class Sqed::BoundaryFinder
 
-  # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
+  # How small we accept a cropped picture to be. E.G. if it was 100x100 and
+  # ratio 0.1, min output should be 10x10
+  MIN_BOUNDARY_RATIO = 0.01    
+ 
+  # How small we accept a cropped picture to be. E.G. if it was 100x100 and
+  # ratio 0.1, min output should be 10x10
+  MIN_CROP_RATIO = 0.1    # constant of this class
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO) # img must bef supplied, others overridable
+  # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
+  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :layout
+
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout) # img must bef supplied, others overridable
+    @layout = layout
     @img, @min_ratio = image, min_ratio
 
     # Coordinates
