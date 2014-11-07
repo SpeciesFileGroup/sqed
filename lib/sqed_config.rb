@@ -25,6 +25,11 @@ module SqedConfig
   #    0  |----  :right_t
   #       | 2
   #
+  #    0   | 1
+  #        |
+  #   -----|---  :offset_cross //may not match current code
+  #    3   | 2
+  #
   #        0
   #    --------  :horizontal_split
   #        1
@@ -77,7 +82,7 @@ module SqedConfig
     standard_cross: {
       boundary_finder: Sqed::BoundaryFinder::CrossFinder,
       layout: :cross, 
-      metadata_map: {0 => :labels, 1 => :specimen, 2 => :identifier, 3 => :specimen_deteriminations }
+      metadata_map: {0 => :labels, 1 => :specimen, 2 => :identifier, 3 => :specimen_determinations }
     },
     stage: {
       boundary_finder: Sqed::BoundaryFinder::StageFinder,
