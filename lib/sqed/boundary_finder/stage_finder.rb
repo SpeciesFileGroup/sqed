@@ -24,7 +24,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   def boundaries
     b = Sqed::Boundaries.new( @layout )
-    b.coordinates[:stage] = [x0, y0, width, height]
+    b.coordinates[0] = [x0, y0, width, height]
     b
   end
 

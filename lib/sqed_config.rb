@@ -42,14 +42,14 @@ module SqedConfig
   #   | 0 |  :internal_box
   #   -----
   #
-  # Hahs values are used to stub out 
+  # Hash values are used to stub out
   # the Sqed::Boundaries instance.
   #
   LAYOUTS = {
    cross: [0,1,2,3],
    offset_cross: [0,1,2,3],
-   horizontal_split: [0,1] ,
-   vertical_split: [0.1] ,
+   horizontal_split: [0,1],
+   vertical_split: [0,1],
    right_t: [0,1,2],
    left_t: [0,1,2],
    internal_box: [0]
@@ -93,5 +93,7 @@ module SqedConfig
   }
 
   DEFAULT_TMP_DIR = "/tmp"
-
+def self.index_for_section_type(pattern, section_type)
+  EXTRACTION_PATTERNS[pattern][:metadata_map].invert[section_type]
+end
 end

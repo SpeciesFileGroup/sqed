@@ -6,7 +6,7 @@ class Sqed::Extractor
   attr_accessor :boundaries, :layout, :image
 
   def initialize(boundaries: boundaries, layout: layout, image: image)
-    raise if boundaries.nil? || !boundaries.class == Squed::Boundaries
+    raise if boundaries.nil? || !boundaries.class == Sqed::Boundaries
     raise if layout.nil? || !layout.class == Hash
 
     @layout = layout

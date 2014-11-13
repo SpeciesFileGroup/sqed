@@ -1,6 +1,6 @@
 require 'RMagick'
 
-# Sqed Boundry Finders find boundries on images and return co-ordinates of those boundries.  They do not
+# Sqed Boundary Finders find boundaries on images and return co-ordinates of those boundaries.  They do not
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
 #
 # This core of this code is from Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
@@ -16,7 +16,10 @@ class Sqed::BoundaryFinder
   MIN_CROP_RATIO = 0.1    # constant of this class
 
   # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :layout
+  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
+
+  # a symbol from SqedConfig::LAYOUTS
+  attr_reader :layout
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout) # img must bef supplied, others overridable
     @layout = layout

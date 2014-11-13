@@ -5,10 +5,11 @@
 class Sqed::Boundaries 
   include Enumerable
 
-  # References the section by section name, not index!
-  # In the pattern section_type: [x1,y1, width, height]
+  # stores a hash
+  # References the section by integer index!
+  # In the pattern integer => [x1,y1, width, height] (ImageMagick convention rectangle descriptors)
   # e.g.
-  #   stage: [10,10,40,40]
+  #   0 => [10,10,40,40]
   attr_reader :coordinates
 
   # An EXTRACTION_PATTERN layout
@@ -17,11 +18,7 @@ class Sqed::Boundaries
   def initialize(layout = nil)
     @layout = layout
     @coordinates = {}
-    if @layout
-      initialize_coordinates
-    else
-      @layout = {}
-    end   
+      initialize_coordinates if !@layout.nil?
   end
 
   def initialize_coordinates

@@ -16,11 +16,17 @@ require_relative "sqed/result"
 # Return a Sqed::Result
 #    
 #     a = Sqed.new(pattern: :right_t, image: image)
-#     b = a.result # => Squed::Result instance
+#     b = a.result # => Sqed::Result instance
 #
 class Sqed
-  
-  attr_accessor :image, :pattern, :stage_image 
+  # initial image which is an instance of ImageMagick::image, containing background and stage
+  attr_accessor :image
+
+  # the particular arrangement of the content, a symbol taken from SqedConfig::EXTRACTION_PATTERNS
+  attr_accessor :pattern
+
+  # the image that is the cropped content for parsing
+  attr_accessor :stage_image
 
   def initialize(image: image, pattern: pattern)
     @image = image
@@ -34,7 +40,7 @@ class Sqed
     extractor = Sqed::Extractor.new(
       boundaries: boundaries,
       layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout],
-      image: image)
+      image: @stage_image)
     extractor.result
   end
 
@@ -47,7 +53,7 @@ class Sqed
 
   def crop_image
     boundaries = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
-    @stage_image = @image.crop(*boundaries.for(:stage))
+    @stage_image = @image.crop(*boundaries.for(SqedConfig.index_for_section_type(:stage, :stage)))
   end
 
 end

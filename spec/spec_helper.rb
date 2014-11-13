@@ -1,3 +1,7 @@
+require 'rubygems'
+require 'bundler/setup'
+Bundler.setup
+
 require 'sqed'
 require 'support/image_helpers'
 require 'byebug'
