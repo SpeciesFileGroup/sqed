@@ -1,31 +1,64 @@
 module ImageHelpers
 
-  def self.test0_image
-    Image.read(File.expand_path('../files/test3.jpg', __FILE__)).first
-  end
+  BASE_PATH = '../files/'
 
-  def self.greenline_image
-    Image.read(File.expand_path('../files/greenlineimage.jpg', __FILE__)).first
-  end
-  def self.ocr_image
-    # Image.read(File.expand_path('../files/Quadrant_2_3.jpg', __FILE__)).first
-    Image.read(File.expand_path('../files/test4.jpg', __FILE__)).first
-  end
+  class << self
 
-  def self.barcode_image
-    Image.read(File.expand_path('../files/test_barcode.jpg', __FILE__)).first
-  end
+    def get_image(file_name)
+      Image.read(File.expand_path(BASE_PATH + file_name, __FILE__)).first
+    end
 
-  def self.labels_image
-    Image.read(File.expand_path('../files/types_8.jpg', __FILE__)).first
-  end
 
-  def self.foo3_image
-    Image.read(File.expand_path('../../../foo3.jpg', __FILE__)).first
-  end
+    # Images
 
-  def self.get_image(path)
-    Image.read(path)
-  end
+    def test0_image
+      get_image('test3.jpg')
+    end
+
+    def greenline_image
+      get_image '/greenlineimage.jpg'
+    end
+
+    def ocr_image
+      get_image 'test4.jpg'
+    end
+
+    def barcode_image
+      get_image 'test_barcode.jpg'
+    end
+
+    def labels_image
+      get_image 'types_8.jpg'
+    end
+
+    def foo3_image
+      get_image 'foo3.jpg'
+    end
+
+    # Images for boundary tests (otherwise empty)
+
+    def standard_cross_green
+      get_image 'boundary_cross_green.jpg'
+    end
+
+    def offset_cross_red
+      get_image 'boundary_offset_cross_red.jpg'
+    end
+
+    def right_t_green
+      get_image 'boundary_right_t_green.jpg'
+    end
+
+    def left_t_yellow
+      get_image 'boundary_left_t_yellow.jpg'
+    end
+
+
+
+
+
+
+  end 
+
 
 end
