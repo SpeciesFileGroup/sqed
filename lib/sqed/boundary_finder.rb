@@ -17,24 +17,36 @@ class Sqed::BoundaryFinder
 
   # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
   attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
+  
+  # A Sqed::Boundaries instance, stores the coordinates of all fo the layout sections 
+  attr_reader :boundaries
 
   # a symbol from SqedConfig::LAYOUTS
   attr_reader :layout
 
+  # The proc containing the border finding algorithim
+  attr_reader :is_border
+
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout) # img must bef supplied, others overridable
     @layout = layout
+
+    raise 'No image provided.' if image.nil? || image.class != Magick::Image
+
+    # Initial co-ordinates
     @img, @min_ratio = image, min_ratio
-
-    # Coordinates
-    @x0, @y0 = 0, 0; @x1, @y1 = img.columns, img.rows # total image area
+    @x0, @y0 = 0, 0
+    @x1, @y1 = img.columns, img.rows 
     @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
-
     @columns, @rows = img.columns, img.rows
 
     # We need a border finder proc. Provide one if none was given.
     @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
-  end
 
+    true
+
+    # !! Each subclass should run find 
+  end
+  
   # actually  + 1 (starting at zero?)
   def width   
     @x1 - @x0  
@@ -46,8 +58,9 @@ class Sqed::BoundaryFinder
   end
 
   # Returns a Sqed::Boundaries instance
+  # defined in subclasses
   def boundaries
-    # defined in subclasses
+    @boundaries ||= Sqed::Boundaries.new()
   end
 
   # Returns a Proc that, given a set of pixels (an edge of the image) decides

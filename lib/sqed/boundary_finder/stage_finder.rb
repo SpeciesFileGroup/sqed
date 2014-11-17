@@ -5,27 +5,17 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   # How small we accept a cropped picture to be. E.G. if it was 100x100 and
   # ratio 0.1, min output should be 10x10
-  MIN_CROP_RATIO = 0.1    # constant of this class
-  # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
+  MIN_CROP_RATIO = 0.1   
+  
   attr_reader  :is_border
 
   # assume white-ish image on dark-ish background
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout)
     @layout = :internal_box
     super 
-
-    # We need a border finder proc. Provide one if none was given.
-    @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
-
     find_edges
     # output
-  end
-
-  def boundaries
-    b = Sqed::Boundaries.new( @layout )
-    b.coordinates[0] = [x0, y0, width, height]
-    b
   end
 
   def output
@@ -74,6 +64,11 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     0.upto(u)      { |y| height_croppable? && is_border[hline y] ? @y0 = y + 1 : break }
     (u).downto(y0) { |y| height_croppable? && is_border[hline y] ? @y1 = y - 1 : break }
     u = 0
+
+    delta_x = width/33    # 3% of cropped image to make up for trapezoidal distortion
+    delta_y = height/33   # 3% of cropped image to make up for trapezoidal distortion <- NOT 3%
+   
+    boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
   end
 
  

@@ -8,7 +8,6 @@ module ImageHelpers
       Image.read(File.expand_path(BASE_PATH + file_name, __FILE__)).first
     end
 
-
     # Images
 
     def test0_image
@@ -16,7 +15,7 @@ module ImageHelpers
     end
 
     def greenline_image
-      get_image '/greenlineimage.jpg'
+      get_image 'greenlineimage.jpg'
     end
 
     def ocr_image
@@ -53,12 +52,12 @@ module ImageHelpers
       get_image 'boundary_left_t_yellow.jpg'
     end
 
-
-
-
-
+    def of_size(width = 1024, height = 768)
+      i = Image.new(width, height, 'blue' ) {
+        self.background_color = 'white'
+      }
+    end
 
   end 
-
 
 end

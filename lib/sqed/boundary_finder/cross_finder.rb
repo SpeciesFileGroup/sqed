@@ -1,19 +1,24 @@
 require 'RMagick'
 
-# Find a (mostly) solid-color cross delineating quadrants.  Adapted from Emmanuel Oga/autocrop.rb
+# Return four equal qundrants, no parsing through the image
 
 class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
   # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
   attr_reader  :is_border
 
-  def boundaries
-    b = Sqed::Boundaries.new( SqedConfig::EXTRACTION_PATTERNS[:stage][:layout] )
-    b.coordinates[:stage] = [x0, y0, width, height]
-    b
-  end
+ def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: nil)
+    find_edges 
+ end
 
-  private
- 
+ def find_edges
+   width = @image.columns / 2
+   height = @image.rows / 2
+
+   @boundaries.coordinates[0] = (0, 0, width, height) 
+   @boundaries.coordinates[1] = (width, 0, width, height) 
+   @boundaries.coordinates[2] = (width, height, width, height) 
+   @boundaries.coordinates[3] = (0, height, width, height) 
+ end
 
 end
