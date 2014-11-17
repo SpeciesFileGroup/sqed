@@ -15,10 +15,10 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
    width = @image.columns / 2
    height = @image.rows / 2
 
-   @boundaries.coordinates[0] = (0, 0, width, height) 
-   @boundaries.coordinates[1] = (width, 0, width, height) 
-   @boundaries.coordinates[2] = (width, height, width, height) 
-   @boundaries.coordinates[3] = (0, height, width, height) 
+   @boundaries.coordinates[0] = [0, 0, width, height] 
+   @boundaries.coordinates[1] = [width, 0, width, height] 
+   @boundaries.coordinates[2] = [width, height, width, height] 
+   @boundaries.coordinates[3] = [0, height, width, height] 
  end
 
 end

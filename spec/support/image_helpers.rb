@@ -53,7 +53,7 @@ module ImageHelpers
     end
 
     def of_size(width = 1024, height = 768)
-      i = Image.new(width, height, 'blue' ) {
+       Image.new(width, height) {
         self.background_color = 'white'
       }
     end
