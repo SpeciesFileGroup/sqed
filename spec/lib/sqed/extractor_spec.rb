@@ -55,7 +55,7 @@ describe Sqed::Extractor do
 #   expect(egt).to match(/529 234/)
 # end
 
-# context "foo" do
+# context "foo.jpg" do
 #   let(:eg) { Sqed.new(image: ImageHelpers.ocr_image) }
 
 #   specify 'all together' do
