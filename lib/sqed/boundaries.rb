@@ -37,4 +37,20 @@ class Sqed::Boundaries
     end
   end
 
+  def x_for(index)
+    @coordinates[index][0]
+  end
+
+  def y_for(index)
+    @coordinates[index][1]
+  end
+
+  def width_for(index)
+    @coordinates[index][2]
+  end
+
+  def height_for(index)
+    @coordinates[index][3]
+  end
+
 end

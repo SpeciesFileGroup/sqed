@@ -4,10 +4,9 @@ require 'RMagick'
 
 class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
-  # enumerate read-only parameters involved, accessible either as  <varname> or @<varname>
-  attr_reader  :is_border
 
  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: nil)
+   @image = image
     find_edges 
  end
 
@@ -15,10 +14,10 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
    width = @image.columns / 2
    height = @image.rows / 2
 
-   @boundaries.coordinates[0] = [0, 0, width, height] 
-   @boundaries.coordinates[1] = [width, 0, width, height] 
-   @boundaries.coordinates[2] = [width, height, width, height] 
-   @boundaries.coordinates[3] = [0, height, width, height] 
+   boundaries.coordinates[0] = [0, 0, width, height] 
+   boundaries.coordinates[1] = [width, 0, width, height] 
+   boundaries.coordinates[2] = [width, height, width, height] 
+   boundaries.coordinates[3] = [0, height, width, height] 
  end
 
 end
