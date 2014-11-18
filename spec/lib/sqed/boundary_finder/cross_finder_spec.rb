@@ -6,7 +6,7 @@ describe Sqed::BoundaryFinder::CrossFinder do
   let(:c) {b.boundaries}
 
   specify '#boundaries returns a Sqed::Boundaries instance' do
-    expect(b.boundaries.class).to eq Sqed::Boundaries
+    expect(b.boundaries.class).to eq(Sqed::Boundaries)
   end
 
   specify 'the 0th image starts at x = 0' do
@@ -24,9 +24,5 @@ describe Sqed::BoundaryFinder::CrossFinder do
   specify 'the 0th image has height = 300' do
     expect(c.height_for(0)).to eq(300)
   end
-
-
-
-
 
 end 

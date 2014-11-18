@@ -6,10 +6,8 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   attr_reader :is_band
 
-  def initialize(img, is_band_proc = nil, min_ratio = MIN_BOUNDARY_RATIO) # img must be supplied, others overridable
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout)
     super 
-
-    # !! This should initialize a Boundaries instance and use it to store "corners" below
 
     # We need a band finder proc. Provide one if none was given.
     green_pixel = Pixel.new(13000,30000,5000)
@@ -23,7 +21,9 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     # img.fuzz = 2000
     # @target.write('fool.jpg')
     # r = img.find_similar_region(@target,0,0)
-    @is_band = is_band_proc || self.class.default_line_finder(img)  # if no proc specified, use default below
+   
+    # was is_band_proc
+    @is_band = is_border_proc || self.class.default_line_finder(img)  # if no proc specified, use default below
 
     find_bands
     # output
