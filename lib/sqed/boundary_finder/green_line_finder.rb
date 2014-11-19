@@ -22,7 +22,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     # @target.write('fool.jpg')
     # r = img.find_similar_region(@target,0,0)
    
-    # was is_band_proc
+    # !! was is_band_proc (still is the same code, just renamed variable)
     @is_band = is_border_proc || self.class.default_line_finder(img)  # if no proc specified, use default below
 
     find_bands
@@ -73,6 +73,8 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   def find_bands
     return unless is_band
+    
+    # TODO: @jrflood - corners has to be swapped out for boundaries now, set the boundaries as referenced in cross finder
     corners = []
 
     u = x1 - 1
@@ -137,6 +139,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     end
     u = 0
 
+    # TODO: almost certainly not 0..4, right? 
     (0..4).each do |i|
       if !corners[i].nil?
         area = img.crop(corners[i][0][0], corners[i][0][1], corners[i][1][0], corners[i][1][1]); area.write("area#{i}.jpg")
