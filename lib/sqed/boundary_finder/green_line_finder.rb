@@ -90,7 +90,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     (u).downto(x0) { |x| is_band[vline(x)] ? break : @x1 = x - 1 }  # scan from right to left
 # handle not found case
   if x0 == x1 then
-    corners[0] = [0,0],[@columns, @rows]
+    corners[4] = [0,0],[@columns, @rows]
     return
   end
 # if vertical band found, scan left and right divisions for (single) horizontal band
@@ -136,8 +136,8 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     else
       y0r = @y0   # found line, record bounds
       y1r = @y1
-      corners[3] = [x1,0],[@columns,y0r]
-      corners[4] = [x1, y1r],[@columns,@rows]
+      corners[2] = [x1,0],[@columns,y0r]
+      corners[3] = [x1, y1r],[@columns,@rows]
     end
     u = 0
 
