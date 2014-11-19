@@ -7,7 +7,7 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
   let(:b) {
     # let(:image) { ImageHelpers.standard_cross_green }
     # Sqed::BoundaryFinder::GreenLineFinder.new(image: image)
-    Sqed::BoundaryFinder::StageFinder.new(image: image)
+    Sqed::BoundaryFinder::StageFinder.new(image: image)    #, layout: SqedConfig::LAYOUTS::offset_cross
   }
   let(:c) {
     b.boundaries
@@ -32,8 +32,9 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     expect(c).to be_truthy
     expect(d).to be_truthy
     expect(e).to be_truthy
-    expect(f).to be_falsey
+    expect(f).to be_truthy
     expect(b.boundaries.class).to eq(Sqed::Boundaries)
+    expect(f.boundaries.class).to eq(Sqed::Boundaries)
   end
 
   # @jrflood - here is an example of dynamically specify tests for a range of values

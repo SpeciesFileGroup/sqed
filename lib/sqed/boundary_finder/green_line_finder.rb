@@ -5,7 +5,6 @@ require 'RMagick'
 class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   attr_reader :is_band
-  attr_reader :boundaries
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout)
     super 
@@ -132,7 +131,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
     if @y0 == @y1 && @y1 == @rows
       @y0 = 0   # no solid line found in right division
-      corners[3] = [@x1, 0],[@columns, @rows]
+      corners[2] = [@x1, 0],[@columns, @rows]
     else
       y0r = @y0   # found line, record bounds
       y1r = @y1
@@ -141,13 +140,23 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     end
     u = 0
 
-    # TODO: almost certainly not 0..4, right? 
-    (0..4).each do |i|
-      if !corners[i].nil?
-        area = img.crop(corners[i][0][0], corners[i][0][1], corners[i][1][0], corners[i][1][1]); area.write("area#{i}.jpg")
-      end
+    case @layout
+      when nil
+        # (0..3).each do |i|
+        #
+        # end
+        boundaries.coordinates[0] = [corners[0][0][0], corners[0][0][1], corners[0][1][0], corners[0][1][1]]
+        boundaries.coordinates[1] = [corners[2][0][0], corners[2][0][1], corners[2][1][0] - corners[2][0][0], corners[2][1][1] - corners[2][0][1]]
+        boundaries.coordinates[2] = [corners[3][0][0], corners[3][0][1], corners[3][1][0] - corners[3][0][0], corners[3][1][1] - corners[3][0][1]]
+        boundaries.coordinates[3] = [corners[1][0][0], corners[1][0][1], corners[1][1][0] - corners[1][0][0], corners[1][1][1] - corners[1][0][1]]
     end
 
+# ? almost certainly not 0..4, right? not exactly, since not found is recorded too
+#     (0..4).each do |i|
+     (0..3).each do |i|
+       area = img.crop(boundaries.coordinates[i][0], boundaries.coordinates[i][1], boundaries.coordinates[i][2], boundaries.coordinates[i][3]); area.write("area#{i}.jpg")
+      end
+      u = 0
    end
 
   # def hline(y)
