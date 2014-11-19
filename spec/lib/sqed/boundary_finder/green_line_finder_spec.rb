@@ -6,7 +6,10 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     # Sqed::BoundaryFinder::GreenLineFinder.new(image: image)
     Sqed::BoundaryFinder::StageFinder.new(image: image)
   }
- # let(:d) {image.crop(c.coordinates[0],c.coordinates[1],c.coordinates[2],c.coordinates[3])}
+  # let(:c) {
+  #   b.boundaries
+  # }
+  # let(:d) {image.crop(c.coordinates[0],c.coordinates[1],c.coordinates[2],c.coordinates[3])}
   let(:d) {
     image.crop(126,86,756,596)
   }
