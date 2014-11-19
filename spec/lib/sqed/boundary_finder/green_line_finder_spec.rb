@@ -1,28 +1,38 @@
 require 'spec_helper'
 
 describe Sqed::BoundaryFinder::GreenLineFinder do
-  let(:image) { ImageHelpers.standard_cross_green }
+  # let(:image) { ImageHelpers.standard_cross_green }
+  let(:image) { ImageHelpers.four_green_lined_quadrants }
+  # image = ImageHelpers.standard_cross_green
   let(:b) {
+    # let(:image) { ImageHelpers.standard_cross_green }
     # Sqed::BoundaryFinder::GreenLineFinder.new(image: image)
     Sqed::BoundaryFinder::StageFinder.new(image: image)
   }
-  # let(:c) {
-  #   b.boundaries
-  # }
-  # let(:d) {image.crop(c.coordinates[0],c.coordinates[1],c.coordinates[2],c.coordinates[3])}
-  let(:d) {
-    image.crop(126,86,756,596)
+  let(:c) {
+    b.boundaries
   }
+  let(:d) {image.crop(c.coordinates[0][0],c.coordinates[0][1],c.coordinates[0][2],c.coordinates[0][3])}
+  # let(:d) {
+  #   image.crop(126,86,756,596)
+  # }
+  # d = image.crop(126,86,756,596)
   let(:e) {
     Sqed::BoundaryFinder::GreenLineFinder.new(image: d)
   }
-
-  let(:c) {
+# e = Sqed::BoundaryFinder::GreenLineFinder.new(image: d)
+  let(:f) {
     e.boundaries
   }
- 
+ # f = e.boundaries
 
   specify '#boundaries returns a Sqed::Boundaries instance' do
+    expect(image).to be_truthy
+    expect(b).to be_truthy
+    expect(c).to be_truthy
+    expect(d).to be_truthy
+    expect(e).to be_truthy
+    expect(f).to be_falsey
     expect(b.boundaries.class).to eq(Sqed::Boundaries)
   end
 
@@ -32,7 +42,7 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     # 0, 1, 2, 3, not 0,1,2,3,4 (= 5 things)
     (0..3).each do |i|
       specify "the #{i}th image has width < 504" do
-        expect(c.width_for(i)).to be < 504 
+        expect(c.width_for(i)).to be < 504
       end
 
       specify "the #{i}th image has width < 504" do

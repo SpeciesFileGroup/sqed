@@ -5,6 +5,7 @@ require 'RMagick'
 class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   attr_reader :is_band
+  attr_reader :boundaries
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout)
     super 
@@ -43,6 +44,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
     # fuzz = (2**16 * fuzz).to_i  #same fuzz? not really, according to object_id
     fuzz = (2**QuantumDepth * fuzz_factor).to_i  #same fuzz? not really, according to object_id
+    # test_pixel = Pixel.new(13000,30000,5000)    # medium green initially
     test_pixel = Pixel.new(13000,30000,5000)    # medium green initially
     # r = img.find_similar_region(@target, 5000)
         # Returns true if the edge is a band. (?)

@@ -40,6 +40,10 @@ module ImageHelpers
       get_image 'boundary_cross_green.jpg'
     end
 
+    def four_green_lined_quadrants
+      get_image 'CrossyGreenLinesSpecimen.jpg'
+    end
+
     def offset_cross_red
       get_image 'boundary_offset_cross_red.jpg'
     end
