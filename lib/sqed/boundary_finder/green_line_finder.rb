@@ -148,10 +148,11 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
       boundaries.coordinates[3] = [corners[1][0][0], corners[1][0][1], corners[1][1][0] - corners[1][0][0], corners[1][1][1] - corners[1][0][1]]
     end
 
-    (0..3).each do |i|
-      area = img.crop(*boundaries.for(i))
-      area.write("area#{i}.jpg")
-    end
+
+    # (0..3).each do |i|    #this produces spurious results ! !
+    #   area = img.crop(*boundaries.for(i),true)
+    #   area.write("area#{i}.jpg")
+    # end
     u = 0
   end
 

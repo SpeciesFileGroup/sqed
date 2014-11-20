@@ -39,7 +39,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
     # Returns true if the edge is a border. (?) (border meaning outer region to be cropped)
     lambda do |edge|
-      border, non_border = 0.0, 0.0 #maybe shoule be called outer, inner
+      border, non_border = 0.0, 0.0 #maybe should be called outer, inner
 
       pixels = (0...samples).map { |n| edge[n * edge.length / samples] }
       pixels.combination(2).each { |a, b| a.fcmp(b, fuzz) ? border += 1 : non_border += 1 }
