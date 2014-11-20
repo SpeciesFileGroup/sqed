@@ -21,7 +21,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     # img.fuzz = 2000
     # @target.write('fool.jpg')
     # r = img.find_similar_region(@target,0,0)
-   
+
     # !! was is_band_proc (still is the same code, just renamed variable)
     @is_band = is_border_proc || self.class.default_line_finder(img)  # if no proc specified, use default below
 
@@ -46,7 +46,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     # test_pixel = Pixel.new(13000,30000,5000)    # medium green initially
     test_pixel = Pixel.new(13000,30000,5000)    # medium green initially
     # r = img.find_similar_region(@target, 5000)
-        # Returns true if the edge is a band. (?)
+    # Returns true if the edge is a band. (?)
     # want to return true if find a green line
     # first priority is get vertical line: done
     lambda do |edge|
@@ -74,8 +74,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   def find_bands
     return unless is_band
-    
-    # TODO: @jrflood - corners has to be swapped out for boundaries now, set the boundaries as referenced in cross finder
+
     corners = []
 
     u = x1 - 1
@@ -87,12 +86,12 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
       end
     end
     (u).downto(x0) { |x| is_band[vline(x)] ? break : @x1 = x - 1 }  # scan from right to left
-# handle not found case
-  if x0 == x1 then
-    corners[4] = [0,0],[@columns, @rows]
-    return
-  end
-# if vertical band found, scan left and right divisions for (single) horizontal band
+    # handle not found case
+    if x0 == x1 then
+      corners[4] = [0,0],[@columns, @rows]
+      return
+    end
+    # if vertical band found, scan left and right divisions for (single) horizontal band
 
     u = y1 - 1    # u is not changed, so re-use as max y
     #  do left side
@@ -111,23 +110,23 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
       end
     end
 
-  if @y0 == @y1 && @y1 == @rows then
-    @y0 = 0   # no solid line found in left division
-    corners[0] = [0,0],[@x0, @rows]
+    if @y0 == @y1 && @y1 == @rows then
+      @y0 = 0   # no solid line found in left division
+      corners[0] = [0,0],[@x0, @rows]
 
-  else
-    y0l = @y0   # found line, record bounds
-    y1l = @y1
-    @y0 = 0     # and reset limits for right
-    @y1 = u
-    corners[0] = [0,0],[@x0, y0l]
-    corners[1] = [0,y1l],[@x0, @rows]
-  end
+    else
+      y0l = @y0   # found line, record bounds
+      y1l = @y1
+      @y0 = 0     # and reset limits for right
+      @y1 = u
+      corners[0] = [0,0],[@x0, y0l]
+      corners[1] = [0,y1l],[@x0, @rows]
+    end
 
-#  do right side
-    0.upto(u)      { |y| is_band[hliner y] ? break : @y0 = y + 1 }    #scan from top to bottom
-    (u).downto(y0) { |y| is_band[hliner y] ? break : @y1 = y - 1 }    #scan from bottom to top
-# handle not found case
+    #  do right side
+    0.upto(u)      { |y| is_band[hliner y] ? break : @y0 = y + 1 }   #scan from top to bottom
+    (u).downto(y0) { |y| is_band[hliner y] ? break : @y1 = y - 1 }   #scan from bottom to top
+    # handle not found case
 
     if @y0 == @y1 && @y1 == @rows
       @y0 = 0   # no solid line found in right division
@@ -141,23 +140,20 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
     u = 0
 
     case @layout
-      when nil
-        # (0..3).each do |i|
-        #
-        # end
-        boundaries.coordinates[0] = [corners[0][0][0], corners[0][0][1], corners[0][1][0], corners[0][1][1]]
-        boundaries.coordinates[1] = [corners[2][0][0], corners[2][0][1], corners[2][1][0] - corners[2][0][0], corners[2][1][1] - corners[2][0][1]]
-        boundaries.coordinates[2] = [corners[3][0][0], corners[3][0][1], corners[3][1][0] - corners[3][0][0], corners[3][1][1] - corners[3][0][1]]
-        boundaries.coordinates[3] = [corners[1][0][0], corners[1][0][1], corners[1][1][0] - corners[1][0][0], corners[1][1][1] - corners[1][0][1]]
+    when :foo
+    else 
+      boundaries.coordinates[0] = [corners[0][0][0], corners[0][0][1], corners[0][1][0], corners[0][1][1]]
+      boundaries.coordinates[1] = [corners[2][0][0], corners[2][0][1], corners[2][1][0] - corners[2][0][0], corners[2][1][1] - corners[2][0][1]]
+      boundaries.coordinates[2] = [corners[3][0][0], corners[3][0][1], corners[3][1][0] - corners[3][0][0], corners[3][1][1] - corners[3][0][1]]
+      boundaries.coordinates[3] = [corners[1][0][0], corners[1][0][1], corners[1][1][0] - corners[1][0][0], corners[1][1][1] - corners[1][0][1]]
     end
 
-# ? almost certainly not 0..4, right? not exactly, since not found is recorded too
-#     (0..4).each do |i|
-     (0..3).each do |i|
-       area = img.crop(boundaries.coordinates[i][0], boundaries.coordinates[i][1], boundaries.coordinates[i][2], boundaries.coordinates[i][3]); area.write("area#{i}.jpg")
-      end
-      u = 0
-   end
+    (0..3).each do |i|
+      area = img.crop(*boundaries.for(i))
+      area.write("area#{i}.jpg")
+    end
+    u = 0
+  end
 
   # def hline(y)
   #   img.get_pixels x0, y, width - 1, 1

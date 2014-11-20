@@ -26,6 +26,7 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
   }
  # f = e.boundaries
 
+  # Sanity checking let statements
   specify '#boundaries returns a Sqed::Boundaries instance' do
     expect(image).to be_truthy
     expect(b).to be_truthy
@@ -37,10 +38,7 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     expect(f.boundaries.class).to eq(Sqed::Boundaries)
   end
 
-  # @jrflood - here is an example of dynamically specify tests for a range of values
-  # TODO: all these tests are currently failing becuase the finder is setting corners[] not setting values in the boundaries method (see comments in model) 
   context 'width and height of a standard cross for the test image should be equal for all' do
-    # 0, 1, 2, 3, not 0,1,2,3,4 (= 5 things)
     (0..3).each do |i|
       specify "the #{i}th image has width < 504" do
         expect(c.width_for(i)).to be < 504
