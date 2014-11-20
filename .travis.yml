@@ -4,9 +4,9 @@ rvm:
 bundler_args: --without development
 branches:
   only:
-      - master
+    - master
 notifications:
   email:
     - diapriid@gmail.com 
-    - jrflood@illinois.edu
+     - jrflood@illinois.edu
   on_failure: change
