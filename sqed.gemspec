@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'did_you_mean', '~> 0.9'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'byebug'
-  spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'awesome_print'
   spec.add_dependency 'rmagick', '~> 2.13.2'
