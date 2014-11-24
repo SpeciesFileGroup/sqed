@@ -9,6 +9,7 @@ require_relative "sqed/boundary_finder"
 require_relative "sqed/boundary_finder/green_line_finder"
 require_relative "sqed/boundary_finder/cross_finder"
 require_relative "sqed/boundary_finder/stage_finder"
+require_relative "sqed/boundary_finder/agnostic_line_finder"
 
 # Sqed constants, including patterns for extraction etc.
 #
