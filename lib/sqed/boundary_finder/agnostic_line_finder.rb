@@ -1,28 +1,14 @@
 require 'RMagick'
 
-# Auto crop an image by detecting solid edges around them.
-# Assume white-ish image on dark-ish background
+# This was "green" line finder attempting to be agnostic; now it is reworked to be color-specific line finder
+#
 class Sqed::BoundaryFinder::AgnosticLineFinder < Sqed::BoundaryFinder
 
   attr_reader :is_band
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout)
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout, boundary_color: :green)
     super
 
-    # We need a band finder proc. Provide one if none was given.
-    green_pixel = Pixel.new(13000,30000,5000)
-    # @green_pixel = img.pixel_color(2514,1319)
-    # @target = Image.new( 20, @columns/100) { self.background_color = green_pixel }
-    # @target = Image.new(20, 5)
-    # t = img.export_pixels(2500, 1300, 20, 5)
-    # @target = @target.import_pixels(0,0,20,5,'RGB',t)
-    # @target = @target.gaussian_blur(0.0, 3.0)
-    # @target.fuzz = 2000
-    # img.fuzz = 2000
-    # @target.write('fool.jpg')
-    # r = img.find_similar_region(@target,0,0)
-
-    # !! was is_band_proc (still is the same code, just renamed variable)
     @is_band = is_border_proc || self.class.default_line_finder(img)  # if no proc specified, use default below
 
     find_bands
@@ -37,41 +23,9 @@ class Sqed::BoundaryFinder::AgnosticLineFinder < Sqed::BoundaryFinder
   # whether that edge is a band or not.
   # def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz = 0.20)   # initially 0.95, 0.05
   def self.default_line_finder(img, samples = 5, threshold = 0.85, fuzz_factor = 0.20)   # canonically 0.75, 0.10
-    # appears to assume sharp transition will occur in 5 pixels x/y
-    # how is threshold defined?
-    # works for 0.5, >0.137; 0.60, >0.14 0.65, >0.146; 0.70, >0.1875; 0.75, >0.1875; 0.8, >0.237; 0.85, >0.24; 0.90, >0.28; 0.95, >0.25
-    # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
-    # fuzz = (2**16 * fuzz).to_i  #same fuzz? not really, according to object_id
     fuzz = (2**QuantumDepth * fuzz_factor).to_i  #same fuzz? not really, according to object_id
-    # test_pixel = Pixel.new(13000,30000,5000)    # medium green initially
-    test_pixel = Pixel.new(13000,30000,5000)    # medium green initially
-    # r = img.find_similar_region(@target, 5000)
-    # Returns true if the edge is a band. (?)
-    # want to return true if find a green line
-    # first priority is get vertical line: done
+    # first priority is get vertical line: done ??
     lambda do |edge|
-      band, non_band = 0.0, 0.0
-      pixels = (0...samples).map { |n| edge[n * edge.length / samples] }
-      # want ~1% of pixels to be like the model, initially green
-      # pixels.combination(2).each { |a, b| a.fcmp(b, fuzz) ? band += 1 : non_border += 1 }
-      pixels.combination(2).each { |a, b|
-        # if (a.fcmp(b, fuzz)) then
-        #   band += 1
-        # else
-        #   non_band += 1
-        # end }
-        if (a.fcmp(b, fuzz)) then   #reverse sense of above: if a not like b then count band
-          non_band += 1
-        else
-          band += 1
-        end }
-
-      # band.to_f / (band + non_band) > threshold
-      if band.to_f / (band + non_band) > threshold then
-        return true
-      else
-        return false
-      end
     end
   end
 
@@ -80,71 +34,41 @@ class Sqed::BoundaryFinder::AgnosticLineFinder < Sqed::BoundaryFinder
   def find_bands
     return unless is_band
 
-    corners = []
+    case @layout    # boundaries.coordinates are referenced from stage image
+      when :right_t   # only 3 zones expected, with horizontal division in right-side of vertical division
+        t = Sqed::BoundaryFinder.color_boundary_finder(image: img)  #defaults to detect vertical division, green line
+        raise if t.nil?
+        boundaries.coordinates[0] = [0, 0, t[0], img.rows]  # left section of image
+        boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], img.rows]  # left section of image
 
-    u = x1 - 1
-    x0.upto(u) do |x|     # scan from left to right
-      if is_band[vline(x)] then
-        break
-      else
-        @x0 = x + 1
-      end
-    end
-    (u).downto(x0) { |x| is_band[vline(x)] ? break : @x1 = x - 1 }  # scan from right to left
-    # handle not found case
-    if x0 == x1 then
-      corners[4] = [0,0],[@columns, @rows]
-      return
-    end
-    # if vertical band found, scan left and right divisions for (single) horizontal band
+        # now subdivide right side
+        irt = img.crop(*boundaries.coordinates[1], true)
+        rt = Sqed::BoundaryFinder.color_boundary_finder(image: irt, scan: :columns)  # set to detect horizontal division, (green line)
+        return if rt.nil?
+        boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], rt[0]]  # upper section of image
+        boundaries.coordinates[2] = [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]  # lower section of image
 
-    u = y1 - 1    # u is not changed, so re-use as max y
-    #  do left side
-    0.upto(u) do |y|    #scan from top to bottom
-      if is_band[hlinel y] then
-        break
-      else
-        @y0 = y + 1
-      end
-    end
-    (u).downto(y0) do |y|    #scan from bottom to top
-      if is_band[hlinel y] then
-        break
-      else
-        @y1 = y - 1
-      end
-    end
+      when :offset_cross   # 4 zones expected, with horizontal division in right- and left- sides of vertical division
+        t = Sqed::BoundaryFinder.color_boundary_finder(image: img)  #defaults to detect vertical division, green line
+        raise if t.nil?
+        boundaries.coordinates[0] = [0, 0, t[0], img.rows]  # left section of image
+        boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], img.rows]  # right section of image
 
-    if @y0 == @y1 && @y1 == @rows then
-      @y0 = 0   # no solid line found in left division
-      corners[0] = [0,0],[@x0, @rows]
+        # now subdivide left side
+        ilt = img.crop(*boundaries.coordinates[0], true)
+        lt = Sqed::BoundaryFinder.color_boundary_finder(image: ilt, scan: :columns)  # set to detect horizontal division, (green line)
+        if !lt.nil?
+          boundaries.coordinates[0] = [0, 0, t[0], lt[0]]  # upper section of image
+          boundaries.coordinates[3] = [0, lt[2], t[0], img.rows - lt[2]]  # lower section of image
+        end
+        # now subdivide right side
+        irt = img.crop(*boundaries.coordinates[1], true)
+        rt = Sqed::BoundaryFinder.color_boundary_finder(image: irt, scan: :columns)  # set to detect horizontal division, (green line)
+        return if rt.nil?
+        boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], rt[0]]  # upper section of image
+        boundaries.coordinates[2] = [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]  # lower section of image
 
-    else
-      y0l = @y0   # found line, record bounds
-      y1l = @y1
-      @y0 = 0     # and reset limits for right
-      @y1 = u
-      corners[0] = [0,0],[@x0, y0l]
-      corners[1] = [0,y1l],[@x0, @rows]
-    end
-
-    #  do right side
-    0.upto(u)      { |y| is_band[hliner y] ? break : @y0 = y + 1 }   #scan from top to bottom
-    (u).downto(y0) { |y| is_band[hliner y] ? break : @y1 = y - 1 }   #scan from bottom to top
-    # handle not found case
-
-    if @y0 == @y1 && @y1 == @rows
-      @y0 = 0   # no solid line found in right division
-      corners[2] = [@x1, 0],[@columns, @rows]
-    else
-      y0r = @y0   # found line, record bounds
-      y1r = @y1
-      corners[2] = [x1,0],[@columns,y0r]
-      corners[3] = [x1, y1r],[@columns,@rows]
-    end
-    u = 0
-
-    case @layout
+         u = 0
       when :foo
       else
         boundaries.coordinates[0] = [corners[0][0][0], corners[0][0][1], corners[0][1][0], corners[0][1][1]]
@@ -161,16 +85,5 @@ class Sqed::BoundaryFinder::AgnosticLineFinder < Sqed::BoundaryFinder
     u = 0
   end
 
-  # def hline(y)
-  #   img.get_pixels x0, y, width - 1, 1
-  # end
-
-  def hlinel(y)
-    img.get_pixels 1, y, x0, 1
-  end
-
-  def hliner(y)
-    img.get_pixels x1, y, @columns - x1, 1    #xoffset, yoffset, width, height
-  end
 
 end

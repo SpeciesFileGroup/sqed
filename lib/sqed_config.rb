@@ -43,6 +43,13 @@ module SqedConfig
   #   | 0 |  :internal_box
   #   -----
   #
+  # should be an arbitrary cross layout
+  #    0  |  1
+  #       |
+  #   ---------  :offset_cross //may not match current code
+  #    3   | 2
+  #
+
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
   #

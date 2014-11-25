@@ -16,16 +16,20 @@ describe Sqed::BoundaryFinder::AgnosticLineFinder do  # describe 'Find a barrier
   let(:d) { image.crop(*c.for(0), true) }
 
   let(:e) {
-    Sqed::BoundaryFinder::AgnosticLineFinder.new(image: d)
+    Sqed::BoundaryFinder::AgnosticLineFinder.new(image: d, layout: :right_t)
   }
-
-
-
 
   let(:f) {
   e.boundaries
   }
 
+  let(:g) {
+    Sqed::BoundaryFinder::AgnosticLineFinder.new(image: d, layout: :offset_cross)
+  }
+
+  let(:h) {
+    g.boundaries
+  }
   specify 'initial image columns are as expected for :image above' do
     expect(image.columns).to eq(3264)
     expect(image.rows).to eq(2452)
@@ -39,15 +43,27 @@ describe Sqed::BoundaryFinder::AgnosticLineFinder do  # describe 'Find a barrier
     expect(d.rows).to eq(1890)
   end
 
-  specify 'image cropped to stage boundary is correct size ' do
+  # specify 'image cropped to stage boundary is correct size ' do
+    specify "CrossGreenLinesSpecimen using right_t layout should yield 3 rectangular boundaries" do
     # write out the found quadrants
     q = nil
-    (0..3).each do |j|
+    (f.first[0]..f.count - 1).each do |j|
       q = d.crop(*f.for(j), true)
-      q.write("q#{j}.jpg")
+      q.write("q0#{j}.jpg")
     end
-    expect(q.columns).to eq(1969)   # for quadrant 3
-    expect(q.rows).to eq(856)       # for quadrant 3
+    expect(q.columns).to eq(413)   # for quadrant 2
+    expect(q.rows).to eq(910)       # for quadrant 2
+  end
+
+  specify "CrossGreenLinesSpecimen using offset_cross layout should yield 4 rectangular boundaries" do
+    # write out the found quadrants
+    q = nil
+    (h.first[0]..h.count - 1).each do |j|
+      q = d.crop(*h.for(j), true)
+      q.write("q1#{j}.jpg")
+    end
+    expect(q.columns).to eq(1953)   # for quadrant 3
+    expect(q.rows).to eq(847)       # for quadrant 3
   end
 
 end

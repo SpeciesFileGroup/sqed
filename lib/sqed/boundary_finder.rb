@@ -27,7 +27,7 @@ class Sqed::BoundaryFinder
   # The proc containing the border finding algorithim
   attr_reader :is_border
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout) # img must bef supplied, others overridable
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green) # img must bef supplied, others overridable
     @layout = layout
 
     raise 'No image provided.' if image.nil? || image.class != Magick::Image
@@ -94,7 +94,7 @@ class Sqed::BoundaryFinder
   #
   def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: 2, scan: :rows, boundary_color: :green)
     border_hits = {}
-    samples_to_take = (image.send(scan) / sample_subdivision_size).to_i
+    samples_to_take = (image.send(scan) / sample_subdivision_size).to_i - 1
 
     (0..samples_to_take).each do |s|
       # Create a sample image a single pixel tall
@@ -122,7 +122,7 @@ class Sqed::BoundaryFinder
         end
       end
     end
-    predict_center(border_hits, (samples_to_take / sample_cutoff_factor))
+    frequency_stats(border_hits, (samples_to_take / sample_cutoff_factor))
   end
 
   def self.is_green?(pixel)
@@ -139,7 +139,8 @@ class Sqed::BoundaryFinder
 
   # Takes a frequency hash of position => count key/values and returns
   # the median position of all positions that have a count greater than the cutoff
-  def self.predict_center(frequency_hash, sample_cutoff = 0)
+
+  def self.frequency_stats(frequency_hash, sample_cutoff = 0)
     return nil if sample_cutoff < 1
     hit_ranges = [] 
     frequency_hash.each do |position, count|
@@ -147,10 +148,11 @@ class Sqed::BoundaryFinder
         hit_ranges.push(position)
       end
     end
- 
+    return nil if hit_ranges.size < 3
     # return the position exactly in the middle of the array
-    # we have to sort because the keys (positions) we examined came unorderd from a hash originally
-    hit_ranges.sort[(hit_ranges.length / 2).to_i]
+    # we have to sort because the keys (positions) we examined came unordered from a hash originally
+    hit_ranges.sort!
+    [hit_ranges.first, hit_ranges[(hit_ranges.length / 2).to_i], hit_ranges.last]
   end
 
   private
