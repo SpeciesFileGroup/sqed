@@ -141,6 +141,8 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
     case @layout
     when :foo
+    when :right_t
+
     else 
       boundaries.coordinates[0] = [corners[0][0][0], corners[0][0][1], corners[0][1][0], corners[0][1][1]]
       boundaries.coordinates[1] = [corners[2][0][0], corners[2][0][1], corners[2][1][0] - corners[2][0][0], corners[2][1][1] - corners[2][0][1]]

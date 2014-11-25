@@ -90,33 +90,51 @@ class Sqed::BoundaryFinder
   #  sample_subdivision_size: an Integer, the distance in pixels b/w samples
   #  sample_cuttoff_factor: divides the total samples to determine the cutoff for counts that represent a border "hit"
   #     - for example, if you have an image of height 100 pixels, then a border is predicted when 5 or more green pixels are found for a given position
+  #  scan (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
   #
-  def self.vertical_green_border_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: 2)
+  def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: 2, scan: :rows, boundary_color: :green)
     border_hits = {}
-    samples_to_take = (image.rows / sample_subdivision_size).to_i
+    samples_to_take = (image.send(scan) / sample_subdivision_size).to_i
 
     (0..samples_to_take).each do |s|
       # Create a sample image a single pixel tall
-      j = image.crop(0, s * sample_subdivision_size, image.columns, 1)
+      if scan == :rows
+        j = image.crop(0, s * sample_subdivision_size, image.columns, 1)
+      elsif scan == :columns
+        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows)
+      else
+        raise
+      end
 
       # loop through every pixel in the image
       j.each_pixel do |pixel, c, r|
-        # Our hit metric is dirt simple, if there is more green than red or blue in the pixel, count + 1 for that column 
-        if (pixel.green > pixel.red) && (pixel.green > pixel.blue)
-        
+        index = ( (scan == :rows) ? c : r)
+
+        # Our hit metric is dirt simple, if there is more of the boundary_color than the others, count + 1 for that column 
+        if send("is_#{boundary_color}?", pixel) 
           # we have already hit that column previously, increment
-          if border_hits[c]
-            border_hits[c] += 1
-         
+          if border_hits[index]
+            border_hits[index] += 1
           # initialize the newly hit column 1 
           else
-            border_hits[c] = 1
+            border_hits[index] = 1
           end
         end
       end
     end
-
     predict_center(border_hits, (samples_to_take / sample_cutoff_factor))
+  end
+
+  def self.is_green?(pixel)
+   (pixel.green > pixel.red) && (pixel.green > pixel.blue)
+  end
+
+  def self.is_blue?(pixel)
+   (pixel.blue > pixel.red) && (pixel.blue > pixel.green)
+  end
+
+  def self.is_red?(pixel)
+   (pixel.red > pixel.blue) && (pixel.red > pixel.green)
   end
 
   # Takes a frequency hash of position => count key/values and returns
