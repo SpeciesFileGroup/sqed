@@ -83,6 +83,58 @@ class Sqed::BoundaryFinder
     end
   end
 
+  # Demo code for simple green line finding
+  # Returns: the column (x position) in the middle of the single green vertical line dividing the stage
+  #
+  #  image: the image to sample
+  #  sample_subdivision_size: an Integer, the distance in pixels b/w samples
+  #  sample_cuttoff_factor: divides the total samples to determine the cutoff for counts that represent a border "hit"
+  #     - for example, if you have an image of height 100 pixels, then a border is predicted when 5 or more green pixels are found for a given position
+  #
+  def self.vertical_green_border_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: 2)
+    border_hits = {}
+    samples_to_take = (image.rows / sample_subdivision_size).to_i
+
+    (0..samples_to_take).each do |s|
+      # Create a sample image a single pixel tall
+      j = image.crop(0, s * sample_subdivision_size, image.columns, 1)
+
+      # loop through every pixel in the image
+      j.each_pixel do |pixel, c, r|
+        # Our hit metric is dirt simple, if there is more green than red or blue in the pixel, count + 1 for that column 
+        if (pixel.green > pixel.red) && (pixel.green > pixel.blue)
+        
+          # we have already hit that column previously, increment
+          if border_hits[c]
+            border_hits[c] += 1
+         
+          # initialize the newly hit column 1 
+          else
+            border_hits[c] = 1
+          end
+        end
+      end
+    end
+
+    predict_center(border_hits, (samples_to_take / sample_cutoff_factor))
+  end
+
+  # Takes a frequency hash of position => count key/values and returns
+  # the median position of all positions that have a count greater than the cutoff
+  def self.predict_center(frequency_hash, sample_cutoff = 0)
+    return nil if sample_cutoff < 1
+    hit_ranges = [] 
+    frequency_hash.each do |position, count|
+      if count > sample_cutoff 
+        hit_ranges.push(position)
+      end
+    end
+ 
+    # return the position exactly in the middle of the array
+    # we have to sort because the keys (positions) we examined came unorderd from a hash originally
+    hit_ranges.sort[(hit_ranges.length / 2).to_i]
+  end
+
   private
 
   def find_edges
