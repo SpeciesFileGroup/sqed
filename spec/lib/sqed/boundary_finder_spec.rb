@@ -24,70 +24,77 @@ describe Sqed::BoundaryFinder do
     end
   end
 
-  context '.green_border_finder(image: image, sample_subdivision: 10)' do
+  context '.color_boundary_finder(image: image, sample_subdivision: 10)' do
     specify 'finds the vertical dividing line in a standard cross, with border still present' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.standard_cross_green)
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.standard_cross_green)
       expect(center).to be > 492
       expect(center).to be < 504
     end
 
     specify 'finds the vertical dividing line in a standard cross, with border still present, when more precise' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.standard_cross_green, sample_cutoff_factor: 1.3)
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.standard_cross_green, sample_cutoff_factor: 1.3)
       expect(center).to be > 492
       expect(center).to be < 504
     end
 
     specify 'finds the vertical dividing line in a right t green cross, with border still present' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.right_t_green)
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.right_t_green)
       expect(center).to be > 695
       expect(center).to be < 705 
     end
 
     specify 'finds the vertical dividing line a real image, with border still present' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.four_green_lined_quadrants)
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.four_green_lined_quadrants)
       expect(center).to be > 2452
       expect(center).to be < 2495 
     end
 
     specify 'finds the vertical dividing line a real image, with border still present, with 10x fewer subsamples' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.four_green_lined_quadrants, sample_subdivision_size: 100 )
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.four_green_lined_quadrants, sample_subdivision_size: 100 )
       expect(center).to be > 2452
       expect(center).to be < 2495 
     end
 
     specify 'finds the vertical dividing line a real image, with border still present, with 100x fewer subsamples' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.four_green_lined_quadrants, sample_subdivision_size: 1000 )
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.four_green_lined_quadrants, sample_subdivision_size: 1000 )
       expect(center).to be > 2452
       expect(center).to be < 2495 
     end
 
     specify 'FAILS to find the vertical dividing line a real image, with border still present, with 200x fewer subsamples' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.four_green_lined_quadrants, sample_subdivision_size: 2000 )
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.four_green_lined_quadrants, sample_subdivision_size: 2000 )
       expect(center).to be nil
     end
 
     specify 'finds the vertical dividing line another real image, with border still present' do
-      center = Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.greenline_image)
+      center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image)
       expect(center).to be > 2445
       expect(center).to be < 2495
     end
 
     specify 'finds the vertical dividing line another real image, with border still present, and 20x fewer subsamples' do
-      center = Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.greenline_image, sample_subdivision_size: 200)
+      center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image, sample_subdivision_size: 200)
       expect(center).to be > 2445
       expect(center).to be < 2495
     end
 
     specify 'finds the vertical dividing line another real image, with border still present, and 100x fewer subsamples' do
-      center = Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.greenline_image, sample_subdivision_size: 1000)
+      center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image, sample_subdivision_size: 1000)
       expect(center).to be > 2445
       expect(center).to be < 2495
     end
 
     specify 'FAILS to find the vertical dividing line in a standard cross, with border still present, when even more precise' do
-      center =  Sqed::BoundaryFinder.vertical_green_border_finder(image: ImageHelpers.standard_cross_green, sample_cutoff_factor: 1.2)
+      center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.standard_cross_green, sample_cutoff_factor: 1.2)
       expect(center).to be nil
     end
+
+    specify 'finds the horizontal dividing line another real image, with border still present' do
+      center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image, scan: :columns, sample_cutoff_factor: 6)
+      expect(center).to be > 1282
+      expect(center).to be < 1332 
+    end
+
   end
 
   context '.predict_center(frequency_hash, samples_taken)' do
@@ -102,6 +109,4 @@ describe Sqed::BoundaryFinder do
     end
   end
   
-  context 'green line finding' do
-  end
 end 
