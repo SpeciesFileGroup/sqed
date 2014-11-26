@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sqed::BoundaryFinder::AgnosticLineFinder do  # describe 'Find a barrier line' do    # it 'should scan a stage image and find dividing lines' do
+describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier line' do    # it 'should scan a stage image and find dividing lines' do
 
   let(:image) { ImageHelpers.four_green_lined_quadrants }
 
@@ -16,7 +16,7 @@ describe Sqed::BoundaryFinder::AgnosticLineFinder do  # describe 'Find a barrier
   let(:d) { image.crop(*c.for(0), true) }
 
   let(:e) {
-    Sqed::BoundaryFinder::AgnosticLineFinder.new(image: d, layout: :right_t)
+    Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :right_t)
   }
 
   let(:f) {
@@ -24,11 +24,19 @@ describe Sqed::BoundaryFinder::AgnosticLineFinder do  # describe 'Find a barrier
   }
 
   let(:g) {
-    Sqed::BoundaryFinder::AgnosticLineFinder.new(image: d, layout: :offset_cross)
+    Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :offset_cross)
   }
 
   let(:h) {
     g.boundaries
+  }
+
+  let(:gv) {
+    Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :vertical_split)
+  }
+
+  let(:hv) {
+    gv.boundaries
   }
   specify 'initial image columns are as expected for :image above' do
     expect(image.columns).to eq(3264)
@@ -51,6 +59,7 @@ describe Sqed::BoundaryFinder::AgnosticLineFinder do  # describe 'Find a barrier
       q = d.crop(*f.for(j), true)
       q.write("q0#{j}.jpg")
     end
+    expect(f.count).to eq(3)
     expect(q.columns).to eq(413)   # for quadrant 2
     expect(q.rows).to eq(910)       # for quadrant 2
   end
@@ -62,8 +71,21 @@ describe Sqed::BoundaryFinder::AgnosticLineFinder do  # describe 'Find a barrier
       q = d.crop(*h.for(j), true)
       q.write("q1#{j}.jpg")
     end
+    expect(h.count).to eq(4)
     expect(q.columns).to eq(1953)   # for quadrant 3
     expect(q.rows).to eq(847)       # for quadrant 3
+  end
+
+  specify "CrossGreenLinesSpecimen using vertical_split layout should yield 2 rectangular boundaries" do
+    # write out the found quadrants
+    q = nil
+    (hv.first[0]..hv.count - 1).each do |j|
+      q = d.crop(*hv.for(j), true)
+      q.write("q2#{j}.jpg")
+    end
+    expect(hv.count).to eq(2)
+    expect(q.columns).to eq(413)   # for quadrant 1
+    expect(q.rows).to eq(1890)       # for quadrant 1
   end
 
 end

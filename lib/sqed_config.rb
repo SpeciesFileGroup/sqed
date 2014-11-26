@@ -9,7 +9,7 @@ require_relative "sqed/boundary_finder"
 require_relative "sqed/boundary_finder/green_line_finder"
 require_relative "sqed/boundary_finder/cross_finder"
 require_relative "sqed/boundary_finder/stage_finder"
-require_relative "sqed/boundary_finder/agnostic_line_finder"
+require_relative "sqed/boundary_finder/color_line_finder"
 
 # Sqed constants, including patterns for extraction etc.
 #
@@ -19,17 +19,23 @@ module SqedConfig
   # Windows are enumerated from the top left, moving around the border 
   # in a clockwise position.  For example:
   #    0  | 1
-  #   ----|----  :equal_cross
+  #   ----|----  :equal_cross //probably obviated by offset_cross
   #    3  | 2
   #  
   #       | 1
   #    0  |----  :right_t
   #       | 2
   #
-  #    0   | 1
-  #        |
-  #   -----|---  :offset_cross //may not match current code
+  # should be an arbitrary cross layout
+  #    0  |  1
+  #       |
+  #   ---------  :offset_cross //does not match current code
   #    3   | 2
+  #
+  #    0  |  1
+  #       |____
+  #   ----|      :offset_cross // matches current code
+  #    3  |  2
   #
   #        0
   #    --------  :horizontal_split
@@ -42,12 +48,6 @@ module SqedConfig
   #   -----
   #   | 0 |  :internal_box
   #   -----
-  #
-  # should be an arbitrary cross layout
-  #    0  |  1
-  #       |
-  #   ---------  :offset_cross //may not match current code
-  #    3   | 2
   #
 
   # Hash values are used to stub out

@@ -2,42 +2,36 @@ require 'RMagick'
 
 # This was "green" line finder attempting to be agnostic; now it is reworked to be color-specific line finder
 #
-class Sqed::BoundaryFinder::AgnosticLineFinder < Sqed::BoundaryFinder
-
-  attr_reader :is_band
+class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout, boundary_color: :green)
     super
 
-    @is_band = is_border_proc || self.class.default_line_finder(img)  # if no proc specified, use default below
-
     find_bands
-    # output
-  end
 
-  def output
-    # @img = @img.crop(x0, y0, width, height, true)
-  end
-
-  # Returns a Proc that, given a set of pixels (an edge of the image) decides
-  # whether that edge is a band or not.
-  # def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz = 0.20)   # initially 0.95, 0.05
-  def self.default_line_finder(img, samples = 5, threshold = 0.85, fuzz_factor = 0.20)   # canonically 0.75, 0.10
-    fuzz = (2**QuantumDepth * fuzz_factor).to_i  #same fuzz? not really, according to object_id
-    # first priority is get vertical line: done ??
-    lambda do |edge|
-    end
   end
 
   private
 
   def find_bands
-    return unless is_band
 
     case @layout    # boundaries.coordinates are referenced from stage image
+
+      when :vertical_split    # can vertical and horizontal split be re-used to do cross cases?
+        t = Sqed::BoundaryFinder.color_boundary_finder(image: img)  #detect vertical division, green line
+        return if t.nil?
+        boundaries.coordinates[0] = [0, 0, t[0], img.rows]  # left section of image
+        boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], img.rows]  # right section of image
+
+      when :horizontal_split
+        t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns)  # set to detect horizontal division, (green line)
+        return if t.nil?
+        boundaries.coordinates[0] = [0, t[0], img.columns, t[0]]  # upper section of image
+        boundaries.coordinates[1] = [0, t[2], img.columns, img.rows - rt[2]]  # lower section of image
+
       when :right_t   # only 3 zones expected, with horizontal division in right-side of vertical division
         t = Sqed::BoundaryFinder.color_boundary_finder(image: img)  #defaults to detect vertical division, green line
-        raise if t.nil?
+        return if t.nil?
         boundaries.coordinates[0] = [0, 0, t[0], img.rows]  # left section of image
         boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], img.rows]  # left section of image
 
@@ -47,6 +41,7 @@ class Sqed::BoundaryFinder::AgnosticLineFinder < Sqed::BoundaryFinder
         return if rt.nil?
         boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], rt[0]]  # upper section of image
         boundaries.coordinates[2] = [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]  # lower section of image
+      # will return 1, 2, or 3
 
       when :offset_cross   # 4 zones expected, with horizontal division in right- and left- sides of vertical division
         t = Sqed::BoundaryFinder.color_boundary_finder(image: img)  #defaults to detect vertical division, green line
@@ -67,23 +62,14 @@ class Sqed::BoundaryFinder::AgnosticLineFinder < Sqed::BoundaryFinder
         return if rt.nil?
         boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], rt[0]]  # upper section of image
         boundaries.coordinates[2] = [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]  # lower section of image
+      # will return 1, 2, 3, or 4  //// does not handle staggered vertical boundary case
 
-         u = 0
-      when :foo
       else
-        boundaries.coordinates[0] = [corners[0][0][0], corners[0][0][1], corners[0][1][0], corners[0][1][1]]
-        boundaries.coordinates[1] = [corners[2][0][0], corners[2][0][1], corners[2][1][0] - corners[2][0][0], corners[2][1][1] - corners[2][0][1]]
-        boundaries.coordinates[2] = [corners[3][0][0], corners[3][0][1], corners[3][1][0] - corners[3][0][0], corners[3][1][1] - corners[3][0][1]]
-        boundaries.coordinates[3] = [corners[1][0][0], corners[1][0][1], corners[1][1][0] - corners[1][0][0], corners[1][1][1] - corners[1][0][1]]
+        boundaries.coordinates[0] = [0, 0, img.columns, img.rows]  # totality of image as default
+        return    # return original image boundary if no method implemented
     end
 
-
-    # (0..3).each do |i|    #this produces spurious results ! !
-    #   area = img.crop(*boundaries.for(i),true)
-    #   area.write("area#{i}.jpg")
-    # end
-    u = 0
-  end
+ end
 
 
 end
