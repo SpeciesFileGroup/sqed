@@ -27,7 +27,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
         t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns)  # set to detect horizontal division, (green line)
         return if t.nil?
         boundaries.coordinates[0] = [0, t[0], img.columns, t[0]]  # upper section of image
-        boundaries.coordinates[1] = [0, t[2], img.columns, img.rows - rt[2]]  # lower section of image
+        boundaries.coordinates[1] = [0, t[2], img.columns, img.rows - t[2]]  # lower section of image
 
       when :right_t   # only 3 zones expected, with horizontal division in right-side of vertical division
         t = Sqed::BoundaryFinder.color_boundary_finder(image: img)  #defaults to detect vertical division, green line
