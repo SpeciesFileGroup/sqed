@@ -38,6 +38,28 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   let(:hv) {
     gv.boundaries
   }
+
+  let(:ah) {
+    ImageHelpers.offset_cross_red
+  }
+
+  let(:bh) {
+    Sqed::BoundaryFinder::StageFinder.new(image: ah)
+  }
+  let(:ch) {
+    bh.boundaries
+  }
+  let(:dh) {
+    # ah.crop(*ch.for(0), true)
+    ah.crop(100, 100, 777, 555, true)   # since StageFinder fails on this synthetic image
+  }
+  let(:gh) {
+    Sqed::BoundaryFinder::ColorLineFinder.new(image: dh, layout: :horizontal_split, boundary_color: :red)
+  }
+
+  let(:hh) {
+    gh.boundaries
+  }
   specify 'initial image columns are as expected for :image above' do
     expect(image.columns).to eq(3264)
     expect(image.rows).to eq(2452)
@@ -86,6 +108,21 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     expect(hv.count).to eq(2)
     expect(q.columns).to eq(413)   # for quadrant 1
     expect(q.rows).to eq(1890)       # for quadrant 1
+  end
+
+  specify "boundary_offset_cross_red using horizontal_split layout should yield 2 rectangular boundaries" do
+    # write out the found quadrants
+    q = nil
+    ddd = ah.crop(100, 100, 777, 555, true)
+    (hh.first[0]..hh.count - 1).each do |j|
+      q = ddd.crop(*hh.for(j), true)
+      q.write("q3#{j}.jpg")
+    end
+    expect(hh.count).to eq(2)
+    expect(hh.coordinates[0]).to eq([0, 0, 777, 136])      # for quadrant 0
+    expect(hh.coordinates[1]).to eq([0, 147, 777, 404])   # for quadrant 1
+    expect(q.columns).to eq(777)
+    expect(q.rows).to eq(408)
   end
 
 end

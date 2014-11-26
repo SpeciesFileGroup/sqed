@@ -1,4 +1,4 @@
-# An Squed::Boundaries is a simple wrapper for a hash that contains the co-ordinates for each section of a layout.
+# An Sqed::Boundaries is a simple wrapper for a hash that contains the co-ordinates for each section of a layout.
 
 # Layouts are Hashes defined in EXTRACTION_PATTERNS[<pattern>][<layout>]
 # 
