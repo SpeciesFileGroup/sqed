@@ -6,7 +6,6 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
 
   let(:b) {
 
-
     Sqed::BoundaryFinder::StageFinder.new(image: image) #, layout: SqedConfig::LAYOUTS::offset_cross
   }
   let(:c) {
@@ -113,16 +112,13 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   specify "boundary_offset_cross_red using horizontal_split layout should yield 2 rectangular boundaries" do
     # write out the found quadrants
     q = nil
-    ddd = ah.crop(100, 100, 777, 555, true)
     (hh.first[0]..hh.count - 1).each do |j|
-      q = ddd.crop(*hh.for(j), true)
+      q = dh.crop(*hh.for(j), true)
       q.write("q3#{j}.jpg")
     end
     expect(hh.count).to eq(2)
     expect(hh.coordinates[0]).to eq([0, 0, 777, 136])      # for quadrant 0
-    expect(hh.coordinates[1]).to eq([0, 147, 777, 404])   # for quadrant 1
-    expect(q.columns).to eq(777)
-    expect(q.rows).to eq(408)
+    expect(hh.coordinates[1]).to eq([0, 147, 777, 408])   # for quadrant 1
   end
 
 end

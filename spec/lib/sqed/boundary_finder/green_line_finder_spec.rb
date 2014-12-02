@@ -44,7 +44,7 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     q = nil
     (0..3).each do |j|
       q = d.crop(*f.for(j), true)
-      q.write("q#{j}.jpg")
+      q.write("q4#{j}.jpg")
     end
     expect(q.columns).to eq(1969)   # for quadrant 3
     expect(q.rows).to eq(856)       # for quadrant 3
@@ -76,65 +76,42 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
 
   specify 'the 0th image starts at x = 0' do
     expect(f.x_for(0)).to eq(0)
-  end
-
-  specify 'the 0th image starts at y = 0' do
+  # specify 'the 0th image starts at y = 0' do
     expect(f.y_for(0)).to eq(0)
-  end
-
-  specify 'the width of the 0th image is ~1969' do
+  # specify 'the width of the 0th image is ~1969' do
     expect(f.width_for(0)).to eq(1969)
-  end
-
-  specify 'the height of the 0th image is ~1890' do
+  # specify 'the height of the 0th image is ~1890' do
     expect(f.height_for(0)).to eq(993)
   end
 
-  specify 'the 1th image starts at x = 2022' do
+  specify 'the 1st image starts at x = 2022' do
     expect(f.x_for(1)).to eq(2022)
-  end
-
-  specify 'the 1th image starts at x = 0' do
+  # specify 'the 1th image starts at x = 0' do
     expect(f.y_for(1)).to eq(0)
-  end
-
-  specify 'the width of the 1th image is ~425' do
+  # specify 'the width of the 1th image is ~425' do
     expect(f.width_for(1)).to eq(425)
-  end
-
-  specify 'the height of the 1th image is ~927' do
+  # specify 'the height of the 1th image is ~927' do
     expect(f.height_for(1)).to eq(927)
   end
 
-  specify 'the 2th image starts at x = 2022' do
+  specify 'the 2nd image starts at x = 2022' do
     expect(f.x_for(2)).to eq(2022)
-  end
-
-  specify 'the 2th image starts at y = 970' do
+  # specify 'the 2th image starts at y = 970' do
     expect(f.y_for(2)).to eq(970)
-  end
-  specify 'the width of the 2th image is ~425' do
+  # specify 'the width of the 2th image is ~425' do
     expect(f.width_for(2)).to eq(425)
-  end
-
-  specify 'the height of the 2th image is ~920' do
+  # specify 'the height of the 2th image is ~920' do
     expect(f.height_for(2)).to eq(920)
   end
 
-  specify 'the 3th image starts at x = 0' do
+  specify 'the 3rd image starts at x = 0' do
     expect(f.x_for(3)).to eq(0)
-  end
-
-  specify 'the 3th image starts at y = 1034' do
+  # specify 'the 3th image starts at y = 1034' do
     expect(f.y_for(3)).to eq(1034)
-  end
-  specify 'the width of the 3th image is ~1969' do
+  # specify 'the width of the 3th image is ~1969' do
     expect(f.width_for(3)).to eq(1969)
-  end
-
-  specify 'the height of the 3th image is ~856' do
+  # specify 'the height of the 3th image is ~856' do
     expect(f.height_for(3)).to eq(856)
   end
-
 
 end 
