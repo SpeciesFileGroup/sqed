@@ -29,25 +29,15 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
   specify 'initial image columns are as expected for :image above' do
     expect(image.columns).to eq(3264)
     expect(image.rows).to eq(2452)
-#
+  end
+
+  specify 'image cropped to stage boundary is correct size ' do
     expect(b.boundaries.x_for(0)).to eq(484)
     expect(b.boundaries.y_for(0)).to eq(361)
     expect(b.boundaries.width_for(0)).to eq(2447)
     expect(b.boundaries.height_for(0)).to eq(1890)
-#
     expect(d.columns).to eq(2447)
     expect(d.rows).to eq(1890)
-  end
-
-  specify 'image cropped to stage boundary is correct size ' do
-    # write out the found quadrants
-    q = nil
-    (0..3).each do |j|
-      q = d.crop(*f.for(j), true)
-      q.write("q4#{j}.jpg")
-    end
-    expect(q.columns).to eq(1969)   # for quadrant 3
-    expect(q.rows).to eq(856)       # for quadrant 3
   end
 
   # Sanity checking let statements
