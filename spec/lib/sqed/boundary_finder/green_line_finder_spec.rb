@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Sqed::BoundaryFinder::GreenLineFinder do
   # let(:image) { ImageHelpers.standard_cross_green }
-  let(:image) { ImageHelpers.four_green_lined_quadrants }
+  let(:image) { ImageHelpers.crossy_green_line_specimen }
   # let(:image) { ImageHelpers.offset_cross_green_line_specimen }
   # image = ImageHelpers.standard_cross_green
   let(:b) {

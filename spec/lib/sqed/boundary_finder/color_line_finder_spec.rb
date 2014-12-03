@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier line' do    # it 'should scan a stage image and find dividing lines' do
 
-  # let(:image) { ImageHelpers.offset_cross_green_line_specimen }   # ***********************************
-  let(:image) { ImageHelpers.four_green_lined_quadrants }
+  # let(:image) { ImageHelpers.black_stage_green_line_specimen }   # ***********************************
+  let(:image) { ImageHelpers.crossy_green_line_specimen }
 
   let(:b) {
 
@@ -60,6 +60,34 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   let(:hh) {
     gh.boundaries
   }
+  let(:ibs) { ImageHelpers.black_stage_green_line_specimen }   # ***********************************
+# let(:bi) { ImageHelpers.crossy_green_line_specimen }
+
+  let(:bbs) {
+
+    Sqed::BoundaryFinder::StageFinder.new(image: ibs) #, layout: SqedConfig::LAYOUTS::offset_cross
+  }
+  let(:cbs) {
+    bbs.boundaries
+  }
+# let(:bd) { image.crop(c.coordinates[0][0], c.coordinates[0][1], c.coordinates[0][2], c.coordinates[0][3], true) }
+  let(:dbs) { ibs.crop(*cbs.for(0), true) }
+
+  # let(:ebs) {
+  #   Sqed::BoundaryFinder::ColorLineFinder.new(image: dbs, layout: :offset_cross)
+  # }
+  #
+  # let(:fbs) {
+  #   ebs.boundaries
+  # }
+
+  let(:gbs) {
+    Sqed::BoundaryFinder::ColorLineFinder.new(image: dbs, layout: :offset_cross)
+  }
+
+  let(:hbs) {
+    gbs.boundaries
+  }
 
 
   specify 'initial image columns are as expected for :image above' do
@@ -84,6 +112,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   # specify 'image cropped to stage boundary is correct size ' do
     specify "CrossGreenLinesSpecimen using right_t layout should yield 3 rectangular boundaries" do
     # write out the found quadrants
+      # use the f object for right_t
     q = nil
     (f.first[0]..f.count - 1).each do |j|
       q = d.crop(*f.for(j), true)
@@ -106,8 +135,12 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     expect(h.count).to eq(4)
     # expect(q.columns).to eq(1953)   # for quadrant 3
     # expect(q.rows).to eq(847)       # for quadrant 3
-    expect(q.columns).to  be > 1953 * 0.98   # for quadrant 3
-    expect(q.columns).to  be < 1953 * 1.02   # for quadrant 3
+    expect(q.columns).to be > 1953 * 0.98   # for quadrant 3
+    expect(q.columns).to be < 1953 * 1.02   # for quadrant 3
+    expect(q.columns).to be < 1953 * 1.02   # for quadrant 3
+    expect(q.columns).to be_within(1953/50).of 1953   # for quadrant 3 -- 2%
+    expect(in_range(q.columns, 0.02, 1953))  # for quadrant 3 -- 2%
+    expect(in_range(q.columns, 0.02, 1953)).to be true  # for quadrant 3 -- 2%
     expect(q.rows).to be > 847 * 0.97       # for quadrant 3
     expect(q.rows).to be < 847 * 1.02       # for quadrant 3
   end
@@ -136,8 +169,24 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
       # q.write("q3#{j}.jpg")
     end
     expect(hh.count).to eq(2)
-    expect(hh.coordinates[0]).to eq([0, 0, 777, 136])      # for quadrant 0
+    expect([[0, 0, 777, 136] , [0, 0, 777, 138]]).to include(hh.coordinates[0])      # for quadrant 0
+    expect(hh.coordinates[0]).to eq([0, 0, 777, 136]).or eq([0, 0, 777, 138])      # for quadrant 0
+    # expect(hh.coordinates[0]).to include([[0, 0, 777, 136] , [0, 0, 777, 138]])      # for quadrant 0
+    # expect(hh.coordinates[0]).to eq([0, 0, 777, 136] | [0, 0, 777, 138])      # for quadrant 0
     expect(hh.coordinates[1]).to eq([0, 147, 777, 408])   # for quadrant 1
   end
 
+  specify "offset cross method on black stage specimen should yield 4 rectangular boundaries" do
+    expect(hbs.count).to eq(4)
+    expect(hbs.coordinates[0]). to eq([0, 0, 2870, 425])
+    expect(hbs.coordinates[1]). to eq([2995, 0, 306, 355])
+    expect(hbs.coordinates[2]). to eq([2995, 547, 306, 1593])
+    expect(hbs.coordinates[3]). to eq([0, 551, 2870, 1589])
+    q = nil
+    (hbs.first[0]..hbs.count - 1).each do |j|
+      q = dbs.crop(*hbs.for(j), true)
+      # q.write("qb#{j}.jpg")
+    end
+  end
 end
+

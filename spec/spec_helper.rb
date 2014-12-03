@@ -19,7 +19,12 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   # config.order = 'random'
+
 end
 
+def in_range(value, percentage, midpoint)  #order of second and third params to be consistent with be_within
+  # value is a scalar for testing against the range, percentage is a float less than 1, midpoint is the nominal center of the range
+  return (value <= midpoint*(1.0 + percentage)) & (value >= midpoint*(1.0 - percentage))
+end
 
 
