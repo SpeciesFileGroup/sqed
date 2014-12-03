@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier line' do    # it 'should scan a stage image and find dividing lines' do
 
+  # let(:image) { ImageHelpers.offset_cross_green_line_specimen }   # ***********************************
   let(:image) { ImageHelpers.four_green_lined_quadrants }
 
   let(:b) {
@@ -49,7 +50,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     bh.boundaries
   }
   let(:dh) {
-    # ah.crop(*ch.for(0), true)
+    # ah.crop(*ch.for(0), true)   # ************** reverse these for
     ah.crop(100, 100, 777, 555, true)   # since StageFinder fails on this synthetic image
   }
   let(:gh) {
@@ -59,17 +60,25 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   let(:hh) {
     gh.boundaries
   }
+
+
   specify 'initial image columns are as expected for :image above' do
     expect(image.columns).to eq(3264)
     expect(image.rows).to eq(2452)
   #
-    expect(b.boundaries.x_for(0)).to eq(484)
-    expect(b.boundaries.y_for(0)).to eq(361)
-    expect(b.boundaries.width_for(0)).to eq(2447)
-    expect(b.boundaries.height_for(0)).to eq(1890)
+    expect(b.boundaries.x_for(0)).to be > 484 * 0.98
+    expect(b.boundaries.x_for(0)).to be < 484 * 1.02
+    expect(b.boundaries.y_for(0)).to be > 361 * 0.98
+    expect(b.boundaries.y_for(0)).to be < 361 * 1.02
+    expect(b.boundaries.width_for(0)).to be > 2447 * 0.98
+    expect(b.boundaries.width_for(0)).to be < 2447 * 1.02
+    expect(b.boundaries.height_for(0)).to be > 1890 * 0.98
+    expect(b.boundaries.height_for(0)).to be < 1890 * 1.02
   #
-    expect(d.columns).to eq(2447)
-    expect(d.rows).to eq(1890)
+    expect(d.columns).to be > 2447 * 0.97
+    expect(d.columns).to be < 2447 * 1.02
+    expect(d.rows).to be > 1890 * 0.97
+    expect(d.rows).to be < 1890 * 1.02
   end
 
   # specify 'image cropped to stage boundary is correct size ' do
@@ -78,11 +87,13 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     q = nil
     (f.first[0]..f.count - 1).each do |j|
       q = d.crop(*f.for(j), true)
-      q.write("q0#{j}.jpg")
+      # q.write("q0#{j}.jpg")
     end
     expect(f.count).to eq(3)
-    expect(q.columns).to eq(413)   # for quadrant 2
-    expect(q.rows).to eq(910)       # for quadrant 2
+    expect(q.columns).to  be > 413 * 0.98   # for quadrant 2
+    expect(q.columns).to  be < 413 * 1.02   # for quadrant 2
+    expect(q.rows).to be > 910 * 0.97       # for quadrant 2
+    expect(q.rows).to be < 910 * 1.02       # for quadrant 2
   end
 
   specify "CrossGreenLinesSpecimen using offset_cross layout should yield 4 rectangular boundaries" do
@@ -90,11 +101,15 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     q = nil
     (h.first[0]..h.count - 1).each do |j|
       q = d.crop(*h.for(j), true)
-      q.write("q1#{j}.jpg")
+      # q.write("q1#{j}.jpg")
     end
     expect(h.count).to eq(4)
-    expect(q.columns).to eq(1953)   # for quadrant 3
-    expect(q.rows).to eq(847)       # for quadrant 3
+    # expect(q.columns).to eq(1953)   # for quadrant 3
+    # expect(q.rows).to eq(847)       # for quadrant 3
+    expect(q.columns).to  be > 1953 * 0.98   # for quadrant 3
+    expect(q.columns).to  be < 1953 * 1.02   # for quadrant 3
+    expect(q.rows).to be > 847 * 0.97       # for quadrant 3
+    expect(q.rows).to be < 847 * 1.02       # for quadrant 3
   end
 
   specify "CrossGreenLinesSpecimen using vertical_split layout should yield 2 rectangular boundaries" do
@@ -102,11 +117,15 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     q = nil
     (hv.first[0]..hv.count - 1).each do |j|
       q = d.crop(*hv.for(j), true)
-      q.write("q2#{j}.jpg")
+      # q.write("q2#{j}.jpg")
     end
     expect(hv.count).to eq(2)
-    expect(q.columns).to eq(413)   # for quadrant 1
-    expect(q.rows).to eq(1890)       # for quadrant 1
+    # expect(q.columns).to eq(413)   # for quadrant 1
+    # expect(q.rows).to eq(1890)       # for quadrant 1
+    expect(q.columns).to  be > 413 * 0.98   # for quadrant 1
+    expect(q.columns).to  be < 413 * 1.02   # for quadrant 1
+    expect(q.rows).to be > 1890 * 0.97       # for quadrant 1
+    expect(q.rows).to be < 1890 * 1.02       # for quadrant 1
   end
 
   specify "boundary_offset_cross_red using horizontal_split layout should yield 2 rectangular boundaries" do
@@ -114,7 +133,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     q = nil
     (hh.first[0]..hh.count - 1).each do |j|
       q = dh.crop(*hh.for(j), true)
-      q.write("q3#{j}.jpg")
+      # q.write("q3#{j}.jpg")
     end
     expect(hh.count).to eq(2)
     expect(hh.coordinates[0]).to eq([0, 0, 777, 136])      # for quadrant 0

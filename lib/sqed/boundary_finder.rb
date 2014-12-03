@@ -88,11 +88,12 @@ class Sqed::BoundaryFinder
   #
   #  image: the image to sample
   #  sample_subdivision_size: an Integer, the distance in pixels b/w samples
-  #  sample_cuttoff_factor: divides the total samples to determine the cutoff for counts that represent a border "hit"
+  #  sample_cutoff_factor: divides the total samples to determine the cutoff for counts that represent a border "hit"
   #     - for example, if you have an image of height 100 pixels, then a border is predicted when 5 or more green pixels are found for a given position
   #  scan (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
-  #
-  def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: 2, scan: :rows, boundary_color: :green)
+  # **********************
+  def self.color_boundary_finder(image: image, sample_subdivision_size: 13, sample_cutoff_factor: 2, scan: :rows, boundary_color: :green)
+  # def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: 2, scan: :rows, boundary_color: :green)
     border_hits = {}
     samples_to_take = (image.send(scan) / sample_subdivision_size).to_i - 1
 
@@ -126,15 +127,15 @@ class Sqed::BoundaryFinder
   end
 
   def self.is_green?(pixel)
-   (pixel.green > pixel.red) && (pixel.green > pixel.blue)
+   (pixel.green > pixel.red*1.4) && (pixel.green > pixel.blue*1.2)    # ****************
   end
 
   def self.is_blue?(pixel)
-   (pixel.blue > pixel.red) && (pixel.blue > pixel.green)
+   (pixel.blue > pixel.red*1.2) && (pixel.blue > pixel.green*1.2)    # ****************
   end
 
   def self.is_red?(pixel)
-   (pixel.red > pixel.blue) && (pixel.red > pixel.green)
+   (pixel.red > pixel.blue*1.2) && (pixel.red > pixel.green*1.2)    # ****************
   end
 
   # Takes a frequency hash of position => count key/values and returns
