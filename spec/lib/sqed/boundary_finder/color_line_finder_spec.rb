@@ -115,8 +115,8 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   specify "CrossGreenLinesSpecimen using vertical_split layout should yield 2 rectangular boundaries" do
     # write out the found quadrants
     q = nil
-    hh.each do |j|
-      q = d.crop(*hv.for(j), true)
+    hh.each do |k, v|
+      q = d.crop(*v, true)
       # q.write("q2#{j}.jpg")
     end
     expect(hv.count).to eq(2)
@@ -135,8 +135,8 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   specify "boundary_offset_cross_red using horizontal_split layout should yield 2 rectangular boundaries" do
     # write out the found quadrants
     q = nil
-    hh.each do |j|
-      q = dh.crop(*hh.for(j), true)
+    hh.each do |k, v|
+      q = dh.crop(*v, true)
       # q.write("q3#{j}.jpg")
     end
   
