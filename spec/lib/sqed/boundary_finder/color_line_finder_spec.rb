@@ -156,7 +156,6 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     # expect(q.columns).to eq(413)          # for quadrant 1
     # expect(q.rows).to eq(1890)            # for quadrant 1
     
-    
     expect(hv.width_for(1)).to  be > 413 * 0.98   # for quadrant 1
     expect(hv.width_for(1)).to  be < 413 * 1.02   # for quadrant 1
   
@@ -181,16 +180,49 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     expect(hh.coordinates[1]).to eq([0, 147, 777, 408])   # for quadrant 1
   end
 
-  specify "offset cross method on black stage specimen should yield 4 rectangular boundaries" do
-    expect(hbs.count).to eq(4)
-    expect(hbs.coordinates[0]). to eq([0, 0, 2870, 425])
-    expect(hbs.coordinates[1]). to eq([2995, 0, 306, 355])
-    expect(hbs.coordinates[2]). to eq([2995, 547, 306, 1593])
-    expect(hbs.coordinates[3]). to eq([0, 551, 2870, 1589])
+
+  specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 0" do
+    expect(hbs.coordinates.keys.count).to eq(4)
+
+    expect(hbs.width_for(0)).to be > 2865
+    expect(hbs.width_for(0)).to be < 2900 #2875 
+    expect(hbs.height_for(0)).to be > 420
+    expect(hbs.height_for(0)).to be < 440
+
+
     q = nil
-    (hbs.first[0]..hbs.count - 1).each do |j|
-      q = dbs.crop(*hbs.for(j), true)
-      # q.write("qb#{j}.jpg")
+      (hbs.first[0]..hbs.count - 1).each do |j|
+        q = dbs.crop(*hbs.for(j), true)
+        # q.write("qb#{j}.jpg")
+      end
     end
+
+  specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 1" do
+    expect(hbs.width_for(1)).to be > 300
+    expect(hbs.width_for(1)).to be < 350
+    expect(hbs.height_for(1)).to be > 420
+    expect(hbs.height_for(1)).to be < 440
   end
+
+
+  specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 2" do
+    expect(hbs.width_for(2)).to be  > 300
+    expect(hbs.width_for(2)).to be  < 310
+    expect(hbs.height_for(2)).to be > 1590 
+    expect(hbs.height_for(2)).to be < 1595 
+  end
+
+
+  specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 3" do
+    expect(hbs.width_for(3)).to be  > 2865
+    expect(hbs.width_for(3)).to be  < 2875
+    expect(hbs.height_for(3)).to be > 1590 
+    expect(hbs.height_for(3)).to be < 1595 
+  end
+   
+#   expect(hbs.coordinates[0]). to eq([0, 0, 2870, 425])
+#   expect(hbs.coordinates[1]). to eq([2995, 0, 306, 425])
+#   expect(hbs.coordinates[2]). to eq([2995, 547, 306, 1593])
+#   expect(hbs.coordinates[3]). to eq([0, 551, 2870, 1589])
+
 end

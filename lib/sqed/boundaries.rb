@@ -37,6 +37,11 @@ class Sqed::Boundaries
     end
   end
 
+  # Overrides Enumerable
+  def count
+    @coordinates.length
+  end
+
   def x_for(index)
     @coordinates[index][0]
   end

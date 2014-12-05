@@ -8,7 +8,6 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
     super
     @boundary_color = boundary_color
     find_bands
-
   end
 
   private
@@ -49,20 +48,26 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
         t = Sqed::BoundaryFinder.color_boundary_finder(image: img)  #defaults to detect vertical division, green line
         raise if t.nil?
         boundaries.coordinates[0] = [0, 0, t[0], img.rows]  # left section of image
+     
         boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], img.rows]  # right section of image
 
         # now subdivide left side
         ilt = img.crop(*boundaries.coordinates[0], true)
+
         lt = Sqed::BoundaryFinder.color_boundary_finder(image: ilt, scan: :columns)  # set to detect horizontal division, (green line)
         if !lt.nil?
           boundaries.coordinates[0] = [0, 0, t[0], lt[0]]  # upper section of image
           boundaries.coordinates[3] = [0, lt[2], t[0], img.rows - lt[2]]  # lower section of image
         end
+
         # now subdivide right side
         irt = img.crop(*boundaries.coordinates[1], true)
         rt = Sqed::BoundaryFinder.color_boundary_finder(image: irt, scan: :columns)  # set to detect horizontal division, (green line)
         return if rt.nil?
+   
         boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], rt[0]]  # upper section of image
+    
+    
         boundaries.coordinates[2] = [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]  # lower section of image
       # will return 1, 2, 3, or 4  //// does not handle staggered vertical boundary case
 
