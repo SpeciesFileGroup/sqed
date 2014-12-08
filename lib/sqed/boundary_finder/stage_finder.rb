@@ -13,7 +13,11 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout)
     @layout = :internal_box
-    super 
+    super
+    @x00 = @x0
+    @y00 = @y0
+    @height0 = height
+    @width0 = width
     find_edges
     # output
   end
@@ -30,8 +34,10 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   # whether that edge is a border or not.
   # **************************
   # def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz = 0.20)   # initially 0.95, 0.05
-  def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.40)   # initially 0.95, 0.05
-  # def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.20)   # initially 0.95, 0.05
+  def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.40)   # working on non-synthetic images 04-dec-2014
+  # def self.default_border_finder(img, samples = 50, threshold = 0.9, fuzz_factor = 0.1)   # semi-working on synthetic images 08-dec-2014 (x)
+  #   def self.default_border_finder(img, samples = 20, threshold = 0.8, fuzz_factor = 0.2)   # WORKS with synthetic images and changes to x0, y0, width, height
+    # def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.20)   # initially 0.95, 0.05
     # appears to assume sharp transition will occur in 5 pixels x/y
     # how is threshold defined?
     # works for 0.5, >0.137; 0.60, >0.14 0.65, >0.146; 0.70, >0.1875; 0.75, >0.1875; 0.8, >0.237; 0.85, >0.24; 0.90, >0.28; 0.95, >0.25
@@ -60,6 +66,14 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
       border.to_f / (border + non_border) > threshold # number of matching string of pixels/(2 x total pixels - a.k.a. samples?)
     end
   end
+  def vline(x)
+    img.get_pixels x, @y00, 1, @height0 - 1
+  end
+
+  def hline(y)
+    img.get_pixels @x00, y, @width0 - 1, 1
+  end
+
 
   private
 
@@ -80,12 +94,18 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     (u).downto(x0) { |x| width_croppable?  && is_border[vline(x)] ? @x1 = x - 1 : break }
 
     u = y1 - 1
-    0.upto(u)      { |y| height_croppable? && is_border[hline y] ? @y0 = y + 1 : break }
+    0.upto(u) do |y|
+      if height_croppable? && is_border[hline y] then
+        @y0 = y + 1
+      else
+        break
+      end
+    end
     (u).downto(y0) { |y| height_croppable? && is_border[hline y] ? @y1 = y - 1 : break }
     u = 0
 
-    delta_x = width/33    # 3% of cropped image to make up for trapezoidal distortion
-    delta_y = height/33   # 3% of cropped image to make up for trapezoidal distortion <- NOT 3%
+    delta_x = width/50    # 2% of cropped image to make up for trapezoidal distortion
+    delta_y = height/50   # 2% of cropped image to make up for trapezoidal distortion <- NOT 3%
    
     boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
   end
