@@ -257,8 +257,8 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
      end
 
   specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 1" do
-    expect(in_range(hbs.width_for(1), 0.02, 378)).to be(true)
     expect(in_range(hbs.height_for(1), 0.02, 441)).to be(true)
+    expect(in_range(hbs.width_for(1), 0.02, 378)).to be(true)
   end
 
 

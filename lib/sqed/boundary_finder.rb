@@ -16,7 +16,7 @@ class Sqed::BoundaryFinder
   MIN_CROP_RATIO = 0.1    # constant of this class
 
   # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
+  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :stage_boundary
   
   # A Sqed::Boundaries instance, stores the coordinates of all fo the layout sections 
   attr_reader :boundaries
@@ -27,9 +27,9 @@ class Sqed::BoundaryFinder
   # The proc containing the border finding algorithim
   attr_reader :is_border
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green) # img must bef supplied, others overridable
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green, stage_boundary: stage_boundary) # img must bef supplied, others overridable
     @layout = layout
-
+    @stage_boundary = stage_boundary
     raise 'No image provided.' if image.nil? || image.class != Magick::Image
 
     # Initial co-ordinates
@@ -127,9 +127,11 @@ class Sqed::BoundaryFinder
         end
       end
     end
-
+    if border_hits.length < 2
+      return nil
+    end
     if sample_cutoff_factor.nil?
-      cutoff = max_pairwise_difference(border_hits.values)
+      cutoff = max_difference(border_hits.values)
     else
       cutoff = (samples_to_take * sample_cutoff_factor).to_i
     end
@@ -183,6 +185,10 @@ class Sqed::BoundaryFinder
   #   6
   def self.max_pairwise_difference(array)
     (0..array.length-2).map{|i| (array[i] - array[i+1]).abs }.max
+  end
+
+  def self.max_difference(array)
+    array.max - array.min
   end
 
   def self.derivative_signs(array)

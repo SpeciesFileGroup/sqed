@@ -6,7 +6,7 @@ class Sqed::BoundaryFinder::GreenLineFinder < Sqed::BoundaryFinder
 
   attr_reader :is_band
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout)
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout, stage_boundary: stage_boundary)
     super 
 
     # We need a band finder proc. Provide one if none was given.

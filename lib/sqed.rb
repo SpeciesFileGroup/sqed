@@ -26,10 +26,12 @@ class Sqed
   attr_accessor :pattern
 
   # the image that is the cropped content for parsing
-  attr_accessor :stage_image
+  attr_accessor :stage_image, :stage_boundary
 
   def initialize(image: image, pattern: pattern)
     @image = image
+    @stage_boundary = Sqed::Boundaries.new(:internal_box) # a.k.a. stage
+    @stage_boundary.coordinates[0] = [0, 0, @image.columns, @image.rows] if @image
     @pattern = pattern
     @pattern ||= :standard_cross 
   end
@@ -47,13 +49,14 @@ class Sqed
   def boundaries
     SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder].new(
       image: @image, 
-      layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout]
+      layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout],
+      stage_boundary: @stage_boundary,
     ).boundaries
   end
 
   def crop_image
-    boundaries = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
-    @stage_image = @image.crop(*boundaries.for(SqedConfig.index_for_section_type(:stage, :stage)))
+    @stage_boundary = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
+    @stage_image = @image.crop(*@stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)))
   end
 
 end
