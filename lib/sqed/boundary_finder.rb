@@ -107,11 +107,11 @@ class Sqed::BoundaryFinder
         raise
       end
 
-      # loop through every pixel in the image
+      # loop through every pixel in the subsample image
       j.each_pixel do |pixel, c, r|
         index = ( (scan == :rows) ? c : r)
 
-        # Our hit metric is dirt simple, if there is more of the boundary_color than the others, count + 1 for that column 
+        # Our hit metric is dirt simple, if there is some percentage more of the boundary_color than the others, count + 1 for that column 
         if send("is_#{boundary_color}?", pixel) 
           # we have already hit that column previously, increment
           if border_hits[index]
@@ -127,7 +127,7 @@ class Sqed::BoundaryFinder
   end
 
   def self.is_green?(pixel)
-    (pixel.green > pixel.red*1.2) && (pixel.green > pixel.blue*1.2)    # ****************
+    (pixel.green > pixel.red*1.2) && (pixel.green > pixel.blue*1.2)  # ****************
   end
 
   def self.is_blue?(pixel)
@@ -135,7 +135,7 @@ class Sqed::BoundaryFinder
   end
 
   def self.is_red?(pixel)
-   (pixel.red > pixel.blue*1.2) && (pixel.red > pixel.green*1.2)    # ****************
+   (pixel.red > pixel.blue*1.2) && (pixel.red > pixel.green*1.2)     # ****************
   end
 
   # Takes a frequency hash of position => count key/values and returns
@@ -145,7 +145,9 @@ class Sqed::BoundaryFinder
     return nil if sample_cutoff < 1
     hit_ranges = [] 
 
-    # Rich - using this as the cutoff value makes all tests pass, it's another dynamic way to find the peak
+    # Rich - using this as the cutoff value makes all tests pass, it's a way to find the cutoff point, 
+    # the largest observed difference b/w any two adjacent pixels becomes the cuttof
+    # this would eliminate the need for sample_cutoff being passed at this level
     # sample_cutoff = max_pairwise_difference(frequency_hash.values)
 
     frequency_hash.each do |position, count|
@@ -161,8 +163,15 @@ class Sqed::BoundaryFinder
     [hit_ranges.first, hit_ranges[(hit_ranges.length / 2).to_i], hit_ranges.last]
   end
 
+  # Returns an Integer, the maximum of the pairwise differences of the values in the array
+  # For example, given
+  #   [1,2,3,9,6,2,0]
+  # The resulting pairwise array is
+  #   [1,1,6,3,4,2]
+  # The max is
+  #   6
   def self.max_pairwise_difference(array)
-    (0..array.length-2).map{|i| array[i] - array[i+1]}.max
+    (0..array.length-2).map{|i| (array[i] - array[i+1]).abs }.max
   end
 
   def self.derivative_signs(array)
