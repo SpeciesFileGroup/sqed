@@ -87,13 +87,17 @@ class Sqed::BoundaryFinder
   # Returns: the column (x position) in the middle of the single green vertical line dividing the stage
   #
   #  image: the image to sample
+  #
   #  sample_subdivision_size: an Integer, the distance in pixels b/w samples
-  #  sample_cutoff_factor: divides the total samples to determine the cutoff for counts that represent a border "hit"
-  #     - for example, if you have an image of height 100 pixels, then a border is predicted when 5 or more green pixels are found for a given position
+  #
+  #  sample_cutoff_factor: (0.0-1.0) if provided over-rides the default cutoff calculation by reducing the number of pixels required to be considered a border hit
+  #     - for example, if you have an image of height 100 pixels, and a sample_subdivision_size of 10, and a sample_cutoff_factor of .8 
+  #       then only posititions with 8 ((100/10)*.8) or more hits
+  #     - when nil the cutoff defaults to the maximum of the pairwise difference between hit counts
+  #
   #  scan (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
-  # **********************
-  def self.color_boundary_finder(image: image, sample_subdivision_size: 3, sample_cutoff_factor: 1, scan: :rows, boundary_color: :green)
-  # def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: 2, scan: :rows, boundary_color: :green)
+  #
+  def self.color_boundary_finder(image: image, sample_subdivision_size: 3, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green)
     border_hits = {}
     samples_to_take = (image.send(scan) / sample_subdivision_size).to_i - 1
 
@@ -123,7 +127,14 @@ class Sqed::BoundaryFinder
         end
       end
     end
-    frequency_stats(border_hits, (samples_to_take / sample_cutoff_factor))
+
+    if sample_cutoff_factor.nil?
+      cutoff = max_pairwise_difference(frequency_hash.values)
+    else
+      cutoff = (samples_to_take / sample_cutoff_factor).to_i
+    end
+
+    frequency_stats(border_hits, cutoff)
   end
 
   def self.is_green?(pixel)
@@ -168,7 +179,7 @@ class Sqed::BoundaryFinder
   #   [1,2,3,9,6,2,0]
   # The resulting pairwise array is
   #   [1,1,6,3,4,2]
-  # The max is
+  # The max (value returned) is
   #   6
   def self.max_pairwise_difference(array)
     (0..array.length-2).map{|i| (array[i] - array[i+1]).abs }.max
