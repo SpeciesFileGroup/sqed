@@ -144,16 +144,33 @@ class Sqed::BoundaryFinder
   def self.frequency_stats(frequency_hash, sample_cutoff = 0)
     return nil if sample_cutoff < 1
     hit_ranges = [] 
+
+    # Rich - using this as the cutoff value makes all tests pass, it's another dynamic way to find the peak
+    # sample_cutoff = max_pairwise_difference(frequency_hash.values)
+
     frequency_hash.each do |position, count|
-      if count > sample_cutoff 
+      if count >= sample_cutoff 
         hit_ranges.push(position)
       end
     end
+
     return nil if hit_ranges.size < 3
     # return the position exactly in the middle of the array
     # we have to sort because the keys (positions) we examined came unordered from a hash originally
     hit_ranges.sort!
     [hit_ranges.first, hit_ranges[(hit_ranges.length / 2).to_i], hit_ranges.last]
+  end
+
+  def self.max_pairwise_difference(array)
+    (0..array.length-2).map{|i| array[i] - array[i+1]}.max
+  end
+
+  def self.derivative_signs(array)
+    (0..array.length-2).map { |i| (array[i+1] - array[i]) <=> 0 }
+  end
+
+  def self.derivative(array)
+    (0..array.length-2).map { |i| array[i+1] - array[i] }
   end
 
   private
