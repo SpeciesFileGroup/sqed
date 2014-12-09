@@ -38,20 +38,26 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     #   q = d.crop(*e.for(j), true)
     #   q.write("q4#{j}.jpg")
     # end
-    expect(b.boundaries.x_for(0)).to be > 484 * 0.98
-    expect(b.boundaries.x_for(0)).to be < 484 * 1.02
-    expect(b.boundaries.y_for(0)).to be > 361 * 0.98
-    expect(b.boundaries.y_for(0)).to be < 361 * 1.02
-    expect(b.boundaries.width_for(0)).to be > 2447 * 0.98
-    expect(b.boundaries.width_for(0)).to be < 2447 * 1.02
-    expect(b.boundaries.height_for(0)).to be > 1890 * 0.98
-    expect(b.boundaries.height_for(0)).to be < 1890 * 1.02
+    expect(in_range(d.columns, 0.02, 2485)).to be(true)
+    expect(in_range(d.rows, 0.02, 1912)).to be(true)
+    # expect(b.boundaries.x_for(0)).to be > 484 * 0.98
+    # expect(b.boundaries.x_for(0)).to be < 484 * 1.02
+    expect(in_range(c.x_for(0), 0.02, 458)).to be(true)
+    # expect(b.boundaries.y_for(0)).to be > 361 * 0.98
+    # expect(b.boundaries.y_for(0)).to be < 361 * 1.02
+    expect(in_range(c.y_for(0), 0.02, 340)).to be(true)
+    # expect(b.boundaries.width_for(0)).to be > 2447 * 0.98
+    # expect(b.boundaries.width_for(0)).to be < 2447 * 1.02
+    expect(in_range(c.width_for(0), 0.02, 2485)).to be(true)
+    # expect(b.boundaries.height_for(0)).to be > 1890 * 0.98
+    # expect(b.boundaries.height_for(0)).to be < 1890 * 1.02
+    expect(in_range(c.height_for(0), 0.02, 1912)).to be(true)
     # expect(d.columns).to eq(2447)
     # expect(d.rows).to eq(1890)
-    expect(d.columns).to be > 2447 * 0.97
-    expect(d.columns).to be < 2447 * 1.02
-    expect(d.rows).to be > 1890 * 0.97
-    expect(d.rows).to be < 1890 * 1.02
+    # expect(d.columns).to be > 2447 * 0.97
+    # expect(d.columns).to be < 2447 * 1.02
+    # expect(d.rows).to be > 1890 * 0.97
+    # expect(d.rows).to be < 1890 * 1.02
   end
 
   # Sanity checking let statements
@@ -77,67 +83,107 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     #   end
     # end
   end
+  # expect(in_range(h.x_for(0), 0.02, 0)).to be(true)
+  # expect(in_range(h.y_for(0), 0.02, 0)).to be(true)
+  # expect(in_range(h.width_for(0), 0.02, 2003)).to be(true)
+  # expect(in_range(h.height_for(0), 0.02, 1015)).to be(true)
+  #
+  # expect(in_range(h.x_for(1), 0.02, 2047)).to be(true)
+  # expect(in_range(h.y_for(1), 0.02, 0)).to be(true)
+  # expect(in_range(h.width_for(1), 0.02, 438)).to be(true)
+  # expect(in_range(h.height_for(1), 0.02, 948)).to be(true)
+  #
+  # expect(in_range(h.x_for(2), 0.02, 2047)).to be(true)
+  # expect(in_range(h.y_for(2), 0.02, 989)).to be(true)
+  # expect(in_range(h.width_for(2), 0.02, 438)).to be(true)
+  # expect(in_range(h.height_for(2), 0.02, 923)).to be(true)
+  #
+  # expect(in_range(h.x_for(3), 0.02, 0)).to be(true)
+  # expect(in_range(h.y_for(3), 0.02, 1054)).to be(true)
+  # expect(in_range(h.width_for(3), 0.02, 2003)).to be(true)
+  # expect(in_range(h.height_for(3), 0.02, 858)).to be(true)
 
-  specify 'the 0th image starts at x=0, y=0, w=1969, h=993' do
-    expect(f.x_for(0)).to eq(0)
+  specify 'the 0th image starts at x=0, y=0, w=2003, h=1015' do
+    expect(in_range(f.x_for(0), 0.02, 0)).to be(true)
+    expect(in_range(f.y_for(0), 0.02, 0)).to be(true)
+    expect(in_range(f.width_for(0), 0.02, 2003)).to be(true)
+    expect(in_range(f.height_for(0), 0.02, 1015)).to be(true)
+
+    # expect(f.x_for(0)).to eq(0)
   # specify 'the 0th image starts at y = 0' do
-    expect(f.y_for(0)).to eq(0)
+  #   expect(f.y_for(0)).to eq(0)
   # specify 'the width of the 0th image is ~1969' do
   #   expect(f.width_for(0)).to eq(1969)
-    expect(f.width_for(0)).to be > 1969 * 0.98
-    expect(f.width_for(0)).to be < 1969 * 1.02
+  #   expect(f.width_for(0)).to be > 1969 * 0.98
+  #   expect(f.width_for(0)).to be < 1969 * 1.02
   # specify 'the height of the 0th image is ~1890' do
   #   expect(f.height_for(0)).to eq(993)
-    expect(f.height_for(0)).to be > 993 * 0.98
-    expect(f.height_for(0)).to be < 993 * 1.02
+  #   expect(f.height_for(0)).to be > 993 * 0.98
+  #   expect(f.height_for(0)).to be < 993 * 1.02
   end
 
-  specify 'the 1st image starts at x = 2022' do
+  specify 'the 1st image starts at x = 2047' do
+    expect(in_range(f.x_for(1), 0.02, 2047)).to be(true)
+    expect(in_range(f.y_for(1), 0.02, 0)).to be(true)
+    expect(in_range(f.width_for(1), 0.02, 438)).to be(true)
+    expect(in_range(f.width_for(1), 0.02, 425)).to be(false)
+    expect(in_range(f.height_for(1), 0.02, 948)).to be(true)
+    #
     # expect(f.x_for(1)).to eq(2022)
-    expect(f.x_for(1)).to be > 2022 * 0.98
-    expect(f.x_for(1)).to be < 2022 * 1.02
+    # expect(f.x_for(1)).to be > 2022 * 0.98
+    # expect(f.x_for(1)).to be < 2022 * 1.02
   # specify 'the 1th image starts at x = 0' do
-    expect(f.y_for(1)).to eq(0)
+  #   expect(f.y_for(1)).to eq(0)
   # specify 'the width of the 1th image is ~425' do
   #   expect(f.width_for(1)).to eq(425)
   # specify 'the height of the 1th image is ~927' do
   #   expect(f.height_for(1)).to eq(927)
-    expect(f.width_for(1)).to be > 425 * 0.96
-    expect(f.width_for(1)).to be < 425 * 1.02
-    expect(f.height_for(1)).to be > 927 * 0.98
-    expect(f.height_for(1)).to be < 927 * 1.02
+  #   expect(f.width_for(1)).to be > 425 * 0.96
+  #   expect(f.width_for(1)).to be < 425 * 1.03
+  #   expect(f.height_for(1)).to be > 927 * 0.98
+  #   expect(f.height_for(1)).to be < 927 * 1.02
   end
 
-  specify 'the 2nd image starts at x = 2022' do
+  specify 'the 2nd image starts at x = 2047' do
+    expect(in_range(f.x_for(2), 0.02, 2047)).to be(true)
+    expect(in_range(f.y_for(2), 0.02, 989)).to be(true)
+    expect(in_range(f.width_for(2), 0.02, 438)).to be(true)
+    expect(in_range(f.height_for(2), 0.02, 923)).to be(true)
+
     # expect(f.x_for(2)).to eq(2022)
-    expect(f.x_for(2)).to be > 2022 * 0.98
-    expect(f.x_for(2)).to be < 2022 * 1.02
+    # expect(f.x_for(2)).to be > 2022 * 0.98
+    # expect(f.x_for(2)).to be < 2022 * 1.02
   # specify 'the 2th image starts at y = 970' do
   #   expect(f.y_for(2)).to eq(970)
-    expect(f.y_for(2)).to be > 970 * 0.98
-    expect(f.y_for(2)).to be < 970 * 1.02
+  #   expect(f.y_for(2)).to be > 970 * 0.98
+  #   expect(f.y_for(2)).to be < 970 * 1.02
   # specify 'the width of the 2th image is ~425' do
   #   expect(f.width_for(2)).to eq(425)
-    expect(f.width_for(2)).to be > 425 * 0.96
-    expect(f.width_for(2)).to be < 425 * 1.02
+  #   expect(f.width_for(2)).to be > 425 * 0.96
+  #   expect(f.width_for(2)).to be < 425 * 1.02
   # specify 'the height of the 2th image is ~920' do
   #   expect(f.height_for(2)).to eq(920)
-    expect(f.height_for(2)).to be > 920 * 0.96
-    expect(f.height_for(2)).to be < 920 * 1.02
+  #   expect(f.height_for(2)).to be > 920 * 0.96
+  #   expect(f.height_for(2)).to be < 920 * 1.02
   end
 
   specify 'the 3rd image starts at x = 0' do
-    expect(f.x_for(3)).to eq(0)
+    expect(in_range(f.x_for(3), 0.02, 0)).to be(true)
+    expect(in_range(f.y_for(3), 0.02, 1054)).to be(true)
+    expect(in_range(f.width_for(3), 0.02, 2003)).to be(true)
+    expect(in_range(f.height_for(3), 0.02, 858)).to be(true)
+
+    # expect(f.x_for(3)).to eq(0)
   # specify 'the 3th image starts at y = 1034' do
   #   expect(f.y_for(3)).to eq(1034)
-    expect(f.y_for(3)).to be > 1034 * 0.98
-    expect(f.y_for(3)).to be < 1034 * 1.02
+  #   expect(f.y_for(3)).to be > 1034 * 0.98
+  #   expect(f.y_for(3)).to be < 1034 * 1.02
   # specify 'the width of the 3th image is ~1969' do
-    expect(f.width_for(3)).to eq(1969)
+  #   expect(f.width_for(3)).to eq(1969)
   # specify 'the height of the 3th image is ~856' do
   #   expect(f.height_for(3)).to eq(856)
-    expect(f.height_for(3)).to be > 856 * 0.96
-    expect(f.height_for(3)).to be < 856 * 1.02
+  #   expect(f.height_for(3)).to be > 856 * 0.96
+  #   expect(f.height_for(3)).to be < 856 * 1.02
   end
 
 end 
