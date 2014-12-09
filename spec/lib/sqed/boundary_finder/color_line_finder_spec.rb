@@ -96,18 +96,22 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
   #
     # expect(b.boundaries.x_for(0)).to be > 484 * 0.98
     # expect(b.boundaries.x_for(0)).to be < 484 * 1.02
-    expect(in_range(c.x_for(0), 0.02, 458)).to be(true)
+    # expect(in_range(c.x_for(0), 0.02, 458)).to be(true
+    expect(in_range(c.x_for(0), 0.02, 407)).to be(true)
     # expect(b.boundaries.y_for(0)).to be > 361 * 0.98
     # expect(b.boundaries.y_for(0)).to be < 361 * 1.02
-    expect(in_range(c.y_for(0), 0.02, 340)).to be(true)
+    # expect(in_range(c.y_for(0), 0.02, 340)).to be(true)
+    expect(in_range(c.y_for(0), 0.02, 301)).to be(true)
 
     # expect(b.boundaries.width_for(0)).to be > 2447 * 0.98
     # expect(b.boundaries.width_for(0)).to be < 2447 * 1.02
-    expect(in_range(c.width_for(0), 0.02, 2485)).to be(true)
+    # expect(in_range(c.width_for(0), 0.02, 2485)).to be(true)
+    expect(in_range(c.width_for(0), 0.02, 2587)).to be(true)
 
     # expect(b.boundaries.height_for(0)).to be > 1890 * 0.98
     # expect(b.boundaries.height_for(0)).to be < 1890 * 1.02
-    expect(in_range(c.height_for(0), 0.02, 1912)).to be(true)
+    # expect(in_range(c.height_for(0), 0.02, 1912)).to be(true)
+    expect(in_range(c.height_for(0), 0.02, 1990)).to be(true)
   #
     expect(d.columns).to be > 2447 * 0.97
     expect(d.columns).to be < 2447 * 1.02

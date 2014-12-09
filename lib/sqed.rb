@@ -50,10 +50,12 @@ class Sqed
     SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder].new(
       image: @image, 
       layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout],
-      stage_boundary: @stage_boundary,
     ).boundaries
   end
 
+  def native_boundaries
+    boundaries.offset(@stage_boundary)
+  end
   def crop_image
     @stage_boundary = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
     @stage_image = @image.crop(*@stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)))

@@ -27,6 +27,15 @@ class Sqed::Boundaries
     end
   end
 
+  def offset(boundary)
+    b = self.dup
+    self.each do |i, c|
+      b.coordinates[i][0] = x_for(i) + boundary.x_for(i)
+      b.coordinates[i][1] = y_for(i) + boundary.y_for(i)
+    end
+    b
+  end
+
   def for(section)
     @coordinates[section]
   end

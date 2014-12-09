@@ -34,10 +34,10 @@ describe Sqed do
   end
 
   context 'with a test image' do
-    let(:a) { ImageHelpers.test0_image }  
+    let(:a) { ImageHelpers.test0_image }
     before {
       s.image = a
-    } 
+    }
 
     specify '#crop_image' do        #should expand to multiple cases of image border types
       expect(s.crop_image).to be_truthy
@@ -50,4 +50,18 @@ describe Sqed do
       expect(s.boundaries.class).to eq(Sqed::Boundaries)
     end
   end
+
+  context 'stage image with a border' do
+    let(:a) { ImageHelpers.standard_cross_green }
+    before {
+      s.image = a
+      s.crop_image
+    }
+    specify 'stage boundary is created for standard_ cross_green ~ (100,94, 800, 600)' do
+      expect(s.stage_boundary.x_for(0)).to be_within(2).of 100
+      expect(s.stage_boundary.y_for(0)).to be_within(2).of 94
+      expect(s.stage_boundary.width_for(0)).to be_within(2).of 800
+      expect(s.stage_boundary.height_for(0)).to be_within(2).of 600
+    end
+    end
 end 

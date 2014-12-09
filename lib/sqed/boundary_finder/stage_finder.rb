@@ -104,8 +104,8 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     (u).downto(y0) { |y| height_croppable? && is_border[hline y] ? @y1 = y - 1 : break }
     u = 0
 
-    delta_x = width/50    # 2% of cropped image to make up for trapezoidal distortion
-    delta_y = height/50   # 2% of cropped image to make up for trapezoidal distortion <- NOT 3%
+    delta_x = 0 #width/50    # 2% of cropped image to make up for trapezoidal distortion
+    delta_y = 0 #height/50   # 2% of cropped image to make up for trapezoidal distortion <- NOT 3%
    
     boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
   end
