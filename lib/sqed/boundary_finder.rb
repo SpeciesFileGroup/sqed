@@ -129,9 +129,9 @@ class Sqed::BoundaryFinder
     end
 
     if sample_cutoff_factor.nil?
-      cutoff = max_pairwise_difference(frequency_hash.values)
+      cutoff = max_pairwise_difference(border_hits.values)
     else
-      cutoff = (samples_to_take / sample_cutoff_factor).to_i
+      cutoff = (samples_to_take * sample_cutoff_factor).to_i
     end
 
     frequency_stats(border_hits, cutoff)
@@ -153,7 +153,7 @@ class Sqed::BoundaryFinder
   # the median position of all positions that have a count greater than the cutoff
 
   def self.frequency_stats(frequency_hash, sample_cutoff = 0)
-    return nil if sample_cutoff < 1
+    return nil if sample_cutoff.nil? ||  sample_cutoff < 1 
     hit_ranges = [] 
 
     # Rich - using this as the cutoff value makes all tests pass, it's a way to find the cutoff point, 
