@@ -94,30 +94,32 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     expect(image.columns).to eq(3264)
     expect(image.rows).to eq(2452)
   #
-    # expect(b.boundaries.x_for(0)).to be > 484 * 0.98
-    # expect(b.boundaries.x_for(0)).to be < 484 * 1.02
+    # expect(b.boundaries.x_for(0)).to be > 484 * 0.98   #prior to 09DEc14
+    # expect(b.boundaries.x_for(0)).to be < 484 * 1.02   #prior to 09DEc14
     # expect(in_range(c.x_for(0), 0.02, 458)).to be(true
     expect(in_range(c.x_for(0), 0.02, 407)).to be(true)
-    # expect(b.boundaries.y_for(0)).to be > 361 * 0.98
-    # expect(b.boundaries.y_for(0)).to be < 361 * 1.02
+    # expect(b.boundaries.y_for(0)).to be > 361 * 0.98   #prior to 09DEc14
+    # expect(b.boundaries.y_for(0)).to be < 361 * 1.02   #prior to 09DEc14
     # expect(in_range(c.y_for(0), 0.02, 340)).to be(true)
     expect(in_range(c.y_for(0), 0.02, 301)).to be(true)
 
-    # expect(b.boundaries.width_for(0)).to be > 2447 * 0.98
-    # expect(b.boundaries.width_for(0)).to be < 2447 * 1.02
+    # expect(b.boundaries.width_for(0)).to be > 2447 * 0.98   #prior to 09DEc14
+    # expect(b.boundaries.width_for(0)).to be < 2447 * 1.02   #prior to 09DEc14
     # expect(in_range(c.width_for(0), 0.02, 2485)).to be(true)
     expect(in_range(c.width_for(0), 0.02, 2587)).to be(true)
 
-    # expect(b.boundaries.height_for(0)).to be > 1890 * 0.98
-    # expect(b.boundaries.height_for(0)).to be < 1890 * 1.02
+    # expect(b.boundaries.height_for(0)).to be > 1890 * 0.98   #prior to 09DEc14
+    # expect(b.boundaries.height_for(0)).to be < 1890 * 1.02   #prior to 09DEc14
     # expect(in_range(c.height_for(0), 0.02, 1912)).to be(true)
     expect(in_range(c.height_for(0), 0.02, 1990)).to be(true)
   #
-    expect(d.columns).to be > 2447 * 0.97
-    expect(d.columns).to be < 2447 * 1.02
+    # expect(d.columns).to be > 2447 * 0.97   #prior to 09DEc14
+    # expect(d.columns).to be < 2447 * 1.02   #prior to 09DEc14
+    expect(d.columns).to be_within(50).of(2587)
 
-    expect(d.rows).to be > 1890 * 0.97
-    expect(d.rows).to be < 1890 * 1.02
+    # expect(d.rows).to be > 1890 * 0.97   #prior to 09DEc14
+    # expect(d.rows).to be < 1890 * 1.02   #prior to 09DEc14
+    expect(d.rows).to be_within(40).of(1990)
   end
 
   # specify 'image cropped to stage boundary is correct size ' do
@@ -135,20 +137,32 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     #
     # expect(q.rows).to be > 910 * 0.97       # for quadrant 2
     # expect(q.rows).to be < 910 * 1.02       # for quadrant 2
-    expect(in_range(f.x_for(0), 0.02, 0)).to be(true)
-    expect(in_range(f.y_for(0), 0.02, 0)).to be(true)
-    expect(in_range(f.width_for(0), 0.02, 2003)).to be(true)
-    expect(in_range(f.height_for(0), 0.02, 1912)).to be(true)
+    # expect(in_range(f.x_for(0), 0.02, 0)).to be(true)  #prior to 09DEc14
+    expect(f.x_for(0)).to be_within(1).of(1)
+    # expect(in_range(f.y_for(0), 0.02, 0)).to be(true)  #prior to 09DEc14
+    expect(f.y_for(0)).to be_within(1).of(1)
+    # expect(in_range(f.width_for(0), 0.02, 2003)).to be(true)  #prior to 09DEc14
+    expect(f.width_for(0)).to be_within(0.02*2051).of(2051)
+    # expect(in_range(f.height_for(0), 0.02, 1912)).to be(true)  #prior to 09DEc14
+    expect(f.height_for(0)).to be_within(0.02*1990).of(1990)
 
-    expect(in_range(f.x_for(1), 0.02, 2047)).to be(true)
-    expect(in_range(f.y_for(1), 0.02, 0)).to be(true)
-    expect(in_range(f.width_for(1), 0.02, 438)).to be(true)
-    expect(in_range(f.height_for(1), 0.02, 948)).to be(true)
+    # expect(in_range(f.x_for(1), 0.02, 2047)).to be(true)    #prior to 09DEc14
+    # expect(in_range(f.y_for(1), 0.02, 0)).to be(true)    #prior to 09DEc14
+    # expect(in_range(f.width_for(1), 0.02, 438)).to be(true)    #prior to 09DEc14
+    # expect(in_range(f.height_for(1), 0.02, 948)).to be(true)    #prior to 09DEc14
+    expect(f.x_for(1)).to be_within(0.02*2099).of(2099)
+    expect(f.y_for(1)).to be_within(1).of(1)
+    expect(f.width_for(1)).to be_within(0.02*438).of(488)
+    expect(f.height_for(1)).to be_within(0.02*987).of(987)
 
-    expect(in_range(f.x_for(2), 0.02, 2047)).to be(true)
-    expect(in_range(f.y_for(2), 0.02, 989)).to be(true)
-    expect(in_range(f.width_for(2), 0.02, 438)).to be(true)
-    expect(in_range(f.height_for(2), 0.02, 923)).to be(true)
+    # expect(in_range(f.x_for(2), 0.02, 2047)).to be(true)    #prior to 09DEc14
+    # expect(in_range(f.y_for(2), 0.02, 989)).to be(true)    #prior to 09DEc14
+    # expect(in_range(f.width_for(2), 0.02, 438)).to be(true)    #prior to 09DEc14
+    # expect(in_range(f.height_for(2), 0.02, 923)).to be(true)    #prior to 09DEc14
+    expect(f.x_for(2)).to be_within(0.02*2099).of(2099)
+    expect(f.y_for(2)).to be_within(0.02*1026).of(1026)
+    expect(f.width_for(2)).to be_within(0.02*488).of(488)
+    expect(f.height_for(2)).to be_within(0.02*964).of(964)
 
     end
 
@@ -172,25 +186,25 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     # expect(q.rows).to be > 847 * 0.97       # for quadrant 3
     # expect(q.rows).to be < 847 * 1.02       # for quadrant 3
 
-    expect(in_range(h.x_for(0), 0.02, 0)).to be(true)
-    expect(in_range(h.y_for(0), 0.02, 0)).to be(true)
-    expect(in_range(h.width_for(0), 0.02, 2003)).to be(true)
-    expect(in_range(h.height_for(0), 0.02, 1015)).to be(true)
+    expect(h.x_for(0)).to be_within(0.02*2099).of(0)
+    expect(h.y_for(0)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(h.width_for(0)).to be_within(0.02*2051).of(2051)#, 0.02, 2003)).to be(true)
+    expect(h.height_for(0)).to be_within(0.02*1054).of(1054)#, 0.02, 1015)).to be(true)
 
-    expect(in_range(h.x_for(1), 0.02, 2047)).to be(true)
-    expect(in_range(h.y_for(1), 0.02, 0)).to be(true)
-    expect(in_range(h.width_for(1), 0.02, 438)).to be(true)
-    expect(in_range(h.height_for(1), 0.02, 948)).to be(true)
+    expect(h.x_for(1)).to be_within(0.02*2099).of(2099)#, 0.02, 2047)).to be(true)
+    expect(h.y_for(1)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(h.width_for(1)).to be_within(0.02*488).of(488)#, 0.02, 438)).to be(true)
+    expect(h.height_for(1)).to be_within(0.02*987).of(987)#, 0.02, 948)).to be(true)
 
-    expect(in_range(h.x_for(2), 0.02, 2047)).to be(true)
-    expect(in_range(h.y_for(2), 0.02, 989)).to be(true)
-    expect(in_range(h.width_for(2), 0.02, 438)).to be(true)
-    expect(in_range(h.height_for(2), 0.02, 923)).to be(true)
+    expect(h.x_for(2)).to be_within(0.02*2099).of(2099)#, 0.02, 2047)).to be(true)
+    expect(h.y_for(2)).to be_within(0.02*1026).of(1026)#, 0.02, 989)).to be(true)
+    expect(h.width_for(2)).to be_within(0.02*488).of(488)#, 0.02, 438)).to be(true)
+    expect(h.height_for(2)).to be_within(0.02*964).of(964)#, 0.02, 923)).to be(true)
 
-    expect(in_range(h.x_for(3), 0.02, 0)).to be(true)
-    expect(in_range(h.y_for(3), 0.02, 1054)).to be(true)
-    expect(in_range(h.width_for(3), 0.02, 2003)).to be(true)
-    expect(in_range(h.height_for(3), 0.02, 858)).to be(true)
+    expect(h.x_for(3)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(h.y_for(3)).to be_within(0.02*1093).of(1093)#, 0.02, 1054)).to be(true)
+    expect(h.width_for(3)).to be_within(0.02*2051).of(2051)#, 0.02, 2003)).to be(true)
+    expect(h.height_for(3)).to be_within(0.02*897).of(897)#, 0.02, 858)).to be(true)
 
   end
 
@@ -211,21 +225,21 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     # expect(hv.height_for(1)).to  be > 1890 * 0.98   # for quadrant 1
     # expect(hv.height_for(1)).to  be < 1890 * 1.02   # for quadrant 1
 
-    expect(in_range(hv.x_for(0), 0.02, 0)).to be(true)
-    expect(in_range(hv.y_for(0), 0.02, 0)).to be(true)
-    expect(in_range(hv.width_for(0), 0.02, 2003)).to be(true)
-    expect(in_range(hv.height_for(0), 0.02, 1912)).to be(true)
+    expect(hv.x_for(0)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(hv.y_for(0)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(hv.width_for(0)).to be_within(0.02*2051).of(2051)#, 0.02, 2003)).to be(true)
+    expect(hv.height_for(0)).to be_within(0.02*1990).of(1990)#, 0.02, 1912)).to be(true)
 
-    expect(in_range(hv.x_for(1), 0.02, 2047)).to be(true)
-    expect(in_range(hv.y_for(1), 0.02, 0)).to be(true)
-    expect(in_range(hv.width_for(1), 0.02, 438)).to be(true)
-    expect(in_range(hv.height_for(1), 0.02, 1912)).to be(true)
+    expect(hv.x_for(1)).to be_within(0.02*2099).of(2099)#, 0.02, 2047)).to be(true)
+    expect(hv.y_for(1)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(hv.width_for(1)).to be_within(0.02*488).of(488)#, 0.02, 438)).to be(true)
+    expect(hv.height_for(1)).to be_within(0.02*1990).of(1990)#, 0.02, 1912)).to be(true)
 
   end
 
 
   specify "boundary_offset_cross_red using horizontal_split layout should yield 2 rectangular boundaries" do
-    # write out the found quadrants
+    # write out the found quadrants  #boundaries revised 10DEC2014
     q = nil
     hh.each do |k, v|
       q = dh.crop(*v, true)
@@ -233,11 +247,11 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     end
   
     expect(hh.count).to eq(2)
-    expect([[0, 0, 769, 134] , [0, 0, 769, 135]]).to include(hh.coordinates[0])      # for quadrant 0
-    expect(hh.coordinates[0]).to eq([0, 0, 769, 134]).or eq([0, 0, 768, 135])      # for quadrant 0
+    expect([[0, 0, 798, 146] , [0, 0, 799, 145]]).to include(hh.coordinates[0])      # for quadrant 0
+    expect(hh.coordinates[0]).to eq([0, 0, 799, 145]).or eq([0, 0, 798, 146])      # for quadrant 0
     # expect(hh.coordinates[0]).to include([[0, 0, 777, 136] , [0, 0, 777, 138]])      # for quadrant 0
     # expect(hh.coordinates[0]).to eq([0, 0, 777, 136] | [0, 0, 777, 138])      # for quadrant 0
-    expect(hh.coordinates[1]).to eq([0, 143, 769, 434])   # for quadrant 1
+    expect(hh.coordinates[1]).to eq([0, 154, 799, 445])   # for quadrant 1
   end
 
 
@@ -250,8 +264,8 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
     end
     expect(hbs.coordinates.keys.count).to eq(4)
 
-    expect(in_range(hbs.width_for(0), 0.02, 2903)).to be(true)
-    expect(in_range(hbs.height_for(0), 0.02, 462)).to be(true)
+    expect(hbs.width_for(0)).to be_within(0.02*2999).of(2999)#, 0.02, 2903)).to be(true)
+    expect(hbs.height_for(0)).to be_within(0.02*506).of(506)#, 0.02, 462)).to be(true)
     # expect(hbs.width_for(0)).to be > 2865
     # expect(hbs.width_for(0)).to be < 2900 #2875
     # expect(hbs.height_for(0)).to be > 420
@@ -261,14 +275,14 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
      end
 
   specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 1" do
-    expect(in_range(hbs.height_for(1), 0.02, 441)).to be(true)
-    expect(in_range(hbs.width_for(1), 0.02, 378)).to be(true)
+    expect(hbs.width_for(1)).to be_within(0.02*447).of(447)#, 0.02, 378)).to be(true)
+    expect(hbs.height_for(1)).to be_within(0.02*487).of(487)#, 0.02, 441)).to be(true)
   end
 
 
   specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 2" do
-    expect(in_range(hbs.width_for(2), 0.02, 378)).to be(true)
-    expect(in_range(hbs.height_for(2), 0.02, 1635)).to be(true)
+    expect(hbs.width_for(2)).to be_within(0.02*447).of(447)#, 0.02, 378)).to be(true)
+    expect(hbs.height_for(2)).to be_within(0.02*1680).of(1680)#, 0.02, 1635)).to be(true)
   #   expect(hbs.width_for(2)).to be  > 300
   #   expect(hbs.width_for(2)).to be  < 310
   #   expect(hbs.height_for(2)).to be > 1590
@@ -277,8 +291,8 @@ describe Sqed::BoundaryFinder::ColorLineFinder do  # describe 'Find a barrier li
 
 
   specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 3" do
-    expect(in_range(hbs.width_for(3), 0.02, 2934)).to be(true)
-    expect(in_range(hbs.height_for(3), 0.02, 1634)).to be(true)
+    expect(hbs.width_for(3)).to be_within(0.02*2999).of(2999)#, 0.02, 2934)).to be(true)
+    expect(hbs.height_for(3)).to be_within(0.02*1677).of(1677)#, 0.02, 1634)).to be(true)
     # expect(hbs.width_for(3)).to be  > 2865
     # expect(hbs.width_for(3)).to be  < 2875
     # expect(hbs.height_for(3)).to be > 1590
