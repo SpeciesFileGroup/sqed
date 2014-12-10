@@ -81,12 +81,17 @@ module SqedConfig
   }
 
   EXTRACTION_PATTERNS = {
-    right_t: { 
-      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-      layout: :right_t, 
-      metadata_map: {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
-    },
-    standard_cross: {
+      right_t: {
+          boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+          layout: :right_t,
+          metadata_map: {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
+      },
+      offset_cross: {
+          boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+          layout: :offset_cross,
+          metadata_map: {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
+      },
+      standard_cross: {
       boundary_finder: Sqed::BoundaryFinder::CrossFinder,
       layout: :cross, 
       metadata_map: {0 => :labels, 1 => :specimen, 2 => :identifier, 3 => :specimen_determinations }

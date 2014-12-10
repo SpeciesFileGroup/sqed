@@ -19,6 +19,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     @height0 = height
     @width0 = width
     find_edges
+    xxx = 0
     # output
   end
 

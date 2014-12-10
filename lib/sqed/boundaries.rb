@@ -30,8 +30,8 @@ class Sqed::Boundaries
   def offset(boundary)
     b = self.dup
     self.each do |i, c|
-      b.coordinates[i][0] = x_for(i) + boundary.x_for(i)
-      b.coordinates[i][1] = y_for(i) + boundary.y_for(i)
+      b.coordinates[i][0] += boundary.x_for(0)
+      b.coordinates[i][1] += boundary.y_for(0)
     end
     b
   end

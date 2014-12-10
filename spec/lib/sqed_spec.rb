@@ -63,5 +63,17 @@ describe Sqed do
       expect(s.stage_boundary.width_for(0)).to be_within(2).of 800
       expect(s.stage_boundary.height_for(0)).to be_within(2).of 600
     end
+  end
+
+  context 'offset boundaries from original image ' do
+    before{
+      s = Sqed.new(image: ImageHelpers.crossy_green_line_specimen, pattern: :offset_cross)
+      s.crop_image
+      @b = s.boundaries.offset(s.stage_boundary)
+    }
+    specify "offset and size should match internal found areas " do
+      expect(@b.x_for(0)).to eq(s.stage_boundary.x_for(0))
     end
+
+  end
 end 
