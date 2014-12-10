@@ -38,20 +38,20 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
     #   q = d.crop(*e.for(j), true)
     #   q.write("q4#{j}.jpg")
     # end
-    expect(in_range(d.columns, 0.02, 2485)).to be(true)
-    expect(in_range(d.rows, 0.02, 1912)).to be(true)
+    expect(d.columns).to be_within(0.02*2587).of(2587)#, 0.02, 2485)).to be(true)
+    expect(d.rows).to be_within(0.02*1990).of(1990)#, 0.02, 1912)).to be(true)
     # expect(b.boundaries.x_for(0)).to be > 484 * 0.98
     # expect(b.boundaries.x_for(0)).to be < 484 * 1.02
-    expect(in_range(c.x_for(0), 0.02, 458)).to be(true)
+    expect(c.x_for(0)).to be_within(0.02*407).of(407)#, 0.02, 458)).to be(true)
     # expect(b.boundaries.y_for(0)).to be > 361 * 0.98
     # expect(b.boundaries.y_for(0)).to be < 361 * 1.02
-    expect(in_range(c.y_for(0), 0.02, 340)).to be(true)
+    expect(c.y_for(0)).to be_within(0.02*301).of(301)#, 0.02, 340)).to be(true)
     # expect(b.boundaries.width_for(0)).to be > 2447 * 0.98
     # expect(b.boundaries.width_for(0)).to be < 2447 * 1.02
-    expect(in_range(c.width_for(0), 0.02, 2485)).to be(true)
+    expect(c.width_for(0)).to be_within(0.02*2587).of(2587)#, 0.02, 2485)).to be(true)
     # expect(b.boundaries.height_for(0)).to be > 1890 * 0.98
     # expect(b.boundaries.height_for(0)).to be < 1890 * 1.02
-    expect(in_range(c.height_for(0), 0.02, 1912)).to be(true)
+    expect(c.height_for(0)).to be_within(0.02*1990).of(1990)#, 0.02, 1912)).to be(true)
     # expect(d.columns).to eq(2447)
     # expect(d.rows).to eq(1890)
     # expect(d.columns).to be > 2447 * 0.97
@@ -104,10 +104,10 @@ describe Sqed::BoundaryFinder::GreenLineFinder do
   # expect(in_range(h.height_for(3), 0.02, 858)).to be(true)
 
   specify 'the 0th image starts at x=0, y=0, w=2003, h=1015' do
-    expect(in_range(f.x_for(0), 0.02, 0)).to be(true)
-    expect(in_range(f.y_for(0), 0.02, 0)).to be(true)
-    expect(in_range(f.width_for(0), 0.02, 2003)).to be(true)
-    expect(in_range(f.height_for(0), 0.02, 1015)).to be(true)
+    expect(f.x_for(0)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(f.y_for(0)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
+    expect(f.width_for(0)).to be_within(0.02*2003).of(487)#, 0.02, 2003)).to be(true)
+    expect(f.height_for(0)).to be_within(0.02*1015).of(487)#, 0.02, 1015)).to be(true)
 
     # expect(f.x_for(0)).to eq(0)
   # specify 'the 0th image starts at y = 0' do
