@@ -6,7 +6,6 @@ require_relative "sqed/parser/barcode_parser"
 
 require_relative "sqed/boundaries"
 require_relative "sqed/boundary_finder"
-require_relative "sqed/boundary_finder/green_line_finder"
 require_relative "sqed/boundary_finder/cross_finder"
 require_relative "sqed/boundary_finder/stage_finder"
 require_relative "sqed/boundary_finder/color_line_finder"
@@ -83,7 +82,7 @@ module SqedConfig
 
   EXTRACTION_PATTERNS = {
     right_t: { 
-      boundary_finder: Sqed::BoundaryFinder::GreenLineFinder,
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :right_t, 
       metadata_map: {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
     },
