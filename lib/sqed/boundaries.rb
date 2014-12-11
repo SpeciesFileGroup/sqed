@@ -36,8 +36,8 @@ class Sqed::Boundaries
     b = Sqed::Boundaries.new()    # the idea here is to create a deep copy of self, offsetting by boundary as we go
     (0..self.coordinates.length - 1).each do |i|
       b.coordinates[i] = []  # create the instance of the i-th coordinate, then populate it
-      b.coordinates[i][0] = boundary.x_for(0) + self.x_for(i)
-      b.coordinates[i][1] = boundary.y_for(0) + self.y_for(i)
+      b.coordinates[i][0] = self.x_for(i) + boundary.x_for(0)
+      b.coordinates[i][1] = self.y_for(i) + boundary.y_for(0)
       b.coordinates[i][2] = self.width_for(i)
       b.coordinates[i][3] = self.height_for(i)
     end
