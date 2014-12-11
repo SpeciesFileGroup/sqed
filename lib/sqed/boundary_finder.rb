@@ -3,7 +3,7 @@ require 'RMagick'
 # Sqed Boundary Finders find boundaries on images and return co-ordinates of those boundaries.  They do not
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
 #
-# This core of this code is from Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
+# Some of this code was originally inspired by Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
 #
 class Sqed::BoundaryFinder
 
@@ -27,7 +27,8 @@ class Sqed::BoundaryFinder
   # The proc containing the border finding algorithim
   attr_reader :is_border
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green, stage_boundary: stage_boundary) # img must bef supplied, others overridable
+  # image must be supplied, others overridable
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green, stage_boundary: stage_boundary)
     @layout = layout
     @stage_boundary = stage_boundary
     raise 'No image provided.' if image.nil? || image.class != Magick::Image
@@ -83,7 +84,6 @@ class Sqed::BoundaryFinder
     end
   end
 
-  # Demo code for simple green line finding
   # Returns: the column (x position) in the middle of the single green vertical line dividing the stage
   #
   #  image: the image to sample
@@ -97,7 +97,7 @@ class Sqed::BoundaryFinder
   #
   #  scan (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
   #
-  def self.color_boundary_finder(image: image, sample_subdivision_size: 3, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green)
+  def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green) 
     border_hits = {}
     samples_to_take = (image.send(scan) / sample_subdivision_size).to_i - 1
 
@@ -111,7 +111,6 @@ class Sqed::BoundaryFinder
         raise
       end
 
-      # loop through every pixel in the subsample image
       j.each_pixel do |pixel, c, r|
         index = ( (scan == :rows) ? c : r)
 
@@ -127,9 +126,9 @@ class Sqed::BoundaryFinder
         end
       end
     end
-    if border_hits.length < 2
-      return nil
-    end
+
+    return nil if border_hits.length < 2
+    
     if sample_cutoff_factor.nil?
       cutoff = max_difference(border_hits.values)
     else
@@ -140,28 +139,23 @@ class Sqed::BoundaryFinder
   end
 
   def self.is_green?(pixel)
-    (pixel.green > pixel.red*1.2) && (pixel.green > pixel.blue*1.2)  # ****************
+    (pixel.green > pixel.red*1.2) && (pixel.green > pixel.blue*1.2)  
   end
 
   def self.is_blue?(pixel)
-   (pixel.blue > pixel.red*1.2) && (pixel.blue > pixel.green*1.2)    # ****************
+    (pixel.blue > pixel.red*1.2) && (pixel.blue > pixel.green*1.2)   
   end
 
   def self.is_red?(pixel)
-   (pixel.red > pixel.blue*1.2) && (pixel.red > pixel.green*1.2)     # ****************
+    (pixel.red > pixel.blue*1.2) && (pixel.red > pixel.green*1.2)   
   end
 
   # Takes a frequency hash of position => count key/values and returns
   # the median position of all positions that have a count greater than the cutoff
-
+  #
   def self.frequency_stats(frequency_hash, sample_cutoff = 0)
     return nil if sample_cutoff.nil? ||  sample_cutoff < 1 
     hit_ranges = [] 
-
-    # Rich - using this as the cutoff value makes all tests pass, it's a way to find the cutoff point, 
-    # the largest observed difference b/w any two adjacent pixels becomes the cuttof
-    # this would eliminate the need for sample_cutoff being passed at this level
-    # sample_cutoff = max_pairwise_difference(frequency_hash.values)
 
     frequency_hash.each do |position, count|
       if count >= sample_cutoff 

@@ -5,8 +5,6 @@ describe Sqed do
   let(:s) {Sqed.new}
 
   context 'attributes' do
-    # s = Sqed.new
-    # s.image works
     specify '#image' do
       expect(s).to respond_to(:image)
     end
@@ -28,7 +26,6 @@ describe Sqed do
 
   context 'asking for a result' do
     specify 'without providing an image returns false' do
-      # s.pattern = {}
       expect(s.result).to eq(false)
     end
   end
@@ -66,14 +63,26 @@ describe Sqed do
   end
 
   context 'offset boundaries from original image ' do
-    before{
-      s = Sqed.new(image: ImageHelpers.crossy_green_line_specimen, pattern: :offset_cross)
-      s.crop_image
-      @b = s.boundaries.offset(s.stage_boundary)
+    before(:all) {
+      @s = Sqed.new(image: ImageHelpers.crossy_green_line_specimen, pattern: :offset_cross)
+      @s.crop_image
+      @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
     }
+    
     specify "offset and size should match internal found areas " do
-      expect(@b.x_for(0)).to eq(s.stage_boundary.x_for(0))
-    end
+      sbx = @s.stage_boundary.x_for(0)
+      sby = @s.stage_boundary.y_for(0)
 
+      (0..3).each do |i| 
+        # check all the x/y      
+        expect(@offset_boundaries.x_for(i)).to eq(@s.boundaries.x_for(i) + sbx)
+        expect(@offset_boundaries.y_for(i)).to eq(@s.boundaries.y_for(i) + sby)
+
+        # check all width/heights
+        expect(@offset_boundaries.width_for(i)).to eq(@s.boundaries.width_for(i))
+        expect(@offset_boundaries.height_for(i)).to eq(@s.boundaries.height_for(i))
+      end
+    end
   end
+
 end 

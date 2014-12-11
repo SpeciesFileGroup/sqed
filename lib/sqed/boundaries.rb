@@ -12,7 +12,7 @@ class Sqed::Boundaries
   #   0 => [10,10,40,40]
   attr_reader :coordinates
 
-  # An EXTRACTION_PATTERN layout
+  # An Sqed::Config::EXTRACTION_PATTERN layout
   attr_accessor :layout
 
   def initialize(layout = nil)
