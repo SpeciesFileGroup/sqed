@@ -41,6 +41,7 @@ class Sqed::Boundaries
       b.coordinates[i][2] = self.width_for(i)
       b.coordinates[i][3] = self.height_for(i)
     end
+    b.complete = self.complete
     b
   end
 

@@ -4,7 +4,7 @@ require 'RMagick'
 
 class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
- def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: nil)
+ def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: nil, boundary_color: nil)
    @image = image
     find_edges 
  end

@@ -26,9 +26,9 @@ class Sqed
   attr_accessor :pattern
 
   # the image that is the cropped content for parsing
-  attr_accessor :stage_image, :stage_boundary, :boundaries, :auto_detect_border
+  attr_accessor :stage_image, :stage_boundary, :boundaries, :auto_detect_border, :boundary_color
 
-  def initialize(image: image, pattern: pattern, auto_detect_border: true)
+  def initialize(image: image, pattern: pattern, auto_detect_border: true, boundary_color: :green)
     @image = image
 
     @boundaries = nil
@@ -37,7 +37,9 @@ class Sqed
     @auto_detect_border = auto_detect_border
 
     @pattern = pattern
-    @pattern ||= :standard_cross 
+    @pattern ||= :standard_cross
+
+    @boundary_color = boundary_color
 
     set_stage_boundary if @auto_detect_border && @image
   end
@@ -100,7 +102,8 @@ class Sqed
   def get_stage_boundaries
     SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder].new(
       image: stage_image, 
-      layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout]
+      layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout],
+      boundary_color: @boundary_color
     ).boundaries
   end
 
