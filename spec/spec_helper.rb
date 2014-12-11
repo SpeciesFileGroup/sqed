@@ -7,6 +7,7 @@ require 'support/image_helpers'
 require 'byebug'
 require 'awesome_print'
 require 'fileutils'
+require 'RMagick'
 
 FileUtils::mkdir_p 'tmp'
 
