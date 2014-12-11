@@ -67,6 +67,7 @@ describe Sqed do
       @s = Sqed.new(image: ImageHelpers.crossy_green_line_specimen, pattern: :offset_cross)
       @s.crop_image
       @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
+      wtf = 0
     }
     
     specify "offset and size should match internal found areas " do
