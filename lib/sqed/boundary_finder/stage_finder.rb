@@ -80,6 +80,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   # TODO: If this is the same as superclass remove.
   def find_edges
+    # handle this exception
     return unless is_border #return if no process defined or set for @is_border
 
     u = x1 - 1    #rightmost pixel (kind of)
@@ -107,10 +108,11 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
     delta_x = 0 #width/50    # 2% of cropped image to make up for trapezoidal distortion
     delta_y = 0 #height/50   # 2% of cropped image to make up for trapezoidal distortion <- NOT 3%
-   
+  
+
+    # TODO: add conditions
+    boundaries.complete = true 
     boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
   end
-
- 
 
 end

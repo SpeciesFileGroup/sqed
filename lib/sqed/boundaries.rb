@@ -15,10 +15,15 @@ class Sqed::Boundaries
   # An Sqed::Config::EXTRACTION_PATTERN layout
   attr_accessor :layout
 
+  # Whether or not the last method to populate this object passed fully
+  attr_accessor :complete
+
   def initialize(layout = nil)
+    @complete = false
+
     @layout = layout
     @coordinates = {}
-      initialize_coordinates if !@layout.nil?
+    initialize_coordinates if !@layout.nil?
   end
 
   def initialize_coordinates

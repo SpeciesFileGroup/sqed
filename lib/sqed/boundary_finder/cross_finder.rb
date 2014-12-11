@@ -17,6 +17,7 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
    boundaries.coordinates[1] = [width, 0, width, height] 
    boundaries.coordinates[2] = [width, height, width, height] 
    boundaries.coordinates[3] = [0, height, width, height] 
+   boundaries.complete = true
  end
 
 end
