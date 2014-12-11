@@ -1,7 +1,13 @@
+
+#bundler_args: --without development
 language: ruby
 rvm:
   - 2.1.2
-#bundler_args: --without development
+before_install:
+  - sudo add-apt-repository -y ppa:moti-p/cc
+  - sudo apt-get update
+  - sudo apt-get -y --reinstall install imagemagick
+  - printf "\n" | pecl install imagick-beta
 branches:
   only:
     - master
