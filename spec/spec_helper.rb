@@ -6,6 +6,9 @@ require 'sqed'
 require 'support/image_helpers'
 require 'byebug'
 require 'awesome_print'
+require 'fileutils'
+
+FileUtils::mkdir_p 'tmp'
 
 RSpec.configure do |config|
 

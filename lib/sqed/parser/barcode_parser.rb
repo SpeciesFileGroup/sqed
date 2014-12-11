@@ -18,7 +18,7 @@ class Sqed::Parser::BarcodeParser < Sqed::Parser
     if i.nil?
       i = @image
     end
-    i.write(f)
+    i.write("tmp/#{f}")
     c = `/usr/local/Cellar/zbar/0.10_1/bin/zbarimg #{f}`
     d = c.split("\n")
     return d

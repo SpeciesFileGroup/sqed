@@ -16,9 +16,12 @@ class Sqed::BoundaryFinder
   MIN_CROP_RATIO = 0.1    # constant of this class
 
   # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns, :stage_boundary
-  
-  # A Sqed::Boundaries instance, stores the coordinates of all fo the layout sections 
+  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns 
+
+  # A Sqed::Boundaries instance, stores the coordinates of all of stage if present 
+  attr_reader :stage_boundary
+
+  # A Sqed::Boundaries instance, stores the coordinates of all of the layout sections 
   attr_reader :boundaries
 
   # a symbol from SqedConfig::LAYOUTS

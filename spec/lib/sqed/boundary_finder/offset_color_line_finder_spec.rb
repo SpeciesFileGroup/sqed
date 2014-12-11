@@ -116,7 +116,7 @@ let(:d) { image.crop(c.coordinates[0][0], c.coordinates[0][1], c.coordinates[0][
     q = nil
     (f.first[0]..f.count - 1).each do |j|
       q = d.crop(*f.for(j), true)
-      q.write("q0#{j}.jpg")
+      q.write("tmp/q0#{j}.jpg")
     end
     expect(f.count).to eq(3)
 
@@ -142,7 +142,7 @@ let(:d) { image.crop(c.coordinates[0][0], c.coordinates[0][1], c.coordinates[0][
     q = nil
     (h.first[0]..h.count - 1).each do |j|
       q = d.crop(*h.for(j), true)
-      q.write("q1#{j}.jpg")
+      q.write("tmp/q1#{j}.jpg")
     end
     expect(h.count).to eq(4)
 
@@ -173,20 +173,21 @@ let(:d) { image.crop(c.coordinates[0][0], c.coordinates[0][1], c.coordinates[0][
     q = nil
     hv.each do |k, v|
       q = d.crop(*v, true)
-      q.write("q2#{k}.jpg")
+      q.write("tmp/q2#{k}.jpg")
     end
     expect(hv.count).to eq(2)
 
-    expect(hv.x_for(0)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
-    expect(hv.y_for(0)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
-    expect(hv.width_for(0)).to be_within(0.02*2051).of(2051)#, 0.02, 2003)).to be(true)
-    expect(hv.height_for(0)).to be_within(0.02*1990).of(1990)#, 0.02, 1912)).to be(true)
+    pct = 0.02
 
-    expect(hv.x_for(1)).to be_within(0.02*2099).of(2099)#, 0.02, 2047)).to be(true)
-    expect(hv.y_for(1)).to be_within(0.02*0).of(0)#, 0.02, 0)).to be(true)
-    expect(hv.width_for(1)).to be_within(0.02*488).of(488)#, 0.02, 438)).to be(true)
-    expect(hv.height_for(1)).to be_within(0.02*1990).of(1990)#, 0.02, 1912)).to be(true)
+    expect(hv.x_for(0)).to be_within(0).of(0)
+    expect(hv.y_for(0)).to be_within(0).of(0)
+    expect(hv.width_for(0)).to be_within(pct*2051).of(2051)
+    expect(hv.height_for(0)).to be_within(pct*1990).of(1990)
 
+    expect(hv.x_for(1)).to be_within(pct*2099).of(2099)
+    expect(hv.y_for(1)).to be_within(pct*0).of(0)
+    expect(hv.width_for(1)).to be_within(pct*488).of(488)
+    expect(hv.height_for(1)).to be_within(pct*1990).of(1990)
   end
 
 
@@ -195,7 +196,7 @@ let(:d) { image.crop(c.coordinates[0][0], c.coordinates[0][1], c.coordinates[0][
     q = nil
     hh.each do |k, v|
       q = dh.crop(*v, true)
-      q.write("q3#{k}.jpg")
+      q.write("tmp/q3#{k}.jpg")
     end
 
     expect(hh.count).to eq(2)
@@ -210,7 +211,7 @@ let(:d) { image.crop(c.coordinates[0][0], c.coordinates[0][1], c.coordinates[0][
     q = nil
     (hbs.first[0]..hbs.count - 1).each do |j|
       q = dbs.crop(*hbs.for(j), true)
-      q.write("qb#{j}.jpg")
+      q.write("tmp/qb#{j}.jpg")
     end
     expect(hbs.coordinates.keys.count).to eq(4)
 
@@ -224,12 +225,10 @@ let(:d) { image.crop(c.coordinates[0][0], c.coordinates[0][1], c.coordinates[0][
     expect(hbs.height_for(1)).to be_within(0.02*487).of(487)#, 0.02, 441)).to be(true)
   end
 
-
   specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 2" do
     expect(hbs.width_for(2)).to be_within(0.02*447).of(447)#, 0.02, 378)).to be(true)
     expect(hbs.height_for(2)).to be_within(0.02*1680).of(1680)#, 0.02, 1635)).to be(true)
   end
-
 
   specify "offset cross method on black stage specimen should yield 4 rectangular boundaries for 3" do
     expect(hbs.width_for(3)).to be_within(0.02*2999).of(2999)#, 0.02, 2934)).to be(true)
