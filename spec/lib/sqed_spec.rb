@@ -74,7 +74,9 @@ describe Sqed do
       sbx = @s.stage_boundary.x_for(0)
       sby = @s.stage_boundary.y_for(0)
 
-      (0..3).each do |i| 
+      sl =  @s.boundaries.coordinates.length  # may be convenient to clone this model for other than 4 boundaries found
+      expect(sl).to eq(4)    #for offset cross pattern and valid image
+      (0..sl - 1).each do |i|
         # check all the x/y      
         expect(@offset_boundaries.x_for(i)).to eq(@s.boundaries.x_for(i) + sbx)
         expect(@offset_boundaries.y_for(i)).to eq(@s.boundaries.y_for(i) + sby)

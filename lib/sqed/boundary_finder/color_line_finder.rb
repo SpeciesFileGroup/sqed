@@ -20,12 +20,13 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       return if t.nil?
       boundaries.coordinates[0] = [0, 0, t[0], img.rows]  # left section of image
       boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], img.rows]  # right section of image
-
+      bounaries.complete = true
     when :horizontal_split
       t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
       return if t.nil?
       boundaries.coordinates[0] = [0, 0, img.columns, t[0]]  # upper section of image
       boundaries.coordinates[1] = [0, t[2], img.columns, img.rows - t[2]]  # lower section of image
+      bounaries.complete = true
       # boundaries.coordinates[2] = [0, 0, img.columns, t[1]]  # upper section of image
       # boundaries.coordinates[3] = [0, t[1], img.columns, img.rows - t[1]]  # lower section of image
 
@@ -41,6 +42,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       return if rt.nil?
       boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], rt[0]]  # upper section of image
       boundaries.coordinates[2] = [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]  # lower section of image
+      bounaries.complete = true
       # will return 1, 2, or 3
 
     when :offset_cross   # 4 zones expected, with horizontal division in right- and left- sides of vertical division
@@ -66,6 +68,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], rt[0]]  # upper section of image
       boundaries.coordinates[2] = [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]  # lower section of image
       # will return 1, 2, 3, or 4  //// does not handle staggered vertical boundary case
+      boundaries.complete = true
 
     else
       boundaries.coordinates[0] = [0, 0, img.columns, img.rows]  # totality of image as default
