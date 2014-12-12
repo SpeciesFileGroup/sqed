@@ -43,6 +43,9 @@ module ImageHelpers
     def crossy_green_line_specimen
       get_image 'CrossyGreenLinesSpecimen.jpg'
     end
+    def crossy_black_line_specimen
+      get_image 'CrossyBlackLinesSpecimen.jpg'
+    end
 
     def black_stage_green_line_specimen
       get_image 'black_stage_green_line_specimen.jpg'

@@ -153,6 +153,10 @@ class Sqed::BoundaryFinder
     (pixel.red > pixel.blue*1.2) && (pixel.red > pixel.green*1.2)   
   end
 
+  def self.is_black?(pixel)
+    black_threshold = 65535*0.15    #tune for black
+    (pixel.red < black_threshold) &&  (pixel.blue < black_threshold) &&  (pixel.green < black_threshold)
+  end
   # Takes a frequency hash of position => count key/values and returns
   # the median position of all positions that have a count greater than the cutoff
   #

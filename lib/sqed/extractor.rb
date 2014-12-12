@@ -1,3 +1,4 @@
+require 'RMagick'
 
 # An Extractor takes Boundries object and a layout pattern and returns a Sqed::Result
 # 
@@ -36,7 +37,8 @@ class Sqed::Extractor
   # coords are x1, y1, x2, y2
   def extract_image(coords)
     # crop takes x, y, width, height
-    @image.crop(coords[0], coords[1], coords[2] - coords[0], coords[3] - coords[1] )
+    # @image.crop(coords[0], coords[1], coords[2] - coords[0], coords[3] - coords[1] )
+    @image.crop(coords[0], coords[1], coords[2], coords[3])
   end
 
 end
