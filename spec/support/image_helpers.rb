@@ -51,6 +51,10 @@ module ImageHelpers
       get_image 'black_stage_green_line_specimen.jpg'
     end
 
+    def black_stage_green_line_specimen_label
+      get_image 'label_images/black_stage_green_line_specimen_label.jpg'
+    end
+
     def offset_cross_red
       get_image 'boundary_offset_cross_red.jpg'
     end

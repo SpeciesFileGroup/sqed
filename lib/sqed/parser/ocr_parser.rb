@@ -27,9 +27,9 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     # img.write('foo1.jpg')
     # img = img.sharpen(1.0, 0.2)
     # img.write('foo2.jpg')
-    border_color = img.pixel_color(img.columns - 1, img.rows - 1)
-    img = img.color_floodfill(img.columns - 1, img.rows - 1, new_color)
-    img.write('tmp/foo4.jpg')
+    # border_color = img.pixel_color(img.columns - 1, img.rows - 1)
+    # img = img.color_floodfill(img.columns - 1, img.rows - 1, new_color)
+    # img.write('tmp/foo4.jpg')
     # img = img.quantize(2, Magick::GRAYColorspace)
     # #img = img.threshold(0.5)
     # img.write('foo4.jpg') # for debugging purposes, this is the image that is sent to OCR
@@ -39,7 +39,7 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     #
     # img.write('foo.jpg') # for debugging purposes, this is the image that is sent to OCR
 
-    r = RTesseract.new(img, lang: 'eng', psm: 3) 
+    r = RTesseract.new(img, lang: 'eng', psm: 3)
 
 
     # img = img.white_threshold(245)
