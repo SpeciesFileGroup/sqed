@@ -90,9 +90,9 @@ describe Sqed do
     end
 
     specify "find image, barcode, and text content" do
-      bc = Sqed::Extractor.new(boundaries: [0, 0, @s.image.columns, @s.image.rows], image: @s, layout: :offset_cross)
-      poc = Sqed::Parser::OcrParser.new(bc.extract_image(@offest_boundaries.coordinates[1]))
-      expect(poc..text).to eq('000085067')
+      bc = Sqed::Extractor.new(boundaries: [0, 0, @s.image.columns, @s.image.rows], image: @s.image, layout: :offset_cross)
+      poc = Sqed::Parser::OcrParser.new(bc.extract_image(@offset_boundaries.coordinates[1]))
+      expect(poc.text).to eq('000085067')
     end
 
   end

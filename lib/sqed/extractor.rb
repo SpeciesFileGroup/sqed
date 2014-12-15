@@ -38,6 +38,7 @@ class Sqed::Extractor
   def extract_image(coords)
     # crop takes x, y, width, height
     # @image.crop(coords[0], coords[1], coords[2] - coords[0], coords[3] - coords[1] )
+    bp = 0
     @image.crop(coords[0], coords[1], coords[2], coords[3])
   end
 
