@@ -7,7 +7,7 @@ describe Sqed::BoundaryFinder do
   end
 
   context 'when initiated with an image' do
-    let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.standard_cross_green )}
+    let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.standard_cross_green, layout: :offset_cross)}
 
     context 'attributes' do
       specify '#img' do

@@ -5,8 +5,7 @@ require 'RMagick'
 class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
   def initialize(image: image, layout: layout, boundary_color: :green)
-    super(image: image, layout: layout, boundary_color: boundary_color)
-
+    super(image: image, layout: layout)
     raise 'No layout provided.' if @layout.nil?
     @boundary_color = boundary_color
     find_bands

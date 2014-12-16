@@ -102,11 +102,9 @@ class Sqed
   def get_section_boundaries
     boundary_finder_class = SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder]
     options = {image: stage_image}
-    options.merge!(
-      layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout],
-      boundary_color: @boundary_color
-    ) unless boundary_finder_class.name == 'Sqed::BoundaryFinder::CrossFinder' 
- 
+    options.merge!( layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout] ) unless  boundary_finder_class.name == 'Sqed::BoundaryFinder::CrossFinder'
+    options.merge!( boundary_color: @boundary_color) if  boundary_finder_class.name == 'Sqed::BoundaryFinder::ColorLineFinder'
+
     boundary_finder_class.new(options).boundaries
   end
 

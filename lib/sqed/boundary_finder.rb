@@ -4,44 +4,46 @@ require 'RMagick'
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
 #
 class Sqed::BoundaryFinder
-  # The passed iamge
+  # the passed image
   attr_reader :img
-
-  # A Sqed::Boundaries instance, stores the coordinates of all of the layout sections 
-  attr_reader :boundaries
 
   # a symbol from SqedConfig::LAYOUTS
   attr_reader :layout
 
-  # image must be supplied, others overridable
-  def initialize(image: image, is_border_proc: nil, layout: layout, boundary_color: :green)
-    @layout = layout
- 
+  # A Sqed::Boundaries instance, stores the coordinates of all of the layout sections 
+  attr_reader :boundaries
+
+  def initialize(image: image, layout: layout)
+    raise 'No layout provided.' if layout.nil?
     raise 'No image provided.' if image.nil? || image.class != Magick::Image
+
+    @layout = layout
     @img = image
-    
     true
-    # !! Each subclass should run its own find method here
   end
 
-  # Returns a Sqed::Boundaries instance
-  # defined in subclasses
+  # Returns a Sqed::Boundaries instance initialized to the number of sections in the passed layout.
   def boundaries
     @boundaries ||= Sqed::Boundaries.new(@layout)
   end
 
-  # Returns: the column (x position) in the middle of the single green vertical line dividing the stage
+  # @return
+  #   the column (x position) in the middle of the single green vertical line dividing the stage
   #
-  #  image: the image to sample
+  # @param image
+  #   the image to sample
   #
-  #  sample_subdivision_size: an Integer, the distance in pixels b/w samples
+  # @param sample_subdivision_size
+  #   an Integer, the distance in pixels b/w samples
   #
-  #  sample_cutoff_factor: (0.0-1.0) if provided over-rides the default cutoff calculation by reducing the number of pixels required to be considered a border hit
+  # @param sample_cutoff_factor: (0.0-1.0)
+  #   if provided over-rides the default cutoff calculation by reducing the number of pixels required to be considered a border hit
   #     - for example, if you have an image of height 100 pixels, and a sample_subdivision_size of 10, and a sample_cutoff_factor of .8 
   #       then only posititions with 8 ((100/10)*.8) or more hits
   #     - when nil the cutoff defaults to the maximum of the pairwise difference between hit counts
   #
-  #  scan (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
+  # @param scan
+  #   (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
   #
   def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green) 
     border_hits = {}
