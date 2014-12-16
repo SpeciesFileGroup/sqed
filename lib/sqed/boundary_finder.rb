@@ -3,8 +3,7 @@ require 'RMagick'
 # Sqed Boundary Finders find boundaries on images and return co-ordinates of those boundaries.  They do not
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
 #
-# Some of this code was originally inspired by Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
-#
+
 class Sqed::BoundaryFinder
 
   # ratio 0.1, min output should be 10x10
@@ -23,23 +22,22 @@ class Sqed::BoundaryFinder
   # a symbol from SqedConfig::LAYOUTS
   attr_reader :layout
 
-  # The proc containing the border finding algorithim
-  attr_reader :is_border
-
   # image must be supplied, others overridable
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green)
     @layout = layout
  
     raise 'No image provided.' if image.nil? || image.class != Magick::Image
-    @img, @min_ratio = image, min_ratio
+    @img = image
+    
+    @min_ratio =  min_ratio
     true
-    # !! Each subclass should run find 
+    # !! Each subclass should run its own find method. 
   end
 
   # Returns a Sqed::Boundaries instance
   # defined in subclasses
   def boundaries
-    @boundaries ||= Sqed::Boundaries.new()
+    @boundaries ||= Sqed::Boundaries.new(@layout)
   end
 
   # Returns: the column (x position) in the middle of the single green vertical line dividing the stage
@@ -112,9 +110,9 @@ class Sqed::BoundaryFinder
     black_threshold = 65535*0.15    #tune for black
     (pixel.red < black_threshold) &&  (pixel.blue < black_threshold) &&  (pixel.green < black_threshold)
   end
+
   # Takes a frequency hash of position => count key/values and returns
   # the median position of all positions that have a count greater than the cutoff
-  #
   def self.frequency_stats(frequency_hash, sample_cutoff = 0)
     return nil if sample_cutoff.nil? ||  sample_cutoff < 1 
     hit_ranges = [] 
@@ -126,9 +124,11 @@ class Sqed::BoundaryFinder
     end
 
     return nil if hit_ranges.size < 3
-    # return the position exactly in the middle of the array
+
     # we have to sort because the keys (positions) we examined came unordered from a hash originally
     hit_ranges.sort!
+
+    # return the position exactly in the middle of the array
     [hit_ranges.first, hit_ranges[(hit_ranges.length / 2).to_i], hit_ranges.last]
   end
 

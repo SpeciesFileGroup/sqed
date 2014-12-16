@@ -9,10 +9,6 @@ describe Sqed::BoundaryFinder do
   context 'when initiated with an image' do
     let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.standard_cross_green )}
 
-    specify '#is border contains a proc' do
-      expect(b.is_border.class).to eq(Proc)
-    end 
-
     context 'attributes' do
       specify '#img' do
         expect(b).to respond_to(:img)

@@ -19,7 +19,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
   let(:bh) { Sqed::BoundaryFinder::StageFinder.new(image: ah) }
   let(:ch) { bh.boundaries }
   let(:dh) { ah.crop(*ch.for(0), true) }
-  let(:gh) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dh, layout: :horizontal_split, boundary_color: :red) }
+  let(:gh) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dh, layout: :horizontal_split, boundary_color: :red) } # was :horizontal_split
   let(:hh) { gh.boundaries }
 
   let(:ibs) { ImageHelpers.black_stage_green_line_specimen } 
@@ -163,10 +163,5 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
     expect(hbs.width_for(3)).to be_within(0.02*2999).of(2999)
     expect(hbs.height_for(3)).to be_within(0.02*1677).of(1677)
   end
-
-  #   expect(hbs.coordinates[0]). to eq([0, 0, 2870, 425])
-  #   expect(hbs.coordinates[1]). to eq([2995, 0, 306, 425])
-  #   expect(hbs.coordinates[2]). to eq([2995, 547, 306, 1593])
-  #   expect(hbs.coordinates[3]). to eq([0, 551, 2870, 1589])
 
 end

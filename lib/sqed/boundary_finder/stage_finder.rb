@@ -1,19 +1,20 @@
 require 'RMagick'
 
-# Was autocropper
+# Some of this code was originally inspired by Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
+#
 class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   # How small we accept a cropped picture to be. E.G. if it was 100x100 and
   # ratio 0.1, min output should be 10x10
   MIN_CROP_RATIO = 0.1   
   
-  attr_reader  :is_border
+  # The proc containing the border finding algorithim
+  attr_reader :is_border
 
   # assume white-ish image on dark-ish background
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green)
     @layout = :internal_box
-
     super
 
     # Initial co-ordinates

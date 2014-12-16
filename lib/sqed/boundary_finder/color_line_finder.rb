@@ -5,7 +5,9 @@ require 'RMagick'
 class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_BOUNDARY_RATIO, layout: layout, boundary_color: :green)
+
     super
+    raise 'No layout provided.' if @layout.nil?
     @boundary_color = boundary_color
     find_bands
   end
@@ -21,6 +23,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       boundaries.coordinates[0] = [0, 0, t[0], img.rows]  # left section of image
       boundaries.coordinates[1] = [t[2], 0, img.columns - t[2], img.rows]  # right section of image
       boundaries.complete = true
+
     when :horizontal_split
       t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
       return if t.nil?
