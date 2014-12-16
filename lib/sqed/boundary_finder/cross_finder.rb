@@ -1,10 +1,10 @@
 require 'RMagick'
 
-# Return four equal qundrants, no parsing through the image
-
+# Return four equal quadrants, no parsing through the image
+#
 class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: nil, boundary_color: nil)
+  def initialize(image: image)
     @image = image
     find_edges 
   end

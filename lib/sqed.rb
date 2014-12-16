@@ -54,7 +54,7 @@ class Sqed
   end
 
   def boundaries(force = false)
-    @boundaries = get_stage_boundaries if @boundaries.nil? || force
+    @boundaries = get_section_boundaries if @boundaries.nil? || force
     @boundaries
   end
 
@@ -99,12 +99,15 @@ class Sqed
     end
   end
 
-  def get_stage_boundaries
-    SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder].new(
-      image: stage_image, 
+  def get_section_boundaries
+    boundary_finder_class = SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder]
+    options = {image: stage_image}
+    options.merge!(
       layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout],
       boundary_color: @boundary_color
-    ).boundaries
+    ) unless boundary_finder_class.name == 'Sqed::BoundaryFinder::CrossFinder' 
+ 
+    boundary_finder_class.new(options).boundaries
   end
 
 end

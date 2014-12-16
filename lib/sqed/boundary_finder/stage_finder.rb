@@ -3,19 +3,23 @@ require 'RMagick'
 # Some of this code was originally inspired by Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
 #
 class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
-
-  # How small we accept a cropped picture to be. E.G. if it was 100x100 and
-  # ratio 0.1, min output should be 10x10
-  MIN_CROP_RATIO = 0.1   
   
   # The proc containing the border finding algorithim
   attr_reader :is_border
 
   # assume white-ish image on dark-ish background
 
+  # How small we accept a cropped picture to be. E.G. if it was 100x100 and
+  # ratio 0.1, min output should be 10x10
+  MIN_CROP_RATIO = 0.1    
+
+  attr_reader :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns 
+
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green)
     @layout = :internal_box
-    super
+    super(image: image, is_border_proc: nil, layout: layout, boundary_color: boundary_color)
+
+    @min_ratio =  min_ratio
 
     # Initial co-ordinates
     @x0, @y0 = 0, 0
@@ -155,28 +159,6 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     # TODO: add conditions
     boundaries.complete = true 
     boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
-  end
-
-# Superclass version
-# def find_edges
-#     return unless is_border
-
-#     u = x1 - 1
-#     x0.upto(u)     { |x| width_croppable?  && is_border[vline(x)] ? @x0 = x + 1 : break }
-#     (u).downto(x0) { |x| width_croppable?  && is_border[vline(x)] ? @x1 = x - 1 : break }
-
-#     u = y1 - 1
-#     0.upto(u)      { |y| height_croppable? && is_border[hline y] ? @y0 = y + 1 : break }
-#     (u).downto(y0) { |y| height_croppable? && is_border[hline y] ? @y1 = y - 1 : break }
-#     u = 0
-#   end
-
-  def vline(x)
-    img.get_pixels x, y0, 1, height - 1
-  end
-
-  def hline(y)
-    img.get_pixels x0, y, width - 1, 1
   end
 
   def width_croppable?

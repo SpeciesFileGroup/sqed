@@ -3,18 +3,9 @@ require 'RMagick'
 # Sqed Boundary Finders find boundaries on images and return co-ordinates of those boundaries.  They do not
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
 #
-
 class Sqed::BoundaryFinder
-
-  # ratio 0.1, min output should be 10x10
-  MIN_BOUNDARY_RATIO = 0.01    
-
-  # How small we accept a cropped picture to be. E.G. if it was 100x100 and
-  # ratio 0.1, min output should be 10x10
-  MIN_CROP_RATIO = 0.1    # constant of this class
-
-  # enumerate read-only parameters involved, accessible either as <varname> or @<varname>
-  attr_reader :img, :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns 
+  # The passed iamge
+  attr_reader :img
 
   # A Sqed::Boundaries instance, stores the coordinates of all of the layout sections 
   attr_reader :boundaries
@@ -23,15 +14,14 @@ class Sqed::BoundaryFinder
   attr_reader :layout
 
   # image must be supplied, others overridable
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, layout: layout, boundary_color: :green)
+  def initialize(image: image, is_border_proc: nil, layout: layout, boundary_color: :green)
     @layout = layout
  
     raise 'No image provided.' if image.nil? || image.class != Magick::Image
     @img = image
     
-    @min_ratio =  min_ratio
     true
-    # !! Each subclass should run its own find method. 
+    # !! Each subclass should run its own find method here
   end
 
   # Returns a Sqed::Boundaries instance
@@ -154,7 +144,5 @@ class Sqed::BoundaryFinder
   def self.derivative(array)
     (0..array.length-2).map { |i| array[i+1] - array[i] }
   end
-
-  private
 
 end
