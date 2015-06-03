@@ -5,9 +5,6 @@ raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
 
 require "RMagick"
 include Magick
-require_relative 'sqed_config'
-require_relative "sqed/extractor"
-require_relative "sqed/result"
 
 # Instants take the following
 # 1) A base image @image
@@ -19,6 +16,11 @@ require_relative "sqed/result"
 #     b = a.result # => Sqed::Result instance
 #
 class Sqed
+
+  require_relative 'sqed_config'
+  require_relative "sqed/extractor"
+  require_relative "sqed/result"
+
   # initial image which is an instance of ImageMagick::image, containing background and stage, or just stage
   attr_accessor :image
 
