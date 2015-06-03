@@ -5,7 +5,7 @@ module ImageHelpers
   class << self
 
     def get_image(file_name)
-      Image.read(File.expand_path(BASE_PATH + file_name, __FILE__)).first
+      Magick::Image.read(File.expand_path(BASE_PATH + file_name, __FILE__)).first
     end
 
     # Images
@@ -68,7 +68,7 @@ module ImageHelpers
     end
 
     def of_size(width = 1024, height = 768)
-       Image.new(width, height) {
+       Magick::Image.new(width, height) {
         self.background_color = 'white'
       }
     end

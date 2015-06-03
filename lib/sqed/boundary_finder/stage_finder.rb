@@ -52,7 +52,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
   #
   def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.40)   # working on non-synthetic images 04-dec-2014
-   fuzz = ((::QuantumRange + 1)  * fuzz_factor).to_i  
+   fuzz = ((Magick::QuantumRange + 1)  * fuzz_factor).to_i  
     # Returns true if the edge is a border (border meaning outer region to be cropped)
     lambda do |edge|
       border, non_border = 0.0, 0.0 # maybe should be called outer, inner
