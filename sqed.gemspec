@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'rake'
-  spec.add_dependency 'rmagick', '~> 2.13.2'
+  spec.add_dependency 'rmagick', '~> 2.14' # 13.2'
   spec.add_dependency 'rtesseract'
 
   spec.add_development_dependency 'bundler', '~> 1.5'
