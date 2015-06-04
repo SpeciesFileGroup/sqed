@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require 'zxing'
+
 require_relative "sqed/parser"
 require_relative "sqed/parser/ocr_parser"
 require_relative "sqed/parser/barcode_parser"

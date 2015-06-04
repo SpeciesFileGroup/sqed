@@ -7,7 +7,9 @@
 require 'rtesseract' 
 
 class Sqed::Parser::OcrParser < Sqed::Parser
-  attr_accessor  :text
+
+  # the text extracted from the image
+  attr_accessor :text
 
   def text
     img = @image #.white_threshold(245)
@@ -18,9 +20,6 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     new_color = img.pixel_color(1, 1)
     # img = img.scale(2)
     # img.write('foo0.jpg.jpg')
-    # img = img.enhance
-    # img = img.enhance
-    # img = img.enhance
     # img = img.enhance
     # img.write('foo1.jpg')
     # img = img.quantize(8, Magick::GRAYColorspace)
@@ -41,10 +40,9 @@ class Sqed::Parser::OcrParser < Sqed::Parser
 
     r = RTesseract.new(img, lang: 'eng', psm: 3)
 
-
     # img = img.white_threshold(245)
 
-    @text = r.to_s 
+    @text = r.to_s.strip 
   end
 
   # Need to provide tuning methods here, i.e. image transormations that facilitate OCR

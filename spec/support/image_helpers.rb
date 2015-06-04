@@ -7,9 +7,9 @@ module ImageHelpers
     def get_image(file_name)
       Magick::Image.read(File.expand_path(BASE_PATH + file_name, __FILE__)).first
     end
-    
+
     def of_size(width = 1024, height = 768)
-       Magick::Image.new(width, height) {
+      Magick::Image.new(width, height) {
         self.background_color = 'white'
       }
     end
@@ -51,13 +51,33 @@ module ImageHelpers
       get_image 'stage_images/greenlineimage.jpg'
     end
 
-    # Barcode images
+    # barcode images
 
-    def barcode_image
-      get_image 'barcode_images/test_barcode.jpg'
+    def datamatrix_barcode_image
+      get_image 'barcode_images/datamatrix_barcode.png'
     end
 
-    # Text test images
+    def code_128_barcode_image
+      get_image 'barcode_images/code_128_barcode.png'
+    end
+
+    def osuc_datamatrix_barcode_image
+      get_image 'barcode_images/osuc_datamatric_barcode.png'
+    end
+
+    # label (text) images 
+
+    def readme_text 
+      get_image('label_images/readme.png')
+    end
+
+    def basic_text_image1
+      get_image('label_images/basic1.png')
+    end
+
+    def basic_text_image2
+      get_image('label_images/basic2.png')
+    end
 
     def test0_image
       get_image('test3.jpg')
@@ -73,7 +93,8 @@ module ImageHelpers
 
     # misc images
 
-    def labels_image
+    # Not used
+    def slide_scan_image
       get_image 'misc_images/types_8.jpg'
     end
 
