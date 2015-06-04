@@ -51,7 +51,6 @@ module SqedConfig
 
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
-  #
   LAYOUTS = {
     cross: [0,1,2,3],
     offset_cross: [0,1,2,3],
@@ -62,7 +61,7 @@ module SqedConfig
     internal_box: [0]
   }
 
-  #  Each element of the layout is a "section".  
+  # Each element of the layout is a "section".  
   LAYOUT_SECTION_TYPES = [
     :stage,                 # the image contains the full stage 
     :specimen,              # the specimen only, no metadata should be present

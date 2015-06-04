@@ -1,82 +1,41 @@
 require 'spec_helper'
-
 describe Sqed::Extractor do
 
-  let(:s) {Sqed::Extractor.new}
+  let(:metadata_map) { 
+    {0 => :annotated_specimen, 1 => :identifiers, 2 => :image_registration, 3 => :identifiers }
+  } 
+ 
+  let(:image) { ImageHelpers.standard_cross_green }
 
-# context 'attributes' do
-#   specify '#image' do
-#     # expect that s.image is a method
-#     expect(s).to respond_to(:image)
-#   end
+  let(:boundaries) { 
+    Sqed::BoundaryFinder::CrossFinder.new(
+      image: image
+      ).boundaries
+  }
 
-#   specify 'autocropper/edgeDetector works' do
-#     this_image = ImageHelpers.ocr_image
-#     expect(Sqed::AutoCropper.new(this_image)).to be_truthy
-#   end
+  let(:e) {Sqed::Extractor.new(
+    boundaries: boundaries,
+    image: image,
+    metadata_map: metadata_map
+  )
+  }
 
-#   specify 'Sqed.new(image: file) assigns to image' do
-#     specify 'Sqed.new(image:file) "works"' do
-#       expect(Sqed.new(image: ImageHelpers.test0_image)).to be_truthy
-#     end
-#   end
+  context 'attributes' do
+    specify '#image' do
+      expect(e).to respond_to(:image)
+    end
 
-#   specify 'green line parser does something' do
-#     this_image = ImageHelpers.greenline_image
-#     cropped_image = Sqed::AutoCropper.new(this_image).img
-#     a = Sqed::GreenLineFinder.new(cropped_image)
-#     b = 0
-#   end
+    specify '#metadata_map' do
+      expect(e).to respond_to(:metadata_map)
+    end
+ 
+    specify '#boundaries' do
+      expect(e).to respond_to(:boundaries)
+    end
+  end
 
-#   specify 'Sqed.new(image: file) assigns to image' do
-#     a = Sqed.new(image: ImageHelpers.test0_image)
-#     expect(a.image == ImageHelpers.test0_image).to be(true)
-#   end
-# end
+  specify '#result retuns a Sqed::Result' do
+    expect(e.result.class.name).to eq('Sqed::Result')
+  end
 
-# specify 'zbar barcode decodes' do
-#   eb = Sqed::BarcodeParser.new(image: ImageHelpers.barcode_image)  # was barcode_image
-#   bc = eb.barcodes
-#   expect(bc).to be_truthy
-#   expect(bc[2]).to eq('CODE-128:013117001040986')
-#   expect(bc[3]).to eq('CODE-128:SDLXHD1QTDVGJ')
-#   expect(bc[4]).to eq('CODE-128:1PPD368LL/A')
-#   expect(bc[5]).to eq('EAN-13:0885909541171')
-#   expect(bc[6]).to eq('EAN-13:885909270334')
-#   expect(bc[7]).to be(nil)
-# end
-
-# specify 'INHS specimen labels' do
-#   eg = Sqed.new(image: ImageHelpers.labels_image)
-#   # eg = Sqed.new(image: ImageHelpers.foo3_image)
-#   eg.image.rotate!(270.0)
-#   eg.image.write('foo5.jpg')
-#   egt = eg.text_from_quadrant(3)
-#   expect(egt).to match(/529 234/)
-# end
-
-# context "foo.jpg" do
-#   let(:eg) { Sqed.new(image: ImageHelpers.ocr_image) }
-
-#   specify 'all together' do
-#     # eg = Sqed.new(image: ImageHelpers.ocr_image)
-#     egt = eg.text_from_quadrant(3)
-
-#     expect(egt).to match(/Designed by Apple in California/)
-#     expect(egt).to match(/8 85909 27035/)
-#     expect(egt).to match(/EASY/)
-#     expect(eg.text_from_quadrant(3)).to match(/013‘1700104U986/)  #ACTUALLY 013117001040986
-
-#     eg = Sqed.new(image: ImageHelpers.ocr_image)
-#     egb = eg.text_from_quadrant(2)
-#     u = 1  #pre-test breakpoint
-#     expect(egb.barcodes[0]).to eq('QR-Code:http://youtu.be/h9fkPPp8Y1c')
-#     expect(egb.barcodes[1]).to eq('EAN-13:0885909270354')
-#     expect(egb.barcodes[2]).to eq('CODE-128:013117001040986')
-#     expect(egb.barcodes[3]).to eq('CODE-128:SDLXHD1QTDVGJ')
-#     expect(egb.barcodes[4]).to eq('CODE-128:1PPD368LL/A')
-#     expect(egb.barcodes[5]).to eq('EAN-13:0885909541171')
-#     expect(egb.barcodes[6]).to be(nil)
-#   end
-# end
 end 

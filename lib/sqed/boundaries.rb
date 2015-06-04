@@ -12,13 +12,15 @@ class Sqed::Boundaries
   #   0 => [10,10,40,40]
   attr_reader :coordinates
 
-  # An Sqed::Config::EXTRACTION_PATTERN layout
+  # A symbol from Sqed::Config::LAYOUTS.keys 
+  #   :right_t
   attr_accessor :layout
 
-  # Whether or not the last method to populate this object passed fully
+  # Boolean, whether or not the last method to populate this object passed fully
   attr_accessor :complete
 
   def initialize(layout = nil)
+    raise 'unrecognized layout' if layout && !SqedConfig::LAYOUTS.include?(layout)
     @complete = false
 
     @layout = layout
@@ -75,5 +77,10 @@ class Sqed::Boundaries
   def height_for(index)
     @coordinates[index][3]
   end
+
+  def set(index, coordinates)
+    @coordinates[index] = coordinates
+  end
+
 
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Sqed::Boundaries do
 
-  let(:s) { Sqed::Boundaries.new}
+  let(:s) { Sqed::Boundaries.new } 
   let(:layout) {:horizontal_split}
 
   specify "#coordinates defaults to a Hash when no layout provided" do

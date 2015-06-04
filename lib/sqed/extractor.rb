@@ -1,32 +1,41 @@
 require 'RMagick'
 
-# An Extractor takes Boundries object and a layout pattern and returns a Sqed::Result
+# An Extractor takes Boundries object and a metadata_map pattern and returns a Sqed::Result
 # 
 class Sqed::Extractor
 
-  attr_accessor :boundaries, :layout, :image
+  # a Sqed::Boundaries instance 
+  attr_accessor :boundaries
 
-  def initialize(boundaries: boundaries, layout: layout, image: image)
-    raise if boundaries.nil? || !boundaries.class == Sqed::Boundaries
-    raise if layout.nil? || !layout.class == Hash
+  # a metadata_map hash from EXTRACTION_PATTERNS like:
+  #   {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
+  attr_accessor :metadata_map
 
-    @layout = layout
+  # a Magick::Image file
+  attr_accessor :image
+
+  def initialize(boundaries: boundaries, metadata_map: metadata_map, image: image)
+    raise 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class == Sqed::Boundaries
+    raise 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class == Hash
+    raise 'image not provided' if image.nil? || !image.class == Magick::Image
+
+    @metadata_map = metadata_map
     @boundaries = boundaries
     @image = image
   end
 
   def result
     r = Sqed::Result.new()
-   
+  
     # assign the images to the result
     boundaries.each do |section, coords|
-      r.send("#{LAYOUT_SECTION_TYPES[section]}=", extract_image(coords))
+      r.send("#{SqedConfig::LAYOUT_SECTION_TYPES[section]}=", extract_image(coords))
     end 
 
     # assign the metadata to the result
-    layout.keys.each do |section_index, section_type|
+    metadata_map.keys.each do |section_index, section_type|
       # only extract data if a parser exists
-      if parser = SECTION_PARSERS[section_type]
+      if parser = SqedConfig::SECTION_PARSERS[section_type]
         r.send("#{section_type}=", parser.new(image: r.send(section_type + "_image").text) )
       end
     end

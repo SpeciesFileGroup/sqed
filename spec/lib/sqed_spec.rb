@@ -154,7 +154,10 @@ describe Sqed do
     end
 
     specify "find image, barcode, and text content" do
-      bc = Sqed::Extractor.new(boundaries: [0, 0, @s.image.columns, @s.image.rows], image: @s.image, layout: :offset_cross)
+      bc = Sqed::Extractor.new(
+        boundaries: [0, 0, @s.image.columns, @s.image.rows],  # TODO, this does nothing / needs to be a boundaries object
+        image: @s.image, 
+        layout: :offset_cross)
       # ioc = bc.extract_image(@offset_boundaries.coordinates[3])
       # iioc = ioc.crop(384, 140, 1420, 572, true)
       poc = Sqed::Parser::OcrParser.new(bc.extract_image(@offset_boundaries.coordinates[3]).crop(400, 140, 1420, 600, true))

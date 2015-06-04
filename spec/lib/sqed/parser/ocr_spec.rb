@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sqed::Parser do
+describe Sqed::Parser::OcrParser do
 
   let(:image) { ImageHelpers.standard_cross_green  }
   let(:p) { Sqed::Parser.new(image) }
