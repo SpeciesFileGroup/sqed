@@ -15,7 +15,6 @@ module ImageHelpers
     end
 
     # Stage images 
-
     def standard_cross_green
       get_image 'stage_images/boundary_cross_green.jpg'
     end
@@ -79,7 +78,8 @@ module ImageHelpers
       get_image('label_images/basic2.png')
     end
 
-    def test0_image
+    # Real life, black border, no internal boundaries
+    def test3_image
       get_image('test3.jpg')
     end
 

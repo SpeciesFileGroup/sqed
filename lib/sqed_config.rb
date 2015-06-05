@@ -71,26 +71,31 @@ module SqedConfig
     :determination_labels,  # the section contains text that determines the specimen
     :labels,                # the section contains collecting event and non-determination labels
     :identifier,            # the section contains an identifier (e.g. barcode or unique number)
-    :image_registration     # the section contains only image registration information
+    :image_registration,    # the section contains only image registration information,
+    :curator_metadata,      # the section contains text with curator metadata
+    :nothing                # section is empty 
   ] 
 
   # Links section types to data parsers
   SECTION_PARSERS = {
     labels: Sqed::Parser::OcrParser,
     identifier: Sqed::Parser::BarcodeParser,
-    deterimination_labels: Sqed::Parser::OcrParser
+    deterimination_labels: Sqed::Parser::OcrParser,
+    curator_metadata: Sqed::Parser::OcrParser,
+    specimen:  Sqed::Parser::OcrParser,
   }
 
   EXTRACTION_PATTERNS = {
     right_t: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :right_t,
-      metadata_map: {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
+      metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
     },
     offset_cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :offset_cross,
-      metadata_map: {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
+      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 =>:image_registration, 3 => :specimen }
+     # metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
     },
     standard_cross: {
       boundary_finder: Sqed::BoundaryFinder::CrossFinder,

@@ -38,7 +38,7 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     #
     # img.write('foo.jpg') # for debugging purposes, this is the image that is sent to OCR
 
-    r = RTesseract.new(img, lang: 'eng', psm: 3)
+    r = RTesseract.new(img, lang: 'eng', psm: 3, )
 
     # img = img.white_threshold(245)
 

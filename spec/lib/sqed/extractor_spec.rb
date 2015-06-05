@@ -2,22 +2,23 @@ require 'spec_helper'
 describe Sqed::Extractor do
 
   let(:metadata_map) { 
-    {0 => :annotated_specimen, 1 => :identifiers, 2 => :image_registration, 3 => :identifiers }
+    {0 => :specimen, 1 => :identifier, 2 => :nothing, 3 => :image_registration }
   } 
  
-  let(:image) { ImageHelpers.standard_cross_green }
+  let(:image) { ImageHelpers.crossy_green_line_specimen }
 
   let(:boundaries) { 
     Sqed::BoundaryFinder::CrossFinder.new(
       image: image
-      ).boundaries
+    ).boundaries
   }
 
-  let(:e) {Sqed::Extractor.new(
-    boundaries: boundaries,
-    image: image,
-    metadata_map: metadata_map
-  )
+  let(:e) {
+    Sqed::Extractor.new(
+      boundaries: boundaries,
+      image: image,
+      metadata_map: metadata_map
+    )
   }
 
   context 'attributes' do
@@ -38,4 +39,7 @@ describe Sqed::Extractor do
     expect(e.result.class.name).to eq('Sqed::Result')
   end
 
+
 end 
+
+

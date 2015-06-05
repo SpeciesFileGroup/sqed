@@ -52,9 +52,9 @@ class Sqed::BoundaryFinder
     (0..samples_to_take).each do |s|
       # Create a sample image a single pixel tall
       if scan == :rows
-        j = image.crop(0, s * sample_subdivision_size, image.columns, 1)
+        j = image.crop(0, s * sample_subdivision_size, image.columns, 1, true)
       elsif scan == :columns
-        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows)
+        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows, true)
       else
         raise
       end

@@ -8,7 +8,7 @@ class Sqed::Extractor
   attr_accessor :boundaries
 
   # a metadata_map hash from EXTRACTION_PATTERNS like:
-  #   {0 => :annotated_specimen, 1 => :identifiers, 2 =>:image_registration }
+  #   {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
   attr_accessor :metadata_map
 
   # a Magick::Image file
@@ -26,29 +26,31 @@ class Sqed::Extractor
 
   def result
     r = Sqed::Result.new()
-  
+
     # assign the images to the result
-    boundaries.each do |section, coords|
-      r.send("#{SqedConfig::LAYOUT_SECTION_TYPES[section]}=", extract_image(coords))
+    boundaries.each do |section_index, coords|
+      image_setter = "#{metadata_map[section_index]}_image="
+      r.send(image_setter, extract_image(coords))
     end 
 
     # assign the metadata to the result
-    metadata_map.keys.each do |section_index, section_type|
+    metadata_map.each do |section_index, section_type|
       # only extract data if a parser exists
       if parser = SqedConfig::SECTION_PARSERS[section_type]
-        r.send("#{section_type}=", parser.new(image: r.send(section_type + "_image").text) )
+
+        section_image = r.send("#{section_type}_image")
+        parsed_result = parser.new(section_image).text
+
+        r.send("#{section_type}=", parsed_result) if parsed_result
       end
     end
 
     r
   end
 
-  # coords are x1, y1, x2, y2
+  # crop takes x, y, width, height
   def extract_image(coords)
-    # crop takes x, y, width, height
-    # @image.crop(coords[0], coords[1], coords[2] - coords[0], coords[3] - coords[1] )
-    bp = 0
-    @image.crop(coords[0], coords[1], coords[2], coords[3], true)
+    i = @image.crop(*coords, true)
   end
 
 end

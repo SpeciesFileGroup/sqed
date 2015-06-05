@@ -32,4 +32,29 @@ describe Sqed::Boundaries do
     end
   end
 
+  context '#offset' do
+    let(:s) { Sqed.new(image: ImageHelpers.crossy_green_line_specimen, pattern: :offset_cross) }
+    let(:offset_boundaries) { 
+      s.crop_image
+      s.boundaries.offset(s.stage_boundary) 
+    }
+
+    specify "offset and size should match internal found areas " do
+      sbx = s.stage_boundary.x_for(0)
+      sby = s.stage_boundary.y_for(0)
+
+      total_sections =  s.boundaries.coordinates.count
+      expect(offset_boundaries.complete).to be(true)
+
+      (0..total_sections - 1).each do |i|
+        # check all the x/y      
+        expect(offset_boundaries.x_for(i)).to eq(s.boundaries.x_for(i) + sbx)
+        expect(offset_boundaries.y_for(i)).to eq(s.boundaries.y_for(i) + sby)
+
+        # check all width/heights
+        expect(offset_boundaries.width_for(i)).to eq(s.boundaries.width_for(i))
+        expect(offset_boundaries.height_for(i)).to eq(s.boundaries.height_for(i))
+      end
+    end
+  end
 end 

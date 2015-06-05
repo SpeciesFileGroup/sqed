@@ -33,4 +33,9 @@ class Sqed::Parser::BarcodeParser < Sqed::Parser
  #  https://github.com/srijan/ruby-dmtx
  #end
 
+  # alias to a universal method
+  def text 
+    barcode
+  end
+
 end
