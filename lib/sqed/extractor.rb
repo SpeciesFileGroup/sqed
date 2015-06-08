@@ -36,12 +36,17 @@ class Sqed::Extractor
     # assign the metadata to the result
     metadata_map.each do |section_index, section_type|
       # only extract data if a parser exists
-      if parser = SqedConfig::SECTION_PARSERS[section_type]
+      if parsers = SqedConfig::SECTION_PARSERS[section_type]
 
         section_image = r.send("#{section_type}_image")
-        parsed_result = parser.new(section_image).text
+        updated = r.send(section_type)
 
-        r.send("#{section_type}=", parsed_result) if parsed_result
+        parsers.each do |p|
+          parsed_result = p.new(section_image).text
+          updated.merge!(p::TYPE => parsed_result) if parsed_result
+        end
+
+        r.send("#{section_type}=", updated) 
       end
     end
 

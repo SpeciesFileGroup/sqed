@@ -24,4 +24,6 @@ local/
 foo*.jpg
 SessionID_BarcodeImage.JPG
 
+tess*
+
 /*.jpg

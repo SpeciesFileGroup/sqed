@@ -68,7 +68,7 @@ describe Sqed do
   end
 
   context 'all together' do
-    let(:image) { ImageHelpers.crossy_green_line_specimen }
+    let(:image) { ImageHelpers.frost_stage }
     let(:pattern) { :offset_cross }
     let(:s) { Sqed.new(image: image, pattern: pattern) }
 
@@ -95,31 +95,20 @@ describe Sqed do
         expect(r.class.name).to eq('Sqed::Result')
       end
 
-      specify 'with extracted data' do
-        expect(r.specimen).to eq('000085067')
+      context 'extracted data' do
+        specify 'for an :identifier section' do
+          expect(r.text_for(:identifier)).to match('000041196')
+        end
+
+        specify 'for a specimen section' do
+          expect(r.text_for(:specimen)).to match('Saucier Creek')
+        end
+
+        specify 'for a curator_metadata section' do
+          expect(r.text_for(:curator_metadata)).to match('Frost Entomological Museum')
+        end
       end
     end
-  end
-
-  specify "find image, barcode, and text content" do
-    bc = Sqed::Extractor.new(boundaries: [0, 0, offset_example.image.columns, @s.image.rows], image: offset_example.image, layout: :offset_cross)
-    poc = Sqed::Parser::OcrParser.new(bc.extract_image(offset_boundaries.coordinates[1]))
-    expect(poc.text).to eq('000085067')
-  end
-
-  specify "find image, barcode, and text content" do
-    bc = Sqed::Extractor.new(
-      boundaries: [0, 0, @s.image.columns, @s.image.rows],  # TODO, this does nothing / needs to be a boundaries object
-      image: @s.image, 
-      layout: :offset_cross)
-    # ioc = bc.extract_image(@offset_boundaries.coordinates[3])
-    # iioc = ioc.crop(384, 140, 1420, 572, true)
-    poc = Sqed::Parser::OcrParser.new(bc.extract_image(@offset_boundaries.coordinates[3]).crop(400, 140, 1420, 600, true))
-    # expect(poc.text).to eq('000085067')
-    ppc = Sqed::Parser::OcrParser.new(ImageHelpers.black_stage_green_line_specimen_label)
-    poc.image.write('tmp/poc.jpg')
-    ppc.image.write('tmp/ppc.jpg')
-    expect(ppc.text).to eq(poc.text)
   end
 
 end

@@ -19,6 +19,10 @@ module ImageHelpers
       get_image 'stage_images/boundary_cross_green.jpg'
     end
 
+    def frost_stage
+      get_image 'stage_images/frost_stage.jpg'
+    end
+
     def crossy_green_line_specimen
       get_image 'stage_images/CrossyGreenLinesSpecimen.jpg'
     end

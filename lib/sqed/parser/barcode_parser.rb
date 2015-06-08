@@ -4,6 +4,8 @@
 
 class Sqed::Parser::BarcodeParser < Sqed::Parser
 
+  TYPE = :barcode
+
   attr_accessor :image
 
   attr_accessor :barcode

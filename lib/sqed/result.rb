@@ -5,8 +5,22 @@
 class Sqed::Result
 
   SqedConfig::LAYOUT_SECTION_TYPES.each do |k|
-    attr_accessor k
     attr_accessor "#{k}_image".to_sym
+    attr_accessor k
+  end
+
+  def initialize
+    SqedConfig::LAYOUT_SECTION_TYPES.each do |k|
+      send("#{k}=", {}) 
+    end
+  end
+
+  def text_for(section)
+    send(section)[:text] 
+  end
+
+  def barcode_text_for(section)
+    send(section)[:barcode]
   end
 
   # return [Hash]
@@ -15,8 +29,8 @@ class Sqed::Result
   def text
     result = {} 
     SqedConfig::LAYOUT_SECTION_TYPES.each do |k|
-      text = self.send(k)
-      result.merge!(k => text) if text
+      v = self.send(k)
+      result.merge!(k => v) if v[:barcode] || v[:text] 
     end
     result
   end
