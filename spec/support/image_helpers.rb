@@ -26,16 +26,13 @@ module ImageHelpers
     def crossy_green_line_specimen
       get_image 'stage_images/CrossyGreenLinesSpecimen.jpg'
     end
+
     def crossy_black_line_specimen
       get_image 'stage_images/CrossyBlackLinesSpecimen.jpg'
     end
 
     def black_stage_green_line_specimen
       get_image 'stage_images/black_stage_green_line_specimen.jpg'
-    end
-
-    def black_stage_green_line_specimen_label
-      get_image 'stage_images/label_images/black_stage_green_line_specimen_label.jpg'
     end
 
     def offset_cross_red
@@ -69,6 +66,11 @@ module ImageHelpers
     end
 
     # label (text) images 
+
+    # NOT USED
+    def black_stage_green_line_specimen_label
+      get_image 'label_iamges/label_images/black_stage_green_line_specimen_label.jpg'
+    end
 
     def readme_text 
       get_image('label_images/readme.png')
