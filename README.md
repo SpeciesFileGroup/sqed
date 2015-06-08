@@ -3,7 +3,7 @@
 
 # Sqed
 
-Stub for a gem that supports specimen digitization from images.
+Sqed is a gem that faciliates metadata extraction from images of staged collection objects. 
 
 ## Installation
 
@@ -21,7 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+For the time being, see specs.
 
 ## Contributing
 

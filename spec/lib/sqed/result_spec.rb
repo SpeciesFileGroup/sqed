@@ -20,9 +20,7 @@ describe Sqed::Result do
     end
   end
 
-
   context 'with a new() result' do
-  
     specify '#text_for(section)' do
       expect(r.text_for(:specimen)).to eq(nil)
     end
@@ -38,8 +36,6 @@ describe Sqed::Result do
     specify '#images' do
       expect(r.text).to eq({})
     end
-
-
   end
 
 end 
