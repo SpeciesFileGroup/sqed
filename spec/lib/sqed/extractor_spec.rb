@@ -35,10 +35,21 @@ describe Sqed::Extractor do
     end
   end
 
-  specify '#result retuns a Sqed::Result' do
-    expect(e.result.class.name).to eq('Sqed::Result')
-  end
+  context 'extracting to a #result' do
+    let(:r) { e.result }
+    
+    specify '#result retuns a Sqed::Result' do
+      expect(r.class.name).to eq('Sqed::Result')
+    end
 
+    specify '#result is populated with images' do
+      expect(r.images.values.first.class.name).to eq('Magick::Image') 
+    end
+
+    specify '#result is populated with text' do
+      expect(r.text_for(:identifier)).to match('000085067')
+    end
+  end
 
 end 
 

@@ -73,24 +73,20 @@ module ImageHelpers
     end
 
     def readme_text 
-      get_image('label_images/readme.png')
+      get_image 'label_images/readme.png' 
     end
 
     def basic_text_image1
-      get_image('label_images/basic1.png')
+      get_image 'label_images/basic1.png' 
     end
 
     def basic_text_image2
-      get_image('label_images/basic2.png')
+      get_image 'label_images/basic2.png' 
     end
 
     # Real life, black border, no internal boundaries
     def test3_image
-      get_image('test3.jpg')
-    end
-
-    def ocr_image
-      get_image 'test4.jpg'
+      get_image 'test3.jpg' 
     end
 
     def foo3_image
