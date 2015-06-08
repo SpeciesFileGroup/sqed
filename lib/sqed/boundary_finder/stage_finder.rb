@@ -1,4 +1,4 @@
-require 'RMagick'
+require 'rmagick'
 
 # Some of this code was originally inspired by Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
 #

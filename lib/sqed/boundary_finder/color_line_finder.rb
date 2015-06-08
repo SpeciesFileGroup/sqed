@@ -1,4 +1,4 @@
-require 'RMagick'
+require 'rmagick'
 
 # This was "green" line finder attempting to be agnostic; now it is reworked to be color-specific line finder
 #

@@ -3,8 +3,8 @@
 recent_ruby = RUBY_VERSION >= '2.1.1'
 raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
 
-require "RMagick"
-include Magick
+require "rmagick"
+# include Magick
 
 # Instants take the following
 # 1) A base image @image

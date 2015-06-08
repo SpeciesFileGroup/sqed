@@ -1,4 +1,4 @@
-require 'RMagick'
+require 'rmagick'
 
 # Sqed Boundary Finders find boundaries on images and return co-ordinates of those boundaries.  They do not
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
@@ -52,9 +52,9 @@ class Sqed::BoundaryFinder
     (0..samples_to_take).each do |s|
       # Create a sample image a single pixel tall
       if scan == :rows
-        j = image.crop(0, s * sample_subdivision_size, image.columns, 1, true)
+        j = image.crop(0, s * sample_subdivision_size, image.columns, 1)
       elsif scan == :columns
-        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows, true)
+        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows)
       else
         raise
       end

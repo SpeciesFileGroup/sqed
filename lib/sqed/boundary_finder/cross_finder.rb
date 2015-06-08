@@ -1,4 +1,4 @@
-require 'RMagick'
+require 'rmagick'
 
 # Return four equal quadrants, no parsing through the image
 #
