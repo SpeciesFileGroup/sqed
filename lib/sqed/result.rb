@@ -1,6 +1,5 @@
-
-# A Sqed::Result is a wrapper for the results of the
-# full process of data extraction from an image.
+# A Sqed::Result is a container for the results of the
+# the data extraction for the full stage 
 #
 class Sqed::Result
 
@@ -15,10 +14,14 @@ class Sqed::Result
     end
   end
 
+  # return [String, nil]
+  #   the text derived from the OCR parsing of the section
   def text_for(section)
     send(section)[:text] 
   end
 
+  # return [String, nil]
+  #   the text derived from the barcode parsing of the section
   def barcode_text_for(section)
     send(section)[:barcode]
   end
@@ -35,6 +38,8 @@ class Sqed::Result
     result
   end
 
+  # return [Hash]
+  #   a map of layout_section_type => Image
   def images
     result = {} 
     SqedConfig::LAYOUT_SECTION_TYPES.each do |k|
@@ -44,10 +49,13 @@ class Sqed::Result
     result
   end
 
+  # return [True]
+  #   write the images in #images to tmp/ 
   def write_images
     images.each do |k, img|
       img.write("tmp/#{k}.jpg")
     end
+    true
   end
 
 end

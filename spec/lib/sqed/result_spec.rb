@@ -13,10 +13,33 @@ describe Sqed::Result do
       specify "##{type}_image" do 
         expect(r.respond_to?("#{type}_image".to_sym)).to be_truthy 
       end
+
+      specify "##{type} initializes to {}" do
+        expect(r.send(type.to_sym)).to eq({}) 
+      end
     end
-  
   end
 
 
+  context 'with a new() result' do
+  
+    specify '#text_for(section)' do
+      expect(r.text_for(:specimen)).to eq(nil)
+    end
+
+    specify '#barcode_text_for(section)' do
+      expect(r.barcode_text_for(:identifier)).to eq(nil)
+    end
+
+    specify '#text' do
+      expect(r.text).to eq({})
+    end
+
+    specify '#images' do
+      expect(r.text).to eq({})
+    end
+
+
+  end
 
 end 
