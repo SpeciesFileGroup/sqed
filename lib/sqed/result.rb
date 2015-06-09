@@ -7,10 +7,18 @@ class Sqed::Result
     attr_accessor "#{k}_image".to_sym
     attr_accessor k
   end
+ 
+  # a hash with section_type => [ ] 
+  attr_accessor :boundary_coordinates
+
+  # an array of section type
+  attr_accessor :sections
 
   def initialize
+    @boundary_coordinates = {}
     SqedConfig::LAYOUT_SECTION_TYPES.each do |k|
       send("#{k}=", {}) 
+      @boundary_coordinates[k] = [nil, nil, nil, nil]
     end
   end
 

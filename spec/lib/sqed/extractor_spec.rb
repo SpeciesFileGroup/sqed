@@ -49,6 +49,21 @@ describe Sqed::Extractor do
     specify '#result is populated with text' do
       expect(r.text_for(:identifier)).to match('000085067')
     end
+
+    specify '#sections is populated with section_types' do
+      expect(r.sections).to eq( [ :identifier, :image_registration, :nothing, :specimen ] )
+    end
+
+    specify '#boundary_coordinates is populated with coordinates' do
+      metadata_map.values.each do |section_type|
+        (0..3).each do |i|
+          expect(r.boundary_coordinates[section_type][i]).to be_truthy 
+        end
+      end
+    end
+
+
+
   end
 
 end 

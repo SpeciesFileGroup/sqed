@@ -27,10 +27,13 @@ class Sqed::Extractor
   def result
     r = Sqed::Result.new()
 
+    r.sections = metadata_map.values.sort
+      
     # assign the images to the result
     boundaries.each do |section_index, coords|
-      image_setter = "#{metadata_map[section_index]}_image="
-      r.send(image_setter, extract_image(coords))
+      section_type = metadata_map[section_index]
+      r.send("#{section_type}_image=", extract_image(coords))
+      r.boundary_coordinates[section_type] = coords
     end 
 
     # assign the metadata to the result
