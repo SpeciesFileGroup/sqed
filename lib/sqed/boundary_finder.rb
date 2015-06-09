@@ -1,5 +1,3 @@
-require 'rmagick'
-
 # Sqed Boundary Finders find boundaries on images and return co-ordinates of those boundaries.  They do not
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
 #
@@ -15,7 +13,7 @@ class Sqed::BoundaryFinder
 
   def initialize(image: image, layout: layout)
     raise 'No layout provided.' if layout.nil?
-    raise 'No image provided.' if image.nil? || image.class != Magick::Image
+    raise 'No image provided.' if image.nil? || image.class.name != 'Magick::Image'
 
     @layout = layout
     @img = image

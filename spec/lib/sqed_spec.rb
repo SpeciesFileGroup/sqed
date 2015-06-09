@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'RMagick'
+
 describe Sqed do
 
   let(:s) {Sqed.new}

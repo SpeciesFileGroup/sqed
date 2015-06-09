@@ -18,7 +18,6 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     img = @image #.white_threshold(245)
 
     # @jrflood: this is where you will have to do some research, tuning images so that they can be better ocr-ed,
-    # all of these methods are from RMagick.
     # get potential border pixel color (based on quadrant?)
     new_color = img.pixel_color(1, 1)
     # img = img.scale(2)

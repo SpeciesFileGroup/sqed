@@ -4,7 +4,6 @@ recent_ruby = RUBY_VERSION >= '2.1.1'
 raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
 
 require "rmagick"
-# include Magick
 
 # Instants take the following
 # 1) A base image @image
@@ -12,7 +11,7 @@ require "rmagick"
 #
 # Return a Sqed::Result
 #    
-#     a = Sqed.new(pattern: :right_t, image: image)
+#     a = Sqed.new(pattern: :offset_cross, image: image)
 #     b = a.result # => Sqed::Result instance
 #
 class Sqed

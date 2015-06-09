@@ -39,7 +39,7 @@ class Sqed::Result
   end
 
   # return [Hash]
-  #   a map of layout_section_type => Image
+  #   a map of layout_section_type => Rmagick::Image
   def images
     result = {} 
     SqedConfig::LAYOUT_SECTION_TYPES.each do |k|

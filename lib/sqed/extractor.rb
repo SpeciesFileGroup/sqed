@@ -17,7 +17,7 @@ class Sqed::Extractor
   def initialize(boundaries: boundaries, metadata_map: metadata_map, image: image)
     raise 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class == Sqed::Boundaries
     raise 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class == Hash
-    raise 'image not provided' if image.nil? || !image.class == Magick::Image
+    raise 'image not provided' if image.nil? || !image.class.name == 'Magick::Image'
 
     @metadata_map = metadata_map
     @boundaries = boundaries
