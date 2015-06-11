@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Sqed::Parser do
 
-  let(:image) { ImageHelpers.standard_cross_green  }
+  let(:image) { ImageHelpers.cross_green  }
   let(:p) { Sqed::Parser.new(image) }
 
   specify '#image' do

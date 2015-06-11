@@ -15,7 +15,7 @@ module ImageHelpers
     end
 
     # Stage images 
-    def standard_cross_green
+    def cross_green
       get_image 'stage_images/boundary_cross_green.jpg'
     end
 

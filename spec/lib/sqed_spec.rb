@@ -35,8 +35,8 @@ describe Sqed do
   end
 
   context 'initialization' do 
-    specify 'without providing a pattern assigns :standard_cross' do
-      expect(s.pattern).to eq(:standard_cross)
+    specify 'without providing a pattern assigns :cross' do
+      expect(s.pattern).to eq(:cross)
     end
   end
 
@@ -57,7 +57,7 @@ describe Sqed do
     end
 
     specify 'properly sets stage boundaries ' do
-      s.image = ImageHelpers.standard_cross_green
+      s.image = ImageHelpers.cross_green
       s.crop_image 
       # ~ (100,94, 800, 600)
       expect(s.stage_boundary.x_for(0)).to be_within(2).of 100
@@ -73,7 +73,6 @@ describe Sqed do
     let(:s) { Sqed.new(image: image, pattern: pattern) }
 
     specify '#boundaries returns a Sqed::Boundaries instance' do
-      # s.pattern = :standard_cross
       expect(s.boundaries.class.name).to eq('Sqed::Boundaries')
     end
 

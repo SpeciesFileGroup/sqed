@@ -26,24 +26,26 @@ module SqedConfig
   #  
   #
   #    0  | 1
-  #   ----|----  :cross (height of [0, 1], [2,3] same, width of [0,1], [2,3] same, otherwise variable (i.e. height(0) != height(3))
+  #   ----|----  :cross - height of [0, 1], [2,3] same, width of [0,1], [2,3] same, otherwise variable, i.e. height(0) != height(3)
   #       | 
   #    3  | 2
   # 
+  #
   #    0  |  1
   #       |
-  #   ---------  :horizontal_offset_cross // NOT CURRENTLY IMPLEMENTED
+  #   ---------  :horizontal_offset_cross 
   #    3   | 2
   #
   #
   #    0  |  1
   #       |____
-  #   ----|      :vertical_offset_cross // matches current code !! 
+  #   ----|      :vertical_offset_cross 
   #    3  |  2
   #
   #       | 1
   #    0  |----  :right_t
   #       | 2
+  # 
   #        0
   #    --------  :horizontal_split
   #        1
@@ -98,23 +100,30 @@ module SqedConfig
       layout: :right_t,
       metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
     },
+
     vertical_offset_cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :vertical_offset_cross,
       metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :specimen }
-     # metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
     },
-    standard_cross: {
+  
+   equal_cross: {
+     boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+     layout: :equal_cross,
+     metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :specimen }
+   },
+
+    cross: {
       boundary_finder: Sqed::BoundaryFinder::CrossFinder,
       layout: :cross, 
-      metadata_map: {0 => :labels, 1 => :specimen, 2 => :identifier, 3 => :specimen_determinations }
+      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :specimen }
     },
+
     stage: {
       boundary_finder: Sqed::BoundaryFinder::StageFinder,
       layout: :internal_box, 
       metadata_map: {0 => :stage}
     }
-    # etc. ...
   }
 
   DEFAULT_TMP_DIR = "/tmp"

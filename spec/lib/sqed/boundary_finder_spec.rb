@@ -7,7 +7,7 @@ describe Sqed::BoundaryFinder do
   end
 
   context 'when initiated with an image' do
-    let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.standard_cross_green, layout: :vertical_offset_cross)}
+    let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.cross_green, layout: :vertical_offset_cross)}
 
     context 'attributes' do
       specify '#img' do
@@ -23,7 +23,7 @@ describe Sqed::BoundaryFinder do
   context '.color_boundary_finder(image: image)' do
     context 'with sample_subdivision_size: 10' do
       specify 'finds the vertical dividing line in a standard cross, with border still present' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.standard_cross_green, sample_subdivision_size: 10 )[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.cross_green, sample_subdivision_size: 10 )[1]
         expect(center).to be > 492
         expect(center).to be < 504
       end
@@ -37,7 +37,7 @@ describe Sqed::BoundaryFinder do
 
     context 'with sample_subdivision_size auto set' do
       specify 'finds the vertical dividing line in a standard cross, with border still present, when more precise' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.standard_cross_green, sample_cutoff_factor: 0.7)[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.cross_green, sample_cutoff_factor: 0.7)[1]
         expect(center).to be > 492
         expect(center).to be < 504
       end
@@ -84,7 +84,7 @@ describe Sqed::BoundaryFinder do
       end
 
       specify 'FAILS to find the vertical dividing line in a standard cross, with border still present, when even more precise' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.standard_cross_green, sample_cutoff_factor: 1)
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.cross_green, sample_cutoff_factor: 1)
         expect(center).to be nil
       end
 

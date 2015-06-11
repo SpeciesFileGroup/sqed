@@ -47,7 +47,7 @@ class Sqed
     @stage_boundary = Sqed::Boundaries.new(:internal_box) 
     @auto_detect_border = auto_detect_border
     @pattern = pattern
-    @pattern ||= :standard_cross
+    @pattern ||= :cross
     @boundary_color = boundary_color
 
     set_stage_boundary if @auto_detect_border && @image
