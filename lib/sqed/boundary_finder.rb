@@ -25,6 +25,31 @@ class Sqed::BoundaryFinder
     @boundaries ||= Sqed::Boundaries.new(@layout)
   end
 
+
+  # return [Integer, nil]
+  #   sample more with small images, less with large images
+  #   we want to return larger numbers (= faster sampling)
+  #
+  #
+  def self.get_subdivision_size(image_width)
+    case image_width
+    when nil
+     nil 
+    when 0..140
+       6
+    when 141..640
+       12
+    when 641..1000
+      16
+    when 1001..3000
+      60 
+    when 3001..6400
+      80 
+    else
+      140 
+    end
+  end
+
   # @return
   #   the column (x position) in the middle of the single green vertical line dividing the stage
   #
@@ -43,16 +68,19 @@ class Sqed::BoundaryFinder
   # @param scan
   #   (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
   #
-  def self.color_boundary_finder(image: image, sample_subdivision_size: 10, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green) 
+  def self.color_boundary_finder(image: image, sample_subdivision_size: nil, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green)
+    image_width = image.send(scan)
+    sample_subdivision_size = get_subdivision_size(image_width) if sample_subdivision_size.nil?
+    samples_to_take = (image_width / sample_subdivision_size).to_i - 1
+
     border_hits = {}
-    samples_to_take = (image.send(scan) / sample_subdivision_size).to_i - 1
 
     (0..samples_to_take).each do |s|
       # Create a sample image a single pixel tall
       if scan == :rows
-        j = image.crop(0, s * sample_subdivision_size, image.columns, 1)
+        j = image.crop(0, s * sample_subdivision_size, image.columns, 1, true)
       elsif scan == :columns
-        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows)
+        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows, true)
       else
         raise
       end
