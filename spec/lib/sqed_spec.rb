@@ -25,8 +25,8 @@ describe Sqed do
       expect(s).to respond_to(:boundaries)
     end
 
-    specify '#auto_detect_border' do
-      expect(s).to respond_to(:auto_detect_border)
+    specify '#has_border' do
+      expect(s).to respond_to(:has_border)
     end
 
     specify '#boundary_color' do
@@ -67,10 +67,10 @@ describe Sqed do
     end
   end
 
-  context 'all together' do
+  context 'all together, without border' do
     let(:image) { ImageHelpers.frost_stage }
     let(:pattern) { :vertical_offset_cross }
-    let(:s) { Sqed.new(image: image, pattern: pattern) }
+    let(:s) { Sqed.new(image: image, pattern: pattern, has_border: false)  }
 
     specify '#boundaries returns a Sqed::Boundaries instance' do
       expect(s.boundaries.class.name).to eq('Sqed::Boundaries')
@@ -99,8 +99,8 @@ describe Sqed do
           expect(r.text_for(:identifier)).to match('000041196')
         end
 
-        specify 'for a specimen section' do
-          expect(r.text_for(:specimen)).to match('Saucier Creek')
+        specify 'for an annotated_specimen section' do
+          expect(r.text_for(:annotated_specimen)).to match('Saucier Creek')
         end
 
         specify 'for a curator_metadata section' do
@@ -109,5 +109,45 @@ describe Sqed do
       end
     end
   end
+
+  context 'all together, with border' do
+    let(:image) { ImageHelpers.greenline_image }
+    let(:pattern) { :right_t }
+    let(:s) { Sqed.new(image: image, pattern: pattern, has_border: false)  }
+
+    specify '#boundaries returns a Sqed::Boundaries instance' do
+      expect(s.boundaries.class.name).to eq('Sqed::Boundaries')
+    end
+
+    specify '#stage_image returns an Magick::Image' do
+      expect(s.stage_image.class.name).to eq('Magick::Image')
+    end
+
+    specify '#crop_image returns an Magick::Image' do
+      expect(s.crop_image.class.name).to eq('Magick::Image')
+    end
+
+    specify '#crop_image returns #stage_image' do
+      expect(s.crop_image).to eq(s.stage_image)
+    end
+
+    context '#result' do
+      let(:r) { s.result }
+      specify 'returns a Sqed::Result' do
+        expect(r.class.name).to eq('Sqed::Result')
+      end
+
+      context 'extracted data' do
+        specify 'for an :identifier section' do
+          expect(r.text_for(:identifier)).to match('000085067')
+        end
+
+        specify 'for a specimen section' do
+          expect(r.text_for(:annotated_specimen)).to match('Aeshna')
+        end
+      end
+    end
+  end
+
 
 end

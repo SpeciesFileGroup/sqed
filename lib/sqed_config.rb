@@ -91,7 +91,7 @@ module SqedConfig
     identifier: [ Sqed::Parser::BarcodeParser, Sqed::Parser::OcrParser ],
     deterimination_labels: [ Sqed::Parser::OcrParser ],
     curator_metadata: [  Sqed::Parser::OcrParser ],
-    specimen: [ Sqed::Parser::OcrParser ],
+    annotated_specimen: [ Sqed::Parser::OcrParser] 
   }
 
   EXTRACTION_PATTERNS = {
@@ -104,19 +104,19 @@ module SqedConfig
     vertical_offset_cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :vertical_offset_cross,
-      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :specimen }
+      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
     },
   
    equal_cross: {
-     boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+     boundary_finder: Sqed::BoundaryFinder::CrossFinder,
      layout: :equal_cross,
-     metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :specimen }
+     metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
    },
 
     cross: {
-      boundary_finder: Sqed::BoundaryFinder::CrossFinder,
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :cross, 
-      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :specimen }
+      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
     },
 
     stage: {

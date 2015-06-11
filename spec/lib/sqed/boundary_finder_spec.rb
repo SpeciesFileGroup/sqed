@@ -94,7 +94,6 @@ describe Sqed::BoundaryFinder do
         expect(center).to be < 1332 
       end
     end
-
   end
 
   context '.frequency_stats(frequency_hash, samples_taken)' do

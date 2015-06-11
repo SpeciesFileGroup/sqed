@@ -22,7 +22,7 @@ describe Sqed::Result do
 
   context 'with a new() result' do
     specify '#text_for(section)' do
-      expect(r.text_for(:specimen)).to eq(nil)
+      expect(r.text_for(:annotated_specimen)).to eq(nil)
     end
 
     specify '#barcode_text_for(section)' do

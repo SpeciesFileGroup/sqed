@@ -172,12 +172,12 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
 
     let(:pct)  { 0.08 }
 
-    before {
-      finder.boundaries.each do |i, coord|
-     #  q = thumb.crop(*coord, true)
-     #  q.write("tmp/thumb#{i}.jpg")
-      end
-    }
+  # before {
+  #    finder.boundaries.each do |i, coord|
+  #    q = thumb.crop(*coord, true)
+  #    q.write("tmp/thumb#{i}.jpg")
+  #   end
+  # }
 
     specify "for section 0" do
       expect(finder_boundaries.x_for(0)).to be_within(pct*thumb.columns).of(0)

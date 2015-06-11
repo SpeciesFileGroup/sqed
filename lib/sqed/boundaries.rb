@@ -84,11 +84,11 @@ class Sqed::Boundaries
   end
 
   def populated?
-      @coordinates.each do |c|
-        return false if c[0].nil?
+    self.each do |index, coords|
+      coords.each do |c|
+        return false if c.nil?
       end
+    end
     true 
   end
-
-
 end

@@ -36,30 +36,30 @@ class Sqed
   attr_accessor :boundaries
  
   # Boolean, whether to detect the border on initialization, i.e. new()
-  attr_accessor :auto_detect_border 
+  attr_accessor :has_border 
  
   # a symbol, :red, :green, :blue, describing the boundary color within the stage 
   attr_accessor :boundary_color
 
-  def initialize(image: image, pattern: pattern, auto_detect_border: true, boundary_color: :green)
+  def initialize(image: image, pattern: pattern, has_border: true, boundary_color: :green)
+    raise 'extraction pattern not defined' if pattern && !SqedConfig::EXTRACTION_PATTERNS.keys.include?(pattern) 
+ 
     @image = image
     @boundaries = nil
     @stage_boundary = Sqed::Boundaries.new(:internal_box) 
-    @auto_detect_border = auto_detect_border
+    @has_border = has_border
     @pattern = pattern
     @pattern ||= :cross
     @boundary_color = boundary_color
 
-    set_stage_boundary if @auto_detect_border && @image
+    set_stage_boundary if @image
   end
 
-  # This handles the case of
-  #   s = Sqed.new()  # no image: @some_image on init
-  #   s.image = @some_image
-  #
+  # Attributes accessor overides
   def image=(value)
     @image = value
-    set_stage_boundary if @auto_detect_border 
+    set_stage_boundary 
+    @image
   end
 
   def boundaries(force = false)
@@ -67,32 +67,36 @@ class Sqed
     @boundaries
   end
 
+  def stage_boundary
+    set_stage_boundary if !@stage_boundary.populated?
+    @stage_boundary
+  end
+
+  def stage_image
+   crop_image if @stage_image.nil?
+   @stage_image 
+  end
+
   # Return [Sqed::Boundaries instance]
   #   a boundaries instance that has the original image (prior to cropping stage) coordinates
   def native_boundaries
     # check for @boundaries.complete first? OR handle partial detections  ?!
     if @boundaries.complete
-      @boundaries.offset(@stage_boundary)
+      @boundaries.offset(stage_boundary)
     else
       nil
     end 
   end
 
   # return [Image]
-  #   crops the image if not already done
-  def stage_image
-    crop_image if @stage_boundary.complete && @stage_image.nil?
-    @stage_image 
-  end
-
-  # return [Image]
   #   crops the stage if not done, then sets/returns @stage_image
   def crop_image
-    if @stage_boundary.complete
-      @stage_image = @image.crop(*@stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)), true)
+    if @has_border 
+      @stage_image = @image.crop(*stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)), true)
     else
       @stage_image = @image 
     end
+    @stage_image
   end
 
   def result
@@ -108,8 +112,8 @@ class Sqed
     {
       image: @image,
       boundaries: @boundaries,
-      stage_boundary: @stage_boundary,
-      auto_detect_border: @auto_detect_border,
+      stage_boundary: stage_boundary,
+      has_border: @has_border,
       pattern: @pattern,
       boundary_color: @boundary_color
     }
@@ -118,12 +122,19 @@ class Sqed
   protected
 
   def set_stage_boundary
-    @stage_boundary = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
-    if !@stage_boundary.complete
-      @stage_boundary.coordinates[0] = [0, 0, @image.columns, @image.rows] 
+    if @has_border
+      boundary = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
+      if boundary.populated? 
+        @stage_boundary.set(0, boundary.for(0)) #  = boundary
+      else
+        raise 'error detecting stage'
+      end
+    else
+      @stage_boundary.set(0, [0, 0, @image.columns, @image.rows])
     end
   end
 
+  # TODO make this a setter
   def get_section_boundaries
     boundary_finder_class = SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder]
 
