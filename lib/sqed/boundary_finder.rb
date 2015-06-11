@@ -129,8 +129,8 @@ class Sqed::BoundaryFinder
     (pixel.red < black_threshold) &&  (pixel.blue < black_threshold) &&  (pixel.green < black_threshold)
   end
 
-  # Takes a frequency hash of position => count key/values and returns
-  # the median position of all positions that have a count greater than the cutoff
+  # return [Array]
+  #   the median position of all (pixel) positions that have a count greater than the cutoff
   def self.frequency_stats(frequency_hash, sample_cutoff = 0)
     return nil if sample_cutoff.nil? ||  sample_cutoff < 1 
     hit_ranges = [] 
