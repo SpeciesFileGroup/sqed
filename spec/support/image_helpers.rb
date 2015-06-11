@@ -23,6 +23,16 @@ module ImageHelpers
       get_image 'stage_images/frost_stage.jpg'
     end
 
+    def frost_stage_thumb
+      get_image 'stage_images/frost_stage_thumb.jpg'
+    end
+
+    def frost_stage_medimum
+      get_image 'stage_images/frost_stage_medimum.jpg'
+    end
+
+
+
     def crossy_green_line_specimen
       get_image 'stage_images/CrossyGreenLinesSpecimen.jpg'
     end
@@ -35,7 +45,7 @@ module ImageHelpers
       get_image 'stage_images/black_stage_green_line_specimen.jpg'
     end
 
-    def offset_cross_red
+    def vertical_offset_cross_red
       get_image 'stage_images/boundary_offset_cross_red.jpg'
     end
 

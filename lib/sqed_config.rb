@@ -19,25 +19,31 @@ module SqedConfig
   # Layouts refer to the arrangement of the divided stage.
   # Windows are enumerated from the top left, moving around the border 
   # in a clockwise position.  For example:
+  #
   #    0  | 1
-  #   ----|----  :equal_cross //probably obviated by offset_cross
+  #   ----|----  :equal_cross (always perfectly divided through the center)
   #    3  | 2
   #  
-  #       | 1
-  #    0  |----  :right_t
-  #       | 2
   #
-  # should be an arbitrary cross layout
+  #    0  | 1
+  #   ----|----  :cross (height of [0, 1], [2,3] same, width of [0,1], [2,3] same, otherwise variable (i.e. height(0) != height(3))
+  #       | 
+  #    3  | 2
+  # 
   #    0  |  1
   #       |
-  #   ---------  :offset_cross //does not match current code
+  #   ---------  :horizontal_offset_cross // NOT CURRENTLY IMPLEMENTED
   #    3   | 2
+  #
   #
   #    0  |  1
   #       |____
-  #   ----|      :offset_cross // matches current code
+  #   ----|      :vertical_offset_cross // matches current code !! 
   #    3  |  2
   #
+  #       | 1
+  #    0  |----  :right_t
+  #       | 2
   #        0
   #    --------  :horizontal_split
   #        1
@@ -53,9 +59,10 @@ module SqedConfig
 
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
+  # TODO: deprecate for simpler breakdown (cross, split, t)
   LAYOUTS = {
     cross: [0,1,2,3],
-    offset_cross: [0,1,2,3],
+    vertical_offset_cross: [0,1,2,3], 
     horizontal_split: [0,1],
     vertical_split: [0,1],
     right_t: [0,1,2],
@@ -91,9 +98,9 @@ module SqedConfig
       layout: :right_t,
       metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
     },
-    offset_cross: {
+    vertical_offset_cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-      layout: :offset_cross,
+      layout: :vertical_offset_cross,
       metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :specimen }
      # metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
     },

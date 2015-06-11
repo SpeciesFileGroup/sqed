@@ -21,68 +21,68 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       return if t.nil?
       boundaries.set(0, [0, 0, t[0], img.rows])  # left section of image
       boundaries.set(1, [t[2], 0, img.columns - t[2], img.rows])  # right section of image
-      boundaries.complete = true
 
     when :horizontal_split
       t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
       return if t.nil?
       boundaries.set(0, [0, 0, img.columns, t[0]])  # upper section of image
       boundaries.set(1, [0, t[2], img.columns, img.rows - t[2]])  # lower section of image
-      boundaries.complete = true
-      # boundaries.coordinates[2] = [0, 0, img.columns, t[1]]  # upper section of image
-      # boundaries.coordinates[3] = [0, t[1], img.columns, img.rows - t[1]]  # lower section of image
 
     when :right_t   # only 3 zones expected, with horizontal division in right-side of vertical division
-      t = Sqed::BoundaryFinder.color_boundary_finder(image: img, boundary_color: @boundary_color)  #defaults to detect vertical division, green line
-      return if t.nil?
+      vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
+      irt = img.crop(*vertical.for(1), true)
+      right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
 
-      left = [0, 0, t[0], img.rows]
-      right = [t[2], 0, img.columns - t[2], img.rows]
+      boundaries.set(0, vertical.for(0))     
+      boundaries.set(1, [ vertical.x_for(1), 0, right.width_for(0), right.height_for(0) ] ) 
+      boundaries.set(2, [ vertical.x_for(1), right.y_for(1), right.width_for(1), right.height_for(1)] )  
 
-      boundaries.set(0, left)            # left section of image
+    when :vertical_offset_cross   # 4 zones expected, with (varying) horizontal division in left- and right- sides of vertical division
+      vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
+    
+      ilt = img.crop(*vertical.for(0), true) 
+      irt = img.crop(*vertical.for(1), true)
 
-      # now subdivide right side
-      irt = img.crop(*right, true)
-      rt = Sqed::BoundaryFinder.color_boundary_finder(image: irt, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
-      return if rt.nil?
-      boundaries.set(1, [t[2], 0, img.columns - t[2], rt[0]])                # upper section of image
-      boundaries.set(2, [t[2], rt[2], img.columns - t[2], img.rows - rt[2]]) # lower section of image
-      boundaries.complete = true
-      # will return 1, 2, or 3
+      left = self.class.new(image: ilt, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
+      right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
 
-    when :offset_cross   # 4 zones expected, with horizontal division in right- and left- sides of vertical division
-      t = Sqed::BoundaryFinder.color_boundary_finder(image: img, boundary_color: @boundary_color)  # defaults to detect vertical division, green line
-      raise if t.nil?
+      boundaries.set(0, [0, 0, left.width_for(0), left.height_for(0) ]) 
+      boundaries.set(1, [vertical.x_for(1), 0, right.width_for(0), right.height_for(0) ]) 
+      boundaries.set(2, [vertical.x_for(1), right.y_for(1), right.width_for(1), right.height_for(1) ]) 
+      boundaries.set(3, [0, left.y_for(1), left.width_for(1), left.height_for(1) ]) 
 
-      left = [0, 0, t[0], img.rows]                               # left section of image
-      right = [t[2], 0, img.columns - t[2], img.rows]             # right section of image
+    # No specs for this yet
+    when :horizontal_offset_cross
+      horizontal = self.class.new(image: @img, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
 
-      # now subdivide left side
-      ilt = img.crop(*left, true)
+      itop = img.crop(*horizontal.for(0), true) 
+      ibottom = img.crop(*horizontal.for(1), true)
 
-      lt = Sqed::BoundaryFinder.color_boundary_finder(image: ilt, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
+      top = self.class.new(image: ilt, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
+      bottom = self.class.new(image: irt, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
 
-      if !lt.nil?
-        boundaries.set(0, [0, 0, left[2], lt[0]])                 # upper section of image
-        boundaries.set(3, [0, lt[2], left[2], img.rows - lt[2]])  # lower section of image
-      end
+      boundaries.set(0, [0, 0, top.width_for(0), top.height_for(0) ]) 
+      boundaries.set(1, [top.x_for(1), 0, top.width_for(1), top.height_for(1) ]) 
+      boundaries.set(2, [bottom.x_for(1), horizontal.y_for(1), bottom.width_for(1), bottom.height_for(1) ]) 
+      boundaries.set(3, [0, horizontal.y_for(1), bottom.width_for(0), bottom.height_for(0) ]) 
 
-      # now subdivide right side
-      irt = img.crop(*right, true)
-      rt = Sqed::BoundaryFinder.color_boundary_finder(image: irt, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
-      return if rt.nil?
+    when :cross # 4 zones, with perfectly intersected horizontal and vertical division
+      v = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
+      h = self.class.new(image: @img, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries 
+  
+      return if v.nil? || h.nil?
 
-      boundaries.set(1, [t[2], 0, img.columns - t[2], rt[0]])                 # upper section of image
-      boundaries.set(2, [t[2], rt[2], img.columns - t[2], img.rows - rt[2]])  # lower section of image
-      # will return 1, 2, 3, or 4  //// does not handle staggered vertical boundary case
-      
-      boundaries.complete = true if boundaries.populated?
+      boundaries.set(0, [0,0, v.width_for(0), h.height_for(0) ]) 
+      boundaries.set(1, [ v.x_for(1), 0, v.width_for(1), h.height_for(0) ]) 
+      boundaries.set(2, [ v.x_for(1), h.y_for(1), v.width_for(1), h.height_for(1) ]) 
+      boundaries.set(3, [0, h.y_for(1), v.width_for(0), h.height_for(1) ]) 
 
-    else
+    else # no @layout provided !?
+
       boundaries.set(0, [0, 0, img.columns, img.rows])   # totality of image as default
-      # TODO: boundaries.complete status here?
-      return    # return original image boundary if no method implemented
     end
+
+    boundaries.complete = true if boundaries.populated?
 
   end
 

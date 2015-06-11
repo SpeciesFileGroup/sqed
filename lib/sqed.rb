@@ -11,7 +11,7 @@ require "rmagick"
 #
 # Return a Sqed::Result
 #    
-#     a = Sqed.new(pattern: :offset_cross, image: image)
+#     a = Sqed.new(pattern: :vertical_offset_cross, image: image)
 #     b = a.result # => Sqed::Result instance
 #
 class Sqed

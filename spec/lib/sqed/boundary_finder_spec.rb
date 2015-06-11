@@ -7,7 +7,7 @@ describe Sqed::BoundaryFinder do
   end
 
   context 'when initiated with an image' do
-    let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.standard_cross_green, layout: :offset_cross)}
+    let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.standard_cross_green, layout: :vertical_offset_cross)}
 
     context 'attributes' do
       specify '#img' do
@@ -107,7 +107,7 @@ describe Sqed::BoundaryFinder do
 
   context 'offset boundaries from crossy_black_line_specimen image ' do
     before(:all) {
-      @s = Sqed.new(image: ImageHelpers.crossy_black_line_specimen, pattern: :offset_cross, boundary_color: :black)
+      @s = Sqed.new(image: ImageHelpers.crossy_black_line_specimen, pattern: :vertical_offset_cross, boundary_color: :black)
       @s.crop_image
       @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
       true
@@ -136,7 +136,7 @@ describe Sqed::BoundaryFinder do
 
   context 'offset boundaries from black_green_line_specimen image ' do
     before(:all) {
-      @s = Sqed.new(image: ImageHelpers.black_stage_green_line_specimen, pattern: :offset_cross)
+      @s = Sqed.new(image: ImageHelpers.black_stage_green_line_specimen, pattern: :vertical_offset_cross)
       @s.crop_image
       @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
       true 
@@ -164,7 +164,7 @@ describe Sqed::BoundaryFinder do
 
   context 'offset boundaries from original red_line image ' do
     before(:all) {
-      @s = Sqed.new(image: ImageHelpers.offset_cross_red, pattern: :right_t, boundary_color: :red)
+      @s = Sqed.new(image: ImageHelpers.vertical_offset_cross_red, pattern: :right_t, boundary_color: :red)
       @s.crop_image
       @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
     }

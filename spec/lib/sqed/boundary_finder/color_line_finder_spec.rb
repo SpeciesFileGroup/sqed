@@ -10,12 +10,12 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
   
   let(:e) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :right_t) }
   let(:f) { e.boundaries }
-  let(:g) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :offset_cross)}
+  let(:g) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :vertical_offset_cross)}
   let(:h) { g.boundaries }
   let(:gv) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :vertical_split) }
   let(:hv) { gv.boundaries }
  
-  let(:ah) { ImageHelpers.offset_cross_red }
+  let(:ah) { ImageHelpers.vertical_offset_cross_red }
   let(:bh) { Sqed::BoundaryFinder::StageFinder.new(image: ah) }
   let(:ch) { bh.boundaries }
   let(:dh) { ah.crop(*ch.for(0), true) }
@@ -26,7 +26,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
   let(:bbs) { Sqed::BoundaryFinder::StageFinder.new(image: ibs) } 
   let(:cbs) { bbs.boundaries }
   let(:dbs) { ibs.crop(*cbs.for(0), true) }
-  let(:gbs) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dbs, layout: :offset_cross) }
+  let(:gbs) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dbs, layout: :vertical_offset_cross) }
   let(:hbs) { gbs.boundaries }
 
   specify 'initial image columns are as expected for :image above' do
@@ -51,7 +51,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
 
   specify "CrossGreenLinesSpecimen using right_t layout should yield 3 rectangular boundaries" do
     # use the f object for right_t
-    f.each do |i, coord| 
+    f.each do |i, coord|
       q = d.crop(*coord, true)
       q.write("tmp/q0#{i}.jpg")
     end
@@ -75,7 +75,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
     expect(f.height_for(2)).to be_within(pct*964).of(964)
   end
 
-  specify "CrossGreenLinesSpecimen using offset_cross layout should yield 4 rectangular boundaries" do
+  specify "CrossGreenLinesSpecimen using vertical_offset_cross layout should yield 4 rectangular boundaries" do
     h.each do |i, coord|
       q = d.crop(*coord, true)
       q.write("tmp/q1#{i}.jpg")
@@ -124,7 +124,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
     expect(hv.height_for(1)).to be_within(0.02*1990).of(1990)
   end
 
-  specify "boundary_offset_cross_red using horizontal_split layout should yield 2 rectangular boundaries" do
+  specify "boundary_vertical_offset_cross_red using horizontal_split layout should yield 2 rectangular boundaries" do
     hh.each do |k, v|
       q = dh.crop(*v, true)
       q.write("tmp/q3#{k}.jpg")
@@ -164,4 +164,48 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
     expect(hbs.height_for(3)).to be_within(0.02*1677).of(1677)
   end
 
+  context 'thumbnail processing finds reasonable boundaries' do
+
+    let(:thumb) { ImageHelpers.frost_stage_thumb  }
+    let(:finder) { Sqed::BoundaryFinder::ColorLineFinder.new(image: thumb, layout: :cross)}
+    let(:finder_boundaries) { finder.boundaries }
+
+    let(:pct)  { 0.08 }
+
+    before {
+      finder.boundaries.each do |i, coord|
+     #  q = thumb.crop(*coord, true)
+     #  q.write("tmp/thumb#{i}.jpg")
+      end
+    }
+
+    specify "for section 0" do
+      expect(finder_boundaries.x_for(0)).to be_within(pct*thumb.columns).of(0)
+      expect(finder_boundaries.y_for(0)).to be_within(pct*0).of(0)
+      expect(finder_boundaries.width_for(0)).to be_within(pct*66).of(66)
+      expect(finder_boundaries.height_for(0)).to be_within(pct*13).of(13)
+    end
+
+    specify 'for section 1' do
+      expect(finder_boundaries.x_for(1)).to be_within(pct*69).of(69)
+      expect(finder_boundaries.y_for(1)).to be_within(pct*0).of(0)
+      expect(finder_boundaries.width_for(1)).to be_within(pct*32).of(32)
+      expect(finder_boundaries.height_for(1)).to be_within(pct*14).of(14)
+    end
+
+    specify 'for section 2' do
+      expect(finder_boundaries.x_for(2)).to be_within(pct*69).of(69)
+      expect(finder_boundaries.y_for(2)).to be_within(pct*17).of(17)
+      expect(finder_boundaries.width_for(2)).to be_within(pct*32).of(32)
+      expect(finder_boundaries.height_for(2)).to be_within(pct*59).of(59)
+    end
+
+    specify 'for section 3' do
+      expect(finder_boundaries.x_for(3)).to be_within(0).of(0)
+      expect(finder_boundaries.y_for(3)).to be_within(pct*17).of(17)
+      expect(finder_boundaries.width_for(3)).to be_within(pct*65).of(65)
+      expect(finder_boundaries.height_for(3)).to be_within(pct*59).of(59)
+    end
+
+  end
 end

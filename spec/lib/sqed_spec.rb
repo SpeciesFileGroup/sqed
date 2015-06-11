@@ -69,7 +69,7 @@ describe Sqed do
 
   context 'all together' do
     let(:image) { ImageHelpers.frost_stage }
-    let(:pattern) { :offset_cross }
+    let(:pattern) { :vertical_offset_cross }
     let(:s) { Sqed.new(image: image, pattern: pattern) }
 
     specify '#boundaries returns a Sqed::Boundaries instance' do
