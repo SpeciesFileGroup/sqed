@@ -97,8 +97,8 @@ class Sqed::Boundaries
       set(i, [   
         x_for(i) * width_factor,
         y_for(i) * height_factor,
-        height_for(i) * height_factor,
         width_for(i) * width_factor,
+        height_for(i) * height_factor
       ])
     end  
   end

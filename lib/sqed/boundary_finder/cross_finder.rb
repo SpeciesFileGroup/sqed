@@ -6,6 +6,7 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
   def initialize(image: image, use_thumbnail: true)
     @img = image
+    @use_thumbnail = use_thumbnail
  
     if use_thumbnail
       @original_image = @img
@@ -25,7 +26,7 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
     boundaries.coordinates[3] = [0, height, width, height] 
     boundaries.complete = true
 
-    if use_thumbnail
+    if @use_thumbnail
       @img = @original_image
       zoom_boundaries
       @original_image = nil

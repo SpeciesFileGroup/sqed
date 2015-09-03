@@ -22,7 +22,8 @@ describe Sqed::BoundaryFinder::CrossFinder do
   end
 
   specify 'the 0th image has height = 300' do
-    expect(c.height_for(0)).to eq(300)
+    pct = 0.02
+    expect(c.height_for(0)).to be_within(pct*300).of(300)
   end
 
 end 
