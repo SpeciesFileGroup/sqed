@@ -4,10 +4,16 @@ require 'rmagick'
 #
 class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
-  def initialize(image: image, layout: layout, boundary_color: :green)
-    super(image: image, layout: layout)
+  def initialize(image: image, layout: layout, boundary_color: :green, use_thumbnail: true)
+    super(image: image, layout: layout, use_thumbnail: use_thumbnail)
     raise 'No layout provided.' if @layout.nil?
     @boundary_color = boundary_color
+
+  # if use_thumbnail
+  #   @original_image = @img.dup
+  #   @img = thumbnail
+  # end  
+
     find_bands
   end
 
@@ -83,6 +89,12 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
     end
 
     boundaries.complete = true if boundaries.populated?
+
+   #if use_thumbnail
+   #  @img = @original_image
+   #  zoom_boundaries
+   #  @original_image = nil
+   #end
 
   end
 

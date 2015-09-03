@@ -4,15 +4,8 @@ require 'rmagick'
 #
 class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
-  def initialize(image: image, use_thumbnail: true)
+  def initialize(image: image)
     @img = image
-    @use_thumbnail = use_thumbnail
- 
-    if use_thumbnail
-      @original_image = @img
-      @img = thumbnail
-    end  
-  
     find_edges 
   end
 
@@ -25,12 +18,6 @@ class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
     boundaries.coordinates[2] = [width, height, width, height] 
     boundaries.coordinates[3] = [0, height, width, height] 
     boundaries.complete = true
-
-    if @use_thumbnail
-      @img = @original_image
-      zoom_boundaries
-      @original_image = nil
-    end
   end
 
 end

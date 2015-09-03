@@ -24,6 +24,7 @@ class Sqed::BoundaryFinder
     raise 'No layout provided.' if layout.nil?
     raise 'No image provided.' if image.nil? || image.class.name != 'Magick::Image'
 
+    @use_thumbnail = use_thumbnail
     @layout = layout
     @img = image
     true
