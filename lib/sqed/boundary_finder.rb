@@ -2,6 +2,9 @@
 # return derivative images. Finders operate on cropped images, i.e. only the "stage".
 #
 class Sqed::BoundaryFinder
+
+  THUMB_SIZE = 100
+
   # the passed image
   attr_reader :img
 
@@ -11,7 +14,13 @@ class Sqed::BoundaryFinder
   # A Sqed::Boundaries instance, stores the coordinates of all of the layout sections 
   attr_reader :boundaries
 
-  def initialize(image: image, layout: layout)
+  # Whether to compress the original image to a thumbnail when finding boundaries
+  attr_reader :use_thumbnail
+
+  # when we compute using a derived thumbnail we temporarily store the full size image here
+  attr_reader :original_image
+
+  def initialize(image: image, layout: layout, use_thumbnail: true)
     raise 'No layout provided.' if layout.nil?
     raise 'No image provided.' if image.nil? || image.class.name != 'Magick::Image'
 
@@ -25,6 +34,33 @@ class Sqed::BoundaryFinder
     @boundaries ||= Sqed::Boundaries.new(@layout)
   end
 
+  def longest_thumbnail_axis
+    img.columns > img.rows ? :width : :height 
+  end
+
+  def thumbnail_height
+    if longest_thumbnail_axis == :height
+      THUMB_SIZE
+    else
+      (img.rows.to_f * (THUMB_SIZE.to_f / img.columns.to_f)).to_i
+    end
+  end
+
+  def thumbnail_width
+    if longest_thumbnail_axis == :width
+      THUMB_SIZE
+    else
+      (img.columns.to_f * (THUMB_SIZE.to_f / img.rows.to_f)).to_i
+    end
+  end
+
+  def thumbnail
+    img.scale(thumbnail_width, thumbnail_height)
+  end
+
+  def zoom_boundaries
+    boundaries.zoom(img.columns / thumbnail_width, img.rows / thumbnail_height )
+  end
 
   # return [Integer, nil]
   #   sample more with small images, less with large images
@@ -174,3 +210,4 @@ class Sqed::BoundaryFinder
   end
 
 end
+

@@ -91,4 +91,17 @@ class Sqed::Boundaries
     end
     true 
   end
+
+  def zoom(width_factor, height_factor)
+    coordinates.keys.each do |i|
+      set(i, [   
+        x_for(i) * width_factor,
+        y_for(i) * height_factor,
+        height_for(i) * height_factor,
+        width_for(i) * width_factor,
+      ])
+    end  
+  end
+
+
 end
