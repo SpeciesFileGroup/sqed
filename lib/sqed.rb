@@ -54,7 +54,7 @@ class Sqed
     @pattern = pattern
     @pattern ||= :cross
     @boundary_color = boundary_color
-
+    @use_thumbnail = use_thumbnail
     set_stage_boundary if @image
   end
 

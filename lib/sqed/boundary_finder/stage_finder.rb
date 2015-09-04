@@ -3,7 +3,7 @@ require 'rmagick'
 # Some of this code was originally inspired by Emmanuel Oga's gist https://gist.github.com/EmmanuelOga/2476153.
 #
 class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
-  
+
   # The proc containing the border finding algorithim
   attr_reader :is_border
 
@@ -11,28 +11,28 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   # How small we accept a cropped picture to be. E.G. if it was 100x100 and
   # ratio 0.1, min output should be 10x10
-  MIN_CROP_RATIO = 0.1    
+  MIN_CROP_RATIO = 0.1
 
-  attr_reader :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns 
+  attr_reader :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
 
   def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, use_thumbnail: true)
-    super(image: image, layout: :internal_box, use_thumbnail: true)
+    super(image: image, layout: :internal_box, use_thumbnail: true) # why true instead of use_thumbnail?
 
-  if use_thumbnail
-     @original_image = @img.dup
-     @img = thumbnail
-   end  
+    if use_thumbnail
+      @original_image = @img.dup
+      @img = thumbnail
+    end
 
-  @min_ratio =  min_ratio
+    @min_ratio = min_ratio
 
     # Initial co-ordinates
     @x0, @y0 = 0, 0
-    @x1, @y1 = img.columns, img.rows 
+    @x1, @y1 = img.columns, img.rows
     @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
     @columns, @rows = img.columns, img.rows
 
     # We need a border finder proc. Provide one if none was given.
-    @is_border = is_border_proc || self.class.default_border_finder(img)  # if no proc specified, use default below
+    @is_border = is_border_proc || self.class.default_border_finder(img) # if no proc specified, use default below
 
     @x00 = @x0
     @y00 = @y0
@@ -56,8 +56,8 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   # works for 0.5, >0.137; 0.60, >0.14 0.65, >0.146; 0.70, >0.1875; 0.75, >0.1875; 0.8, >0.237; 0.85, >0.24; 0.90, >0.28; 0.95, >0.25
   # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
   #
-  def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.40)   # working on non-synthetic images 04-dec-2014
-   fuzz = ((Magick::QuantumRange + 1)  * fuzz_factor).to_i  
+  def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.40) # working on non-synthetic images 04-dec-2014
+    fuzz = ((Magick::QuantumRange + 1) * fuzz_factor).to_i
     # Returns true if the edge is a border (border meaning outer region to be cropped)
     lambda do |edge|
       border, non_border = 0.0, 0.0 # maybe should be called outer, inner
@@ -84,7 +84,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     # handle this exception
     return unless is_border # return if no process defined or set for @is_border
 
-    u = x1 - 1    # rightmost pixel (kind of)
+    u = x1 - 1 # rightmost pixel (kind of)
     # increment from left to right
     x0.upto(u) do |x|
       if width_croppable? && is_border[vline(x)] then
@@ -94,7 +94,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
       end
     end
     # increment from left to right
-    (u).downto(x0) { |x| width_croppable?  && is_border[vline(x)] ? @x1 = x - 1 : break }
+    (u).downto(x0) { |x| width_croppable? && is_border[vline(x)] ? @x1 = x - 1 : break }
 
     u = y1 - 1
     0.upto(u) do |y|
@@ -109,9 +109,9 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
     delta_x = 0 #width/50    # 2% of cropped image to make up for trapezoidal distortion
     delta_y = 0 #height/50   # 2% of cropped image to make up for trapezoidal distortion <- NOT 3%
-  
+
     # TODO: add conditions
-    boundaries.complete = true 
+    boundaries.complete = true
     boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
 
     if use_thumbnail
@@ -138,13 +138,13 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   end
 
   # actually  + 1 (starting at zero?)
-  def width   
-    @x1 - @x0  
+  def width
+    @x1 - @x0
   end
- 
+
   # actually  + 1 (starting at zero?)
   def height
-    @y1 - @y0 
+    @y1 - @y0
   end
 
 end
