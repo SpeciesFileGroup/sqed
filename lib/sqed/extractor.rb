@@ -42,6 +42,7 @@ class Sqed::Extractor
       if parsers = SqedConfig::SECTION_PARSERS[section_type]
 
         section_image = r.send("#{section_type}_image")
+
         updated = r.send(section_type)
 
         parsers.each do |p|

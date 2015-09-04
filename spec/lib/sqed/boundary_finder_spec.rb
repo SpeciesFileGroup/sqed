@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Sqed::BoundaryFinder do
 
   specify 'when no image provided, #new raises' do
-    expect { Sqed::BoundaryFinder.new() }.to raise_error
+    expect { Sqed::BoundaryFinder.new() }.to raise_error('No layout provided.')
   end
 
   context 'when initiated with an image' do

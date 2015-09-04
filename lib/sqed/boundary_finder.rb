@@ -25,6 +25,7 @@ class Sqed::BoundaryFinder
     raise 'No image provided.' if image.nil? || image.class.name != 'Magick::Image'
 
     @use_thumbnail = use_thumbnail
+
     @layout = layout
     @img = image
     true
@@ -55,8 +56,9 @@ class Sqed::BoundaryFinder
     end
   end
 
+  # see https://rmagick.github.io/image3.html#thumbnail
   def thumbnail
-    img.scale(thumbnail_width, thumbnail_height)
+    img.thumbnail(thumbnail_width, thumbnail_height)
   end
 
   def zoom_boundaries

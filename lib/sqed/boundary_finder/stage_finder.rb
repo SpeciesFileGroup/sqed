@@ -15,10 +15,15 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   attr_reader :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns 
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
-    super(image: image, layout: :internal_box)
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, use_thumbnail: true)
+    super(image: image, layout: :internal_box, use_thumbnail: true)
 
-    @min_ratio =  min_ratio
+  if use_thumbnail
+     @original_image = @img.dup
+     @img = thumbnail
+   end  
+
+  @min_ratio =  min_ratio
 
     # Initial co-ordinates
     @x0, @y0 = 0, 0
@@ -108,6 +113,12 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     # TODO: add conditions
     boundaries.complete = true 
     boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
+
+    if use_thumbnail
+      @img = @original_image
+      zoom_boundaries
+      @original_image = nil
+    end
   end
 
   def width_croppable?

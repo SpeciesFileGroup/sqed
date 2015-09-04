@@ -41,7 +41,10 @@ class Sqed
   # a symbol, :red, :green, :blue, describing the boundary color within the stage 
   attr_accessor :boundary_color
 
-  def initialize(image: image, pattern: pattern, has_border: true, boundary_color: :green)
+  # Boolean, whether to do the boundary detection against a thumbnail version fo the past image (faster, less accurate, true be default) 
+  attr_accessor :use_thumbnail
+
+  def initialize(image: image, pattern: pattern, has_border: true, boundary_color: :green, use_thumbnail: true)
     raise 'extraction pattern not defined' if pattern && !SqedConfig::EXTRACTION_PATTERNS.keys.include?(pattern) 
  
     @image = image
@@ -115,7 +118,8 @@ class Sqed
       stage_boundary: stage_boundary,
       has_border: @has_border,
       pattern: @pattern,
-      boundary_color: @boundary_color
+      boundary_color: @boundary_color, 
+      use_thumbnail: @use_thumbnail
     }
   end
 
@@ -138,9 +142,9 @@ class Sqed
   def get_section_boundaries
     boundary_finder_class = SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder]
 
-    options = {image: stage_image}
+    options = {image: stage_image, use_thumbnail: use_thumbnail}
     options.merge!( layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout] ) unless  boundary_finder_class.name == 'Sqed::BoundaryFinder::CrossFinder'
-    options.merge!( boundary_color: @boundary_color) if  boundary_finder_class.name == 'Sqed::BoundaryFinder::ColorLineFinder'
+    options.merge!( boundary_color: @boundary_color) if boundary_finder_class.name == 'Sqed::BoundaryFinder::ColorLineFinder'
 
     boundary_finder_class.new(options).boundaries
   end

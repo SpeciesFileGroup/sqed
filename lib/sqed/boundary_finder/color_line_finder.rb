@@ -9,10 +9,10 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
     raise 'No layout provided.' if @layout.nil?
     @boundary_color = boundary_color
 
-  # if use_thumbnail
-  #   @original_image = @img.dup
-  #   @img = thumbnail
-  # end  
+   if use_thumbnail
+     @original_image = @img.dup
+     @img = thumbnail
+   end  
 
     find_bands
   end
@@ -90,11 +90,11 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
     boundaries.complete = true if boundaries.populated?
 
-   #if use_thumbnail
-   #  @img = @original_image
-   #  zoom_boundaries
-   #  @original_image = nil
-   #end
+   if use_thumbnail
+     @img = @original_image
+     zoom_boundaries
+     @original_image = nil
+   end
 
   end
 
