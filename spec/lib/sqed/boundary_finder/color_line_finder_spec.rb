@@ -8,25 +8,25 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
   let(:c) {b.boundaries}
   let(:d) { image.crop(*c.for(0), true) }
   
-  let(:e) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :right_t) }
+  let(:e) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :right_t, use_thumbnail: false) }
   let(:f) { e.boundaries }
-  let(:g) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :vertical_offset_cross)}
+  let(:g) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :vertical_offset_cross, use_thumbnail: false)}
   let(:h) { g.boundaries }
-  let(:gv) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :vertical_split) }
+  let(:gv) { Sqed::BoundaryFinder::ColorLineFinder.new(image: d, layout: :vertical_split, use_thumbnail: false) }
   let(:hv) { gv.boundaries }
  
   let(:ah) { ImageHelpers.vertical_offset_cross_red }
   let(:bh) { Sqed::BoundaryFinder::StageFinder.new(image: ah) }
   let(:ch) { bh.boundaries }
   let(:dh) { ah.crop(*ch.for(0), true) }
-  let(:gh) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dh, layout: :horizontal_split, boundary_color: :red) } # was :horizontal_split
+  let(:gh) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dh, layout: :horizontal_split, boundary_color: :red, use_thumbnail: false) } # was :horizontal_split
   let(:hh) { gh.boundaries }
 
   let(:ibs) { ImageHelpers.black_stage_green_line_specimen } 
   let(:bbs) { Sqed::BoundaryFinder::StageFinder.new(image: ibs) } 
   let(:cbs) { bbs.boundaries }
   let(:dbs) { ibs.crop(*cbs.for(0), true) }
-  let(:gbs) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dbs, layout: :vertical_offset_cross) }
+  let(:gbs) { Sqed::BoundaryFinder::ColorLineFinder.new(image: dbs, layout: :vertical_offset_cross, use_thumbnail: false) }
   let(:hbs) { gbs.boundaries }
 
   specify 'initial image columns are as expected for :image above' do
@@ -167,7 +167,7 @@ describe Sqed::BoundaryFinder::ColorLineFinder do
   context 'thumbnail processing finds reasonable boundaries' do
 
     let(:thumb) { ImageHelpers.frost_stage_thumb  }
-    let(:finder) { Sqed::BoundaryFinder::ColorLineFinder.new(image: thumb, layout: :cross)}
+    let(:finder) { Sqed::BoundaryFinder::ColorLineFinder.new(image: thumb, layout: :cross, use_thumbnail: false)}
     let(:finder_boundaries) { finder.boundaries }
 
     let(:pct)  { 0.08 }
