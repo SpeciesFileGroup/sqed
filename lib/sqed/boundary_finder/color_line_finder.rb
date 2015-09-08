@@ -10,10 +10,9 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
     @boundary_color = boundary_color
 
    if use_thumbnail
-     @original_image = @img.dup
+     @original_image = @img.copy
      @img = thumbnail
    end  
-
     find_bands
   end
 
@@ -21,6 +20,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
   def find_bands
     case @layout    # boundaries.coordinates are referenced from stage image
+
 
     when :vertical_split    # can vertical and horizontal split be re-used to do cross cases?
       t = Sqed::BoundaryFinder.color_boundary_finder(image: img, boundary_color: @boundary_color)  #detect vertical division, green line
@@ -31,26 +31,28 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
     when :horizontal_split
       t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
       return if t.nil?
+
       boundaries.set(0, [0, 0, img.columns, t[0]])  # upper section of image
       boundaries.set(1, [0, t[2], img.columns, img.rows - t[2]])  # lower section of image
 
     when :right_t   # only 3 zones expected, with horizontal division in right-side of vertical division
-      vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
+      vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
       irt = img.crop(*vertical.for(1), true)
-      right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
+      right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
 
       boundaries.set(0, vertical.for(0))     
       boundaries.set(1, [ vertical.x_for(1), 0, right.width_for(0), right.height_for(0) ] ) 
       boundaries.set(2, [ vertical.x_for(1), right.y_for(1), right.width_for(1), right.height_for(1)] )  
 
     when :vertical_offset_cross   # 4 zones expected, with (varying) horizontal division in left- and right- sides of vertical division
-      vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
-    
+      vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false).boundaries
+   
+
       ilt = img.crop(*vertical.for(0), true) 
       irt = img.crop(*vertical.for(1), true)
 
-      left = self.class.new(image: ilt, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
-      right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
+      left = self.class.new(image: ilt, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false).boundaries  # fails
+      right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries # OK
 
       boundaries.set(0, [0, 0, left.width_for(0), left.height_for(0) ]) 
       boundaries.set(1, [vertical.x_for(1), 0, right.width_for(0), right.height_for(0) ]) 
@@ -59,13 +61,13 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
     # No specs for this yet
     when :horizontal_offset_cross
-      horizontal = self.class.new(image: @img, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries
+      horizontal = self.class.new(image: @img, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
 
       itop = img.crop(*horizontal.for(0), true) 
       ibottom = img.crop(*horizontal.for(1), true)
 
-      top = self.class.new(image: ilt, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
-      bottom = self.class.new(image: irt, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
+      top = self.class.new(image: ilt, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
+      bottom = self.class.new(image: irt, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
 
       boundaries.set(0, [0, 0, top.width_for(0), top.height_for(0) ]) 
       boundaries.set(1, [top.x_for(1), 0, top.width_for(1), top.height_for(1) ]) 
@@ -73,8 +75,8 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       boundaries.set(3, [0, horizontal.y_for(1), bottom.width_for(0), bottom.height_for(0) ]) 
 
     when :cross # 4 zones, with perfectly intersected horizontal and vertical division
-      v = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color ).boundaries
-      h = self.class.new(image: @img, layout: :horizontal_split, boundary_color: @boundary_color ).boundaries 
+      v = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
+      h = self.class.new(image: @img, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false).boundaries 
   
       return if v.nil? || h.nil?
 
