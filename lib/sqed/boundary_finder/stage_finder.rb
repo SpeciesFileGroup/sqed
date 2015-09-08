@@ -15,13 +15,8 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   attr_reader :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO, use_thumbnail: true)
-    super(image: image, layout: :internal_box, use_thumbnail: true) # why true instead of use_thumbnail?
-
-    if use_thumbnail
-      @original_image = @img.dup
-      @img = thumbnail
-    end
+  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
+    super(image: image, layout: :internal_box) 
 
     @min_ratio = min_ratio
 
@@ -31,6 +26,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
     @columns, @rows = img.columns, img.rows
 
+    
     # We need a border finder proc. Provide one if none was given.
     @is_border = is_border_proc || self.class.default_border_finder(img) # if no proc specified, use default below
 
@@ -56,6 +52,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   # works for 0.5, >0.137; 0.60, >0.14 0.65, >0.146; 0.70, >0.1875; 0.75, >0.1875; 0.8, >0.237; 0.85, >0.24; 0.90, >0.28; 0.95, >0.25
   # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
   #
+  # this sets variables (locally) for find_edges
   def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.40) # working on non-synthetic images 04-dec-2014
     fuzz = ((Magick::QuantumRange + 1) * fuzz_factor).to_i
     # Returns true if the edge is a border (border meaning outer region to be cropped)
@@ -112,13 +109,8 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
     # TODO: add conditions
     boundaries.complete = true
-    boundaries.coordinates[0] = [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y]
+    boundaries.set(0, [x0 + delta_x, y0 + delta_y, width - 2*delta_x, height - 2*delta_y])
 
-    if use_thumbnail
-      @img = @original_image
-      zoom_boundaries
-      @original_image = nil
-    end
   end
 
   def width_croppable?
