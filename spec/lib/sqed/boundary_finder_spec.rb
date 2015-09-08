@@ -103,9 +103,15 @@ describe Sqed::BoundaryFinder do
       expect( Sqed::BoundaryFinder.frequency_stats(i, 12)).to eq([3, 4, 5])
     end
 
-    specify 'returns nil if no count is greater than samples taken' do
-      expect( Sqed::BoundaryFinder.frequency_stats(i, 15)).to eq(nil)
+    specify 'returns estimated borders if only one hit greater than samples taken' do
+      expect( Sqed::BoundaryFinder.frequency_stats(i, 15)).to eq([2,3,4])
     end
+
+    specify 'returns nil if no count is greater than samples taken' do
+      expect( Sqed::BoundaryFinder.frequency_stats(i, 20)).to eq(nil)
+    end
+ 
+
   end
 
   context 'offset boundaries from crossy_black_line_specimen image ' do
