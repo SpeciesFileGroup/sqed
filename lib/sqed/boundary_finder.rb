@@ -3,7 +3,7 @@
 #
 class Sqed::BoundaryFinder
 
-  THUMB_SIZE = 100
+  THUMB_SIZE = 100 
 
   # the passed image
   attr_reader :img
@@ -68,8 +68,6 @@ class Sqed::BoundaryFinder
   # return [Integer, nil]
   #   sample more with small images, less with large images
   #   we want to return larger numbers (= faster sampling)
-  #
-  #
   def self.get_subdivision_size(image_width)
     case image_width
     when nil
@@ -108,6 +106,7 @@ class Sqed::BoundaryFinder
   #   (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
   #
   def self.color_boundary_finder(image: image, sample_subdivision_size: nil, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green)
+
     image_width = image.send(scan)
     sample_subdivision_size = get_subdivision_size(image_width) if sample_subdivision_size.nil?
     samples_to_take = (image_width / sample_subdivision_size).to_i - 1
@@ -144,6 +143,8 @@ class Sqed::BoundaryFinder
 
     if sample_cutoff_factor.nil?
       cutoff = max_difference(border_hits.values)
+
+      cutoff = border_hits.values.first - 1 if cutoff == 0 # difference of two identical things is 0
     else
       cutoff = (samples_to_take * sample_cutoff_factor).to_i
     end
@@ -171,6 +172,7 @@ class Sqed::BoundaryFinder
   # return [Array]
   #   the median position of all (pixel) positions that have a count greater than the cutoff
   def self.frequency_stats(frequency_hash, sample_cutoff = 0)
+   
     return nil if sample_cutoff.nil? ||  sample_cutoff < 1 
     hit_ranges = [] 
 
@@ -180,7 +182,18 @@ class Sqed::BoundaryFinder
       end
     end
 
-    return nil if hit_ranges.size < 3
+    case hit_ranges.size
+    when 1
+      c = hit_ranges[0]
+      hit_ranges = [c - 1, c, c + 1]
+    when 2
+      hit_ranges.sort!
+      c1 = hit_ranges[0]
+      c2 = hit_ranges[1]
+      hit_ranges = [c1,  c2, c2 + (c2 - c1)]
+    when 0 
+      return nil 
+    end
 
     # we have to sort because the keys (positions) we examined came unordered from a hash originally
     hit_ranges.sort!
