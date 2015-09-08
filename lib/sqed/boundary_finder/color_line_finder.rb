@@ -21,7 +21,6 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
   def find_bands
     case @layout    # boundaries.coordinates are referenced from stage image
 
-
     when :vertical_split    # can vertical and horizontal split be re-used to do cross cases?
       t = Sqed::BoundaryFinder.color_boundary_finder(image: img, boundary_color: @boundary_color)  #detect vertical division, green line
       return if t.nil?
@@ -37,16 +36,16 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
     when :right_t   # only 3 zones expected, with horizontal division in right-side of vertical division
       vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
+
       irt = img.crop(*vertical.for(1), true)
       right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
-
-      boundaries.set(0, vertical.for(0))     
+      
+      boundaries.set(0, vertical.for(0))    
       boundaries.set(1, [ vertical.x_for(1), 0, right.width_for(0), right.height_for(0) ] ) 
       boundaries.set(2, [ vertical.x_for(1), right.y_for(1), right.width_for(1), right.height_for(1)] )  
 
     when :vertical_offset_cross   # 4 zones expected, with (varying) horizontal division in left- and right- sides of vertical division
       vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false).boundaries
-   
 
       ilt = img.crop(*vertical.for(0), true) 
       irt = img.crop(*vertical.for(1), true)
