@@ -44,7 +44,7 @@ class Sqed::BoundaryFinder
     if longest_thumbnail_axis == :height
       THUMB_SIZE
     else
-      (img.rows.to_f * (THUMB_SIZE.to_f / img.columns.to_f)).to_i
+      (img.rows.to_f * (THUMB_SIZE.to_f / img.columns.to_f)).round.to_i
     end
   end
 
@@ -52,7 +52,7 @@ class Sqed::BoundaryFinder
     if longest_thumbnail_axis == :width
       THUMB_SIZE
     else
-      (img.columns.to_f * (THUMB_SIZE.to_f / img.rows.to_f)).to_i
+      (img.columns.to_f * (THUMB_SIZE.to_f / img.rows.to_f)).round.to_i
     end
   end
 
@@ -61,8 +61,16 @@ class Sqed::BoundaryFinder
     img.thumbnail(thumbnail_width, thumbnail_height)
   end
 
+  def width_factor
+    img.columns.to_f / thumbnail_width.to_f
+  end
+
+  def height_factor
+    img.rows.to_f / thumbnail_height.to_f
+  end
+
   def zoom_boundaries
-    boundaries.zoom(img.columns / thumbnail_width, img.rows / thumbnail_height )
+    boundaries.zoom(width_factor, height_factor )
   end
 
   # return [Integer, nil]
