@@ -46,7 +46,7 @@ class Sqed::Extractor
         updated = r.send(section_type)
 
         parsers.each do |p|
-          parsed_result = p.new(section_image).text
+          parsed_result = p.new(section_image).text(section_type: section_type)
           updated.merge!(p::TYPE => parsed_result) if parsed_result
         end
 

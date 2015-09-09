@@ -10,8 +10,9 @@ class Sqed::Parser
     raise 'no image provided to parser' if @image && !(@image.class.name == 'Magick::Image')
   end
 
+  # TODO: is this required?!j
   # must be provided in subclasses
-  def text
+  def text(section_type: :default)
     nil
   end
 

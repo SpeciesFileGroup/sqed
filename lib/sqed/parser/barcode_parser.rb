@@ -36,7 +36,7 @@ class Sqed::Parser::BarcodeParser < Sqed::Parser
  #end
 
   # alias to a universal method
-  def text 
+  def text(section_type: :default) 
     barcode
   end
 

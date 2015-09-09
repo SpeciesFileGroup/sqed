@@ -90,20 +90,23 @@ describe Sqed do
 
     context '#result' do
       let(:r) { s.result }
+
       specify 'returns a Sqed::Result' do
         expect(r.class.name).to eq('Sqed::Result')
       end
 
       context 'extracted data' do
-        specify 'for an :identifier section' do
+        specify 'text for an :identifier section' do
+
+          r.identifier_image.write('41.jpg')
           expect(r.text_for(:identifier)).to match('000041196')
         end
 
-        specify 'for an annotated_specimen section' do
+        specify 'text for an annotated_specimen section' do
           expect(r.text_for(:annotated_specimen)).to match('Saucier Creek')
         end
 
-        specify 'for a curator_metadata section' do
+        specify 'text for a curator_metadata section' do
           expect(r.text_for(:curator_metadata)).to match('Frost Entomological Museum')
         end
       end
@@ -113,7 +116,7 @@ describe Sqed do
   context 'all together, with border' do
     let(:image) { ImageHelpers.greenline_image }
     let(:pattern) { :right_t }
-    let(:s) { Sqed.new(image: image, pattern: pattern, has_border: false)  }
+    let(:s) { Sqed.new(image: image, pattern: pattern, has_border: true)  }
 
     specify '#boundaries returns a Sqed::Boundaries instance' do
       expect(s.boundaries.class.name).to eq('Sqed::Boundaries')
@@ -138,11 +141,12 @@ describe Sqed do
       end
 
       context 'extracted data' do
-        specify 'for an :identifier section' do
+        specify 'text for an :identifier section' do
+          r.identifier_image.write('85.jpg')
           expect(r.text_for(:identifier)).to match('000085067')
         end
 
-        specify 'for a specimen section' do
+        specify 'text for a specimen section' do
           expect(r.text_for(:annotated_specimen)).to match('Aeshna')
         end
       end
