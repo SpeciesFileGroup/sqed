@@ -55,34 +55,40 @@ class Sqed
    
   def initialize(image: image, pattern: pattern, has_border: true, boundary_color: :green, use_thumbnail: true, boundary_finder: nil, layout: nil, metadata_map: nil)
     raise 'extraction pattern not defined' if pattern && !SqedConfig::EXTRACTION_PATTERNS.keys.include?(pattern) 
- 
+
+    # data, and stubs for results
     @image = image
     @boundaries = nil
     @stage_boundary = Sqed::Boundaries.new(:internal_box) 
+
+    # extraction metadata
+    @pattern = (pattern || :cross)
     @has_border = has_border
-
-    @pattern = pattern
-    @pattern ||= :cross
-
-    @boundary_finder = boundary_finder
+    @boundary_finder = boundary_finder.constantize if boundary_finder
     @layout = layout
     @metadata_map = metadata_map
-
-    
     @boundary_color = boundary_color
     @use_thumbnail = use_thumbnail
+
     set_stage_boundary if @image
   end
 
+  # @return [Hash]
+  #   federate extraction options and apply user provided over-rides
   def extraction_metadata
     data = SqedConfig::EXTRACTION_PATTERNS[@pattern]
+
     data.merge!(boundary_finder: @boundary_finder) if boundary_finder
-    data.merge!(layout: @layout) if layout 
-    data.merge!(metadata_map: @metadata_map) if metadata_map
+    data.merge!(layout: layout) if layout 
+    data.merge!(metadata_map: metadata_map) if metadata_map
+    data.merge!(has_border: has_border) 
+    data.merge!(use_thumbnail: use_thumbnail) 
+    data.merge!(boundary_color: boundary_color) 
     data
   end
 
-  # Attributes accessor overides
+  # @return [ImageMagick::Image]
+  #   set the image if it's not set during initialize(), not commonly used
   def image=(value)
     @image = value
     set_stage_boundary 
@@ -118,62 +124,53 @@ class Sqed
   # return [Image]
   #   crops the stage if not done, then sets/returns @stage_image
   def crop_image
-    if @has_border 
-      @stage_image = @image.crop(*stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)), true)
+    if has_border 
+      @stage_image = image.crop(*stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)), true)
     else
-      @stage_image = @image 
+      @stage_image = image 
     end
     @stage_image
   end
 
   def result
-    return false if @image.nil? || @pattern.nil? 
+    return false if image.nil? || pattern.nil? 
     extractor = Sqed::Extractor.new(
       boundaries: boundaries,
-      metadata_map: SqedConfig::EXTRACTION_PATTERNS[@pattern][:metadata_map],
+      metadata_map: extraction_metadata[:metadata_map],
       image: stage_image)
     extractor.result
   end
 
-  # Debugging purposes
+  # @return [Hash]
+  #   an overview of data/metadata, for debugging purposes only
   def attributes
-    {
-      image: @image,
-      boundaries: @boundaries,
-      stage_boundary: stage_boundary,
-      has_border: @has_border,
-      pattern: @pattern,
-      boundary_color: @boundary_color, 
-      use_thumbnail: @use_thumbnail
-    }
+    { image: image,
+      boundaries: boundaries,
+      stage_boundary: stage_boundary
+    }.merge!(extraction_metadata)
   end
 
   protected
 
   def set_stage_boundary
-    if @has_border
-      boundary = Sqed::BoundaryFinder::StageFinder.new(image: @image).boundaries
+    if has_border
+      boundary = Sqed::BoundaryFinder::StageFinder.new(image: image).boundaries
       if boundary.populated? 
-        @stage_boundary.set(0, boundary.for(0)) #  = boundary
+        @stage_boundary.set(0, boundary.for(0)) 
       else
         raise 'error detecting stage'
       end
     else
-      @stage_boundary.set(0, [0, 0, @image.columns, @image.rows])
+      @stage_boundary.set(0, [0, 0, image.columns, image.rows])
     end
   end
 
-  # TODO make this a setter
   def get_section_boundaries
-    #  boundary_finder_class = SqedConfig::EXTRACTION_PATTERNS[@pattern][:boundary_finder]
-    boundary_finder_class = extraction_metadata[:boundary_finder]
-
     options = {image: stage_image, use_thumbnail: use_thumbnail}
+    options.merge!( layout: extraction_metadata[:layout] ) unless extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::CrossFinder'
+    options.merge!( boundary_color: boundary_color) if extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::ColorLineFinder'
 
-    options.merge!( layout: SqedConfig::EXTRACTION_PATTERNS[@pattern][:layout] ) unless boundary_finder_class.name == 'Sqed::BoundaryFinder::CrossFinder'
-    options.merge!( boundary_color: @boundary_color) if boundary_finder_class.name == 'Sqed::BoundaryFinder::ColorLineFinder'
-
-    boundary_finder_class.new(options).boundaries
+    extraction_metadata[:boundary_finder].new(options).boundaries
   end
 
 end
