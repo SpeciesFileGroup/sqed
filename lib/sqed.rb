@@ -83,7 +83,6 @@ class Sqed
     data.merge!(has_border: has_border) 
     data.merge!(layout: layout) if layout 
     data.merge!(metadata_map: metadata_map) if metadata_map
-
     data.merge!(use_thumbnail: use_thumbnail) 
     data
   end

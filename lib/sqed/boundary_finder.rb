@@ -95,8 +95,8 @@ class Sqed::BoundaryFinder
     end
   end
 
-  # @return
-  #   the column (x position) in the middle of the single green vertical line dividing the stage
+  # @return [Array]
+  #   the x or y position returned as a start, mid, and end coordinate that represent the width  of the colored line that completely divides the image, e.g. [9, 15, 16] 
   #
   # @param image
   #   the image to sample
@@ -178,7 +178,7 @@ class Sqed::BoundaryFinder
   end
 
   # return [Array]
-  #   the median position of all (pixel) positions that have a count greater than the cutoff
+  #   the start, mid, endpoint position of all (pixel) positions that have a count greater than the cutoff
   def self.frequency_stats(frequency_hash, sample_cutoff = 0)
    
     return nil if sample_cutoff.nil? ||  sample_cutoff < 1 
