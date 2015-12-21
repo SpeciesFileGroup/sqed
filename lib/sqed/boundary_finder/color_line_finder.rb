@@ -1,6 +1,6 @@
 require 'rmagick'
 
-# This was "green" line finder attempting to be agnostic; now it is reworked to be color-specific line finder
+# An agnostic pattern finder for color-line delimited boundaries
 #
 class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
@@ -21,20 +21,45 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
   def find_bands
     case @layout    # boundaries.coordinates are referenced from stage image
 
-    when :vertical_split    # can vertical and horizontal split be re-used to do cross cases?
-      t = Sqed::BoundaryFinder.color_boundary_finder(image: img, boundary_color: @boundary_color)  #detect vertical division, green line
+    # No specs for this yet
+    when :seven_slot
+      top_bottom_split = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns, boundary_color: @boundary_color)              # detect vertical division [array]
+      left_right_split = Sqed::BoundaryFinder.color_boundary_finder(image: img, sample_subdivision_size: 2, boundary_color: @boundary_color)  # detect horizontal division [array]
+
+      boundaries.set(0, [0, 0, left_right_split[0], top_bottom_split[0] ])  
+      boundaries.set(6, [0, top_bottom_split[2], left_right_split[0], img.rows - top_bottom_split[2] ] )  
+
+      right_top_img = img.crop( left_right_split[2], 0, img.columns - left_right_split[2], top_bottom_split[0] , true) # sections 1,2
+      right_bottom_img = img.crop(left_right_split[2], top_bottom_split[2], img.columns - left_right_split[2], img.rows - top_bottom_split[2], true)  # sections 3,4,5
+
+      right_top_split = Sqed::BoundaryFinder.color_boundary_finder(image: right_top_img, boundary_color: @boundary_color) # vertical line b/w 1 & 2                   
+      
+      boundaries.set(1, [left_right_split[2], 0, left_right_split[2] + right_top_split[0], top_bottom_split[0] ])
+      boundaries.set(2, [left_right_split[2] + right_top_split[2], 0, right_top_img.columns - right_top_split[2], top_bottom_split[0] ]   )  
+
+      right_bottom_split = Sqed::BoundaryFinder.color_boundary_finder(image: right_bottom_img, scan: :columns, sample_subdivision_size: 2, boundary_color: @boundary_color) # horizontal line b/w (5,3) & 4 
+      
+      bottom_right_top_img = right_bottom_img.crop(0,0, img.columns - left_right_split[2], right_bottom_split[1], true) # 3,5 - we leave right_bottom_split at [1] (not 2) to take into account possible overlap error (crop gets full line at top of image)
+
+      boundaries.set(3, [ left_right_split[2] + right_top_split[2], top_bottom_split[2], left_right_split[2] + right_top_split[2], bottom_right_top_img.rows ] )   
+      boundaries.set(5, [ left_right_split[2], top_bottom_split[2], left_right_split[2] + right_top_split[0], bottom_right_top_img.rows ] )
+      
+      boundaries.set(4, [ left_right_split[2], top_bottom_split[2] + right_top_split[2], img.columns - left_right_split[2],  right_bottom_img.rows - right_top_split[2] ] ) 
+
+    when :vertical_split 
+      t = Sqed::BoundaryFinder.color_boundary_finder(image: img, boundary_color: @boundary_color)  #detect vertical division
       return if t.nil?
       boundaries.set(0, [0, 0, t[0], img.rows])  # left section of image
       boundaries.set(1, [t[2], 0, img.columns - t[2], img.rows])  # right section of image
 
     when :horizontal_split
-      t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division, (green line)
+      t = Sqed::BoundaryFinder.color_boundary_finder(image: img, scan: :columns, boundary_color: @boundary_color)  # set to detect horizontal division
       return if t.nil?
 
       boundaries.set(0, [0, 0, img.columns, t[0]])  # upper section of image
       boundaries.set(1, [0, t[2], img.columns, img.rows - t[2]])  # lower section of image
 
-    when :right_t   # only 3 zones expected, with horizontal division in right-side of vertical division
+    when :right_t # only 3 zones expected, with horizontal division in right-side of vertical division
       vertical = self.class.new(image: @img, layout: :vertical_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries
 
       irt = img.crop(*vertical.for(1), true)
@@ -50,7 +75,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       ilt = img.crop(*vertical.for(0), true) 
       irt = img.crop(*vertical.for(1), true)
 
-      left = self.class.new(image: ilt, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false).boundaries  # fails
+      left = self.class.new(image: ilt, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false).boundaries   # fails
       right = self.class.new(image: irt, layout: :horizontal_split, boundary_color: @boundary_color, use_thumbnail: false ).boundaries # OK
 
       boundaries.set(0, [0, 0, left.width_for(0), left.height_for(0) ]) 

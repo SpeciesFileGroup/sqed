@@ -31,7 +31,9 @@ module ImageHelpers
       get_image 'stage_images/frost_stage_medimum.jpg'
     end
 
-
+    def inhs_stage_7_slot
+      get_image 'stage_images/inhs_7_slot.jpg'
+    end
 
     def crossy_green_line_specimen
       get_image 'stage_images/CrossyGreenLinesSpecimen.jpg'

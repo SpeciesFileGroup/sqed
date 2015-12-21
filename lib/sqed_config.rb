@@ -58,6 +58,14 @@ module SqedConfig
   #   | 0 |  :internal_box
   #   -----
   #
+  #    0 | 1 | 2  
+  #   ------------
+  #      | 5 | 3    :seven_slot
+  #    6 |--------
+  #      |   4
+  #
+  #
+  #
 
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
@@ -69,29 +77,38 @@ module SqedConfig
     vertical_split: [0,1],
     right_t: [0,1,2],
     left_t: [0,1,2],
-    internal_box: [0]
+    internal_box: [0],
+    seven_slot: [0,1,2,3,4,5,6]
   }
 
   # Each element of the layout is a "section".  
   LAYOUT_SECTION_TYPES = [
-    :stage,                 # the image contains the full stage 
-    :specimen,              # the specimen only, no metadata should be present
-    :annotated_specimen,    # a specimen is present, and metadata is too
-    :determination_labels,  # the section contains text that determines the specimen
-    :labels,                # the section contains collecting event and non-determination labels
-    :identifier,            # the section contains an identifier (e.g. barcode or unique number)
-    :image_registration,    # the section contains only image registration information,
-    :curator_metadata,      # the section contains text with curator metadata
-    :nothing                # section is empty 
+    :annotated_specimen,      # a specimen is present, and metadata is too
+    :collecting_event_labels, # the section that contains collecting event labels (only)
+    :curator_metadata,        # the section contains text with curator metadata
+    :determination_labels,    # the section contains text that determines the specimen (only)
+    :identifier,              # the section contains an identifier (e.g. barcode or unique number)
+    :image_registration,      # the section contains only image registration information,
+    :labels,                  # the section contains collecting event and other non-determination labels
+    :nothing,                 # section is empty 
+    :other_labels,            # the section that contains text that misc. 
+    :specimen,                # the specimen only, no metadata should be present
+    :stage,                   # the image contains the full stage 
   ] 
 
   # Links section types to data parsers
   SECTION_PARSERS = {
-    labels: [ Sqed::Parser::OcrParser ],
-    identifier: [ Sqed::Parser::BarcodeParser, Sqed::Parser::OcrParser ],
-    deterimination_labels: [ Sqed::Parser::OcrParser ],
+    annotated_specimen: [ Sqed::Parser::OcrParser],
+    collecting_event_labels: [ Sqed::Parser::OcrParser],
     curator_metadata: [  Sqed::Parser::OcrParser ],
-    annotated_specimen: [ Sqed::Parser::OcrParser] 
+    deterimination_labels: [ Sqed::Parser::OcrParser ],
+    identifier: [ Sqed::Parser::BarcodeParser, Sqed::Parser::OcrParser ],
+    image_registration: [],
+    labels: [ Sqed::Parser::OcrParser ],
+    nothing: [],
+    other_labels: [ Sqed::Parser::OcrParser ],
+    specimen: [],
+    stage: []
   }
 
   EXTRACTION_PATTERNS = {
@@ -123,6 +140,12 @@ module SqedConfig
       boundary_finder: Sqed::BoundaryFinder::StageFinder,
       layout: :internal_box, 
       metadata_map: {0 => :stage}
+    },
+    
+    seven_slot: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :seven_slot,
+      metadata_map: {0 => :collecting_event_labels, 1 => :determination_labels, 2 => :other_labels, 3 => :image_registration, 4 => :curator_metadata, 5 => :identifier, 6 => :specimen }
     }
   }
 
