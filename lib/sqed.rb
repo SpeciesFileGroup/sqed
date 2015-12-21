@@ -77,13 +77,14 @@ class Sqed
   #   federate extraction options and apply user provided over-rides
   def extraction_metadata
     data = SqedConfig::EXTRACTION_PATTERNS[@pattern]
-
+    
+    data.merge!(boundary_color: boundary_color) 
     data.merge!(boundary_finder: @boundary_finder) if boundary_finder
+    data.merge!(has_border: has_border) 
     data.merge!(layout: layout) if layout 
     data.merge!(metadata_map: metadata_map) if metadata_map
-    data.merge!(has_border: has_border) 
+
     data.merge!(use_thumbnail: use_thumbnail) 
-    data.merge!(boundary_color: boundary_color) 
     data
   end
 
@@ -133,6 +134,7 @@ class Sqed
   end
 
   def result
+    # pattern.nil? is no longer true -> must have values for all extraction_metadata keys
     return false if image.nil? || pattern.nil? 
     extractor = Sqed::Extractor.new(
       boundaries: boundaries,
