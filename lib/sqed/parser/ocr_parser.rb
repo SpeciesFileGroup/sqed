@@ -61,7 +61,15 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     },
     deterimination_labels: {
       psm: 3
+    },
+    other_labels: {
+      psm: 3
+    },
+    collecting_event_labels: {
+      psm: 3
     }
+
+
   }
 
   # the text extracted from the image
@@ -85,16 +93,18 @@ class Sqed::Parser::OcrParser < Sqed::Parser
   # img.write('tmp/foo4.jpg')
   # img = img.quantize(2, Magick::GRAYColorspace)
   # #img = img.threshold(0.5)
-  # img.write('foo4.jpg') # for debugging purposes, this is the image that is sent to OCR
+  # img.write('foo4.jpg') 
   # img = img.equalize #(32, Magick::GRAYColorspace)
-  # img.write('foo5.jpg') # for debugging purposes, this is the image that is sent to OCR
-  # #img.write('foo3.jpg') # for debugging purposes, this is the image that is sent to OCR
+  # img.write('foo5.jpg') 
+  # #img.write('foo3.jpg') 
   #
-  # img.write('foo.jpg') # for debugging purposes, this is the image that is sent to OCR
+  # img.write('foo.jpg') 
   # img = img.white_threshold(245)
   # img
   # end
-  
+ 
+  # @return [String]
+  #   the ocr text 
   def text(section_type: :default)
     img = @image 
     params = SECTION_PARAMS[:default].merge(SECTION_PARAMS[section_type])
