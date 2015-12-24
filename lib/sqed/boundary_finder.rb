@@ -4,6 +4,7 @@
 class Sqed::BoundaryFinder
 
   THUMB_SIZE = 100 
+  COLOR_DELTA = 1.3 # color (e.g. red) must be this much be *COLOR_DELTA > than other values (e.g. blue/green) 
 
   # the passed image
   attr_reader :img
@@ -161,15 +162,15 @@ class Sqed::BoundaryFinder
   end
 
   def self.is_green?(pixel)
-    (pixel.green > pixel.red*1.2) && (pixel.green > pixel.blue*1.2)  
+    (pixel.green > pixel.red*COLOR_DELTA) && (pixel.green > pixel.blue*COLOR_DELTA)  
   end
 
   def self.is_blue?(pixel)
-    (pixel.blue > pixel.red*1.2) && (pixel.blue > pixel.green*1.2)   
+    (pixel.blue > pixel.red*COLOR_DELTA) && (pixel.blue > pixel.green*COLOR_DELTA)   
   end
 
   def self.is_red?(pixel)
-    (pixel.red > pixel.blue*1.2) && (pixel.red > pixel.green*1.2)   
+    (pixel.red > pixel.blue*COLOR_DELTA) && (pixel.red > pixel.green*COLOR_DELTA)   
   end
 
   def self.is_black?(pixel)
@@ -209,6 +210,32 @@ class Sqed::BoundaryFinder
     # return the position exactly in the middle of the array
     [hit_ranges.first, hit_ranges[(hit_ranges.length / 2).to_i], hit_ranges.last]
   end
+
+  # @return [Array] 
+  #  like [0,1,2]
+  # If median-min or max-median * width_factor are different from one another (by more than width_factor) then replace the larger wth the median +/- 1/2 the smaller
+  # Given [10, 12, 20] and width_factor 2 the result will be [10, 12, 13]  
+  #
+  def corrected_frequency(frequency_stats, width_factor = 3.0 )
+    v0 = frequency_stats[0]
+    m = frequency_stats[1]
+    v2 = frequency_stats[2]
+
+    a = m - v0 
+    b = v2 - m 
+
+    largest = (a > b ? a : b)
+
+    if a * width_factor > largest
+      [(m - (v2 - m)/2).to_i, m, v2]
+    elsif b * width_factor > largest
+      [ v0, m, (m + (m - v0)/2).to_i ]
+    else
+      frequency_stats
+    end
+  end
+
+
 
   # Returns an Integer, the maximum of the pairwise differences of the values in the array
   # For example, given
