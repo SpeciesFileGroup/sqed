@@ -32,17 +32,17 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       right_top_img = img.crop( left_right_split[2], 0, img.columns - left_right_split[2], top_bottom_split[0] , true) # sections 1,2
       right_bottom_img = img.crop(left_right_split[2], top_bottom_split[2], img.columns - left_right_split[2], img.rows - top_bottom_split[2], true)  # sections 3,4,5
 
-      right_top_split = Sqed::BoundaryFinder.color_boundary_finder(image: right_top_img, boundary_color: @boundary_color) # vertical line b/w 1 & 2                   
-      
-      boundaries.set(1, [left_right_split[2], 0, left_right_split[2] + right_top_split[0], top_bottom_split[0] ])
+      right_top_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_top_img, boundary_color: @boundary_color)) # vertical line b/w 1 & 2, use "corrected_frequency" to account for color bleed from previous crop
+
+      boundaries.set(1, [left_right_split[2], 0, right_top_split[0], top_bottom_split[0] ])
       boundaries.set(2, [left_right_split[2] + right_top_split[2], 0, right_top_img.columns - right_top_split[2], top_bottom_split[0] ]   )  
 
-      right_bottom_split = Sqed::BoundaryFinder.color_boundary_finder(image: right_bottom_img, scan: :columns, sample_subdivision_size: 2, boundary_color: @boundary_color) # horizontal line b/w (5,3) & 4 
+      right_bottom_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_bottom_img, scan: :columns, sample_subdivision_size: 2, boundary_color: @boundary_color)) # horizontal line b/w (5,3) & 4, use "corrected_frequency" to account for color bleed from previous crop
       
-      bottom_right_top_img = right_bottom_img.crop(0,0, img.columns - left_right_split[2], right_bottom_split[1], true) # 3,5 - we leave right_bottom_split at [1] (not 2) to take into account possible overlap error (crop gets full line at top of image)
+      bottom_right_top_img = right_bottom_img.crop(0,0, img.columns - left_right_split[2], right_bottom_split[2], true) # 3,5 
 
       boundaries.set(3, [ left_right_split[2] + right_top_split[2], top_bottom_split[2], left_right_split[2] + right_top_split[2], bottom_right_top_img.rows ] )   
-      boundaries.set(5, [ left_right_split[2], top_bottom_split[2], left_right_split[2] + right_top_split[0], bottom_right_top_img.rows ] )
+      boundaries.set(5, [ left_right_split[2], top_bottom_split[2], right_top_split[0], bottom_right_top_img.rows ] )
       
       boundaries.set(4, [ left_right_split[2], top_bottom_split[2] + right_top_split[2], img.columns - left_right_split[2],  right_bottom_img.rows - right_top_split[2] ] ) 
 
