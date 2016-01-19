@@ -4,6 +4,8 @@ require 'rmagick'
 # 
 class Sqed::Extractor
 
+  class Error < StandardError; end;
+
   # a Sqed::Boundaries instance 
   attr_accessor :boundaries
 
@@ -15,9 +17,9 @@ class Sqed::Extractor
   attr_accessor :image
 
   def initialize(boundaries: boundaries, metadata_map: metadata_map, image: image)
-    raise 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class == Sqed::Boundaries
-    raise 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class == Hash
-    raise 'image not provided' if image.nil? || !image.class.name == 'Magick::Image'
+    raise Error, 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class == Sqed::Boundaries
+    raise Error, 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class == Hash
+    raise Error, 'image not provided' if image.nil? || !image.class.name == 'Magick::Image'
 
     @metadata_map = metadata_map
     @boundaries = boundaries
@@ -32,6 +34,10 @@ class Sqed::Extractor
     # assign the images to the result
     boundaries.each do |section_index, coords|
       section_type = metadata_map[section_index]
+     
+      # TODO: raise this higher up the chain 
+      raise Error, "invalid section_type [#{section_type}]" if !SqedConfig::LAYOUT_SECTION_TYPES.include?(section_type)
+
       r.send("#{section_type}_image=", extract_image(coords))
       r.boundary_coordinates[section_type] = coords
     end 
