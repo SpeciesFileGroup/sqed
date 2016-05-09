@@ -18,14 +18,16 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'rake'
+  spec.add_dependency 'rake', '~> 11.1.2'
   spec.add_dependency 'rmagick', '~> 2.14'  
   spec.add_dependency 'rtesseract', '~> 1.2.6'
-  spec.add_dependency 'zxing_cpp', '~> 0.1.0'
 
-  spec.add_development_dependency 'rspec', '~> 3.3'
+  # A qrcode reader, too many problems with compiling, dependencies
+  # spec.add_dependency 'zxing_cpp', '~> 0.1.0'
+
+  spec.add_development_dependency 'rspec', '~> 3.4'
   spec.add_development_dependency 'bundler', '~> 1.5'
-  spec.add_development_dependency 'did_you_mean', '~> 0.9'
+  # spec.add_development_dependency 'did_you_mean', '~> 0.9'
   spec.add_development_dependency 'byebug'
   spec.add_development_dependency 'awesome_print', '~> 1.6'
 end

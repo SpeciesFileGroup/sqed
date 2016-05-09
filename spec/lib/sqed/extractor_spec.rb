@@ -9,15 +9,15 @@ describe Sqed::Extractor do
 
   let(:boundaries) { 
     Sqed::BoundaryFinder::CrossFinder.new(
-      image: image
+      target_image: image
     ).boundaries
   }
 
   let(:e) {
     Sqed::Extractor.new(
-      boundaries: boundaries,
-      image: image,
-      metadata_map: metadata_map
+      target_boundaries: boundaries,
+      target_image: image,
+      target_metadata_map: metadata_map
     )
   }
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Sqed::BoundaryFinder::CrossFinder do
   let(:image) { ImageHelpers.of_size(800, 600) }
-  let(:b) {Sqed::BoundaryFinder::CrossFinder.new(image: image)}
+  let(:b) {Sqed::BoundaryFinder::CrossFinder.new(target_image: image)}
   let(:c) {b.boundaries}
 
   specify '#boundaries returns a Sqed::Boundaries instance' do

@@ -16,14 +16,14 @@ class Sqed::Extractor
   # a Magick::Image file
   attr_accessor :image
 
-  def initialize(boundaries: boundaries, metadata_map: metadata_map, image: image)
-    raise Error, 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class == Sqed::Boundaries
-    raise Error, 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class == Hash
-    raise Error, 'image not provided' if image.nil? || !image.class.name == 'Magick::Image'
+  def initialize(target_boundaries: boundaries, target_metadata_map: metadata_map, target_image: image)
+    raise Error, 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if target_boundaries.nil? || !target_boundaries.class == Sqed::Boundaries
+    raise Error, 'metadata_map not provided or metadata_map not a Hash' if target_metadata_map.nil? || !target_metadata_map.class == Hash
+    raise Error, 'image not provided' if target_image.nil? || !target_image.class.name == 'Magick::Image'
 
-    @metadata_map = metadata_map
-    @boundaries = boundaries
-    @image = image
+    @metadata_map = target_metadata_map
+    @boundaries = target_boundaries
+    @image = target_image
   end
 
   def result

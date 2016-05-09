@@ -7,7 +7,7 @@ class Sqed::BoundaryFinder
   COLOR_DELTA = 1.3 # color (e.g. red) must be this much be *COLOR_DELTA > than other values (e.g. blue/green) 
 
   # the passed image
-  attr_reader :img
+  attr_reader :image
 
   # a symbol from SqedConfig::LAYOUTS
   attr_reader :layout
@@ -21,14 +21,14 @@ class Sqed::BoundaryFinder
   # when we compute using a derived thumbnail we temporarily store the full size image here
   attr_reader :original_image
 
-  def initialize(image: image, layout: layout, use_thumbnail: true)
-    raise 'No layout provided.' if layout.nil?
-    raise 'No image provided.' if image.nil? || image.class.name != 'Magick::Image'
+  def initialize(target_image: image, target_layout: layout, use_thumbnail: true)
+    raise 'No layout provided.' if target_layout.nil?
+    raise 'No image provided.' if target_image.nil? || target_image.class.name != 'Magick::Image'
 
     @use_thumbnail = use_thumbnail
 
-    @layout = layout
-    @img = image
+    @layout = target_layout
+    @image = target_image
     true
   end
 
@@ -38,14 +38,14 @@ class Sqed::BoundaryFinder
   end
 
   def longest_thumbnail_axis
-    img.columns > img.rows ? :width : :height 
+    image.columns > image.rows ? :width : :height 
   end
 
   def thumbnail_height
     if longest_thumbnail_axis == :height
       THUMB_SIZE
     else
-      (img.rows.to_f * (THUMB_SIZE.to_f / img.columns.to_f)).round.to_i
+      (image.rows.to_f * (THUMB_SIZE.to_f / image.columns.to_f)).round.to_i
     end
   end
 
@@ -53,21 +53,21 @@ class Sqed::BoundaryFinder
     if longest_thumbnail_axis == :width
       THUMB_SIZE
     else
-      (img.columns.to_f * (THUMB_SIZE.to_f / img.rows.to_f)).round.to_i
+      (image.columns.to_f * (THUMB_SIZE.to_f / image.rows.to_f)).round.to_i
     end
   end
 
   # see https://rmagick.github.io/image3.html#thumbnail
   def thumbnail
-    img.thumbnail(thumbnail_width, thumbnail_height)
+    image.thumbnail(thumbnail_width, thumbnail_height)
   end
 
   def width_factor
-    img.columns.to_f / thumbnail_width.to_f
+    image.columns.to_f / thumbnail_width.to_f
   end
 
   def height_factor
-    img.rows.to_f / thumbnail_height.to_f
+    image.rows.to_f / thumbnail_height.to_f
   end
 
   def zoom_boundaries
@@ -114,9 +114,9 @@ class Sqed::BoundaryFinder
   # @param scan
   #   (:rows|:columns), :rows finds vertical borders, :columns finds horizontal borders
   #
-  def self.color_boundary_finder(image: image, sample_subdivision_size: nil, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green)
+  def self.color_boundary_finder(target_image: image, sample_subdivision_size: nil, sample_cutoff_factor: nil, scan: :rows, boundary_color: :green)
 
-    image_width = image.send(scan)
+    image_width = target_image.send(scan)
     sample_subdivision_size = get_subdivision_size(image_width) if sample_subdivision_size.nil?
     samples_to_take = (image_width / sample_subdivision_size).to_i - 1
 
@@ -125,9 +125,9 @@ class Sqed::BoundaryFinder
     (0..samples_to_take).each do |s|
       # Create a sample image a single pixel tall
       if scan == :rows
-        j = image.crop(0, s * sample_subdivision_size, image.columns, 1, true)
+        j = target_image.crop(0, s * sample_subdivision_size, target_image.columns, 1, true)
       elsif scan == :columns
-        j = image.crop(s * sample_subdivision_size, 0, 1, image.rows, true)
+        j = target_image.crop(s * sample_subdivision_size, 0, 1, target_image.rows, true)
       else
         raise
       end

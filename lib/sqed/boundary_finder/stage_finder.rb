@@ -15,20 +15,20 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   attr_reader :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
 
-  def initialize(image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
-    super(image: image, layout: :internal_box) 
+  def initialize(target_image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
+    super(target_image: target_image, target_layout: :internal_box) 
 
     @min_ratio = min_ratio
 
     # Initial co-ordinates
     @x0, @y0 = 0, 0
-    @x1, @y1 = img.columns, img.rows
-    @min_width, @min_height = img.columns * @min_ratio, img.rows * @min_ratio # minimum resultant area
-    @columns, @rows = img.columns, img.rows
+    @x1, @y1 = image.columns, image.rows
+    @min_width, @min_height = image.columns * @min_ratio, image.rows * @min_ratio # minimum resultant area
+    @columns, @rows = image.columns, image.rows
 
     
     # We need a border finder proc. Provide one if none was given.
-    @is_border = is_border_proc || self.class.default_border_finder(img) # if no proc specified, use default below
+    @is_border = is_border_proc || self.class.default_border_finder(image) # if no proc specified, use default below
 
     @x00 = @x0
     @y00 = @y0
@@ -53,7 +53,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   # fails for 0.75, (0.18, 0.17,0.16,0.15); 0.70, 0.18;
   #
   # this sets variables (locally) for find_edges
-  def self.default_border_finder(img, samples = 5, threshold = 0.75, fuzz_factor = 0.40) # working on non-synthetic images 04-dec-2014
+  def self.default_border_finder(image, samples = 5, threshold = 0.75, fuzz_factor = 0.40) # working on non-synthetic images 04-dec-2014
     fuzz = ((Magick::QuantumRange + 1) * fuzz_factor).to_i
     # Returns true if the edge is a border (border meaning outer region to be cropped)
     lambda do |edge|
@@ -122,11 +122,11 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
   end
 
   def vline(x)
-    img.get_pixels x, @y00, 1, @height0 - 1
+    image.get_pixels x, @y00, 1, @height0 - 1
   end
 
   def hline(y)
-    img.get_pixels @x00, y, @width0 - 1, 1
+    image.get_pixels @x00, y, @width0 - 1, 1
   end
 
   # actually  + 1 (starting at zero?)

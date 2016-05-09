@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-require 'zxing'
+# require 'zxing'
 
 require_relative "sqed/parser"
 require_relative "sqed/parser/ocr_parser"

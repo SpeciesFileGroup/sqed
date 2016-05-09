@@ -4,14 +4,14 @@ require 'rmagick'
 #
 class Sqed::BoundaryFinder::CrossFinder < Sqed::BoundaryFinder
 
-  def initialize(image: image)
-    @img = image
+  def initialize(target_image: image)
+    @image = target_image
     find_edges 
   end
 
   def find_edges
-    width = @img.columns / 2
-    height = @img.rows / 2
+    width = image.columns / 2
+    height = image.rows / 2
 
     boundaries.coordinates[0] = [0, 0, width, height] 
     boundaries.coordinates[1] = [width, 0, width, height] 

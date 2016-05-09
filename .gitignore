@@ -25,5 +25,5 @@ foo*.jpg
 SessionID_BarcodeImage.JPG
 
 tess*
-
+.byebug_history
 /*.jpg

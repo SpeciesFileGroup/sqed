@@ -1,7 +1,6 @@
 # Given an image, return an ordered array of detectable barcodes
-
-
-
+# 
+#
 class Sqed::Parser::BarcodeParser < Sqed::Parser
 
   TYPE = :barcode
@@ -23,7 +22,7 @@ class Sqed::Parser::BarcodeParser < Sqed::Parser
   # Uses the same enging as zbarimg that you can install with brew (zbarimg)
   #
   def get_code_128
-    ZXing.decode @image.filename
+    nil # ZXing.decode @image.filename
   end
 
   # try a bunch of options, organized by most common,  give the first hit
