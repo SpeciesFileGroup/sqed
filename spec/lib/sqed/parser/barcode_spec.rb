@@ -17,7 +17,7 @@ describe Sqed::Parser::BarcodeParser do
     expect(p).to respond_to(:barcode)
   end
 
-  specify '#barcode returns some text' do
+  xspecify '#barcode returns some text' do
     expect(p.barcode).to eq('Count01234567!')
   end
 
