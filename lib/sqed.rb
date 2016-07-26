@@ -178,7 +178,7 @@ class Sqed
 
   def get_section_boundaries
     options = {target_image: stage_image, use_thumbnail: use_thumbnail}
-    options.merge!( target_layout: extraction_metadata[:layout] ) unless extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::CrossFinder'
+    options.merge!( target_layout: extraction_metadata[:target_layout] ) unless extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::CrossFinder'
     options.merge!( boundary_color: boundary_color) if extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::ColorLineFinder'
 
     extraction_metadata[:boundary_finder].new(options).boundaries
