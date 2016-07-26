@@ -35,8 +35,8 @@ describe Sqed do
   end
 
   context 'initialization' do 
-    specify 'without providing a pattern assigns :cross' do
-      expect(s.pattern).to eq(:cross)
+    specify 'without providing a pattern assigns nil' do
+      expect(s.pattern).to eq(nil)
     end
   end
 

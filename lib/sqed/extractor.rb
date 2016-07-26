@@ -1,6 +1,6 @@
 require 'rmagick'
 
-# An Extractor takes Boundries object and a metadata_map pattern and returns a Sqed::Result
+# An Extractor takes Boundries object and a metadata_map and returns a Sqed::Result
 # 
 class Sqed::Extractor
 

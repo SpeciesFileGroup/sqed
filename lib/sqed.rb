@@ -5,9 +5,9 @@ raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
 
 require "rmagick"
 
-# Instants take the following
+# Instances take the following
 # 1) A base image @image
-# 2) A target extraction pattern
+# 2) A target extraction pattern, or individually specified attributes
 #
 # Return a Sqed::Result
 #    
@@ -23,7 +23,10 @@ class Sqed
   # initial image which is an instance of ImageMagick::Image, containing background and stage, or just stage
   attr_accessor :image
 
-  # pointer to a combined boundary_finder, layout, and metadata_map pattern, a symbol taken from SqedConfig::EXTRACTION_PATTERNS
+  # !optional! A lookup macro that if provided sets boundary_finder, layout, and metadata_map.  These can be individually overwritten.
+  # Legal values are symbols taken from SqedConfig::EXTRACTION_PATTERNS.
+  # DO NOT pass pattern outside of a sqed instance!
+  # 
   attr_accessor :pattern
 
   # Provide a specific layout, overrides layout metadata taken from pattern
@@ -53,7 +56,7 @@ class Sqed
   # Provide a boundary_finder, overrides metadata taken from pattern
   attr_accessor :boundary_finder 
    
-  def initialize(target_image: nil, target_pattern: :cross, target_layout: nil, has_border: true, boundary_color: :green, use_thumbnail: true, boundary_finder: nil, metadata_map: nil)
+  def initialize(target_image: nil, target_pattern: nil, target_layout: nil, has_border: true, boundary_color: :green, use_thumbnail: true, boundary_finder: nil, metadata_map: nil)
     raise 'extraction pattern not defined' if target_pattern && !SqedConfig::EXTRACTION_PATTERNS.keys.include?(target_pattern) 
 
     # data, and stubs for results
@@ -62,11 +65,13 @@ class Sqed
     @stage_boundary = Sqed::Boundaries.new(:internal_box) 
 
     # extraction metadata
-    @pattern = (target_pattern || :cross)
+    @pattern = target_pattern  # not required if target_layout, metadata_map, and boundary_finder are provided
 
     @has_border = has_border
     @boundary_finder = boundary_finder.constantize if boundary_finder
-    @layout = target_layout || SqedConfig::EXTRACTION_PATTERNS[pattern][:layout]
+    @layout = target_layout 
+    @layout ||= SqedConfig::EXTRACTION_PATTERNS[pattern][:layout] if pattern
+
     @metadata_map = metadata_map
     @boundary_color = boundary_color
     @use_thumbnail = use_thumbnail
@@ -77,13 +82,16 @@ class Sqed
   # @return [Hash]
   #   federate extraction options and apply user provided over-rides
   def extraction_metadata
-    data = SqedConfig::EXTRACTION_PATTERNS[pattern]
-    
-    data[:boundary_color] = boundary_color 
+    data = {}
+    data = SqedConfig::EXTRACTION_PATTERNS[pattern] if pattern
+
+    # if pattern is not provided, these must be
     data[:boundary_finder]  = @boundary_finder if boundary_finder
-    data[:has_border] = has_border 
     data[:target_layout] = layout if layout 
     data[:target_metadata_map] = metadata_map if metadata_map
+
+    data[:boundary_color] = boundary_color 
+    data[:has_border] = has_border 
     data[:use_thumbnail] = use_thumbnail 
     data
   end
@@ -134,8 +142,8 @@ class Sqed
   end
 
   def result
-    # pattern.nil? is no longer true -> must have values for all extraction_metadata keys
-    return false if image.nil? || pattern.nil? 
+    return false if image.nil? 
+    return false if pattern.nil? && (metadata_map.nil? && layout.nil? && boundary_finder.nil?) 
 
     extractor = Sqed::Extractor.new(
       target_boundaries: boundaries,
