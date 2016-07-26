@@ -65,7 +65,7 @@ class Sqed
     @pattern = (target_pattern || :cross)
     @has_border = has_border
     @boundary_finder = boundary_finder.constantize if boundary_finder
-    @layout = layout
+    @layout = target_layout
     @metadata_map = metadata_map
     @boundary_color = boundary_color
     @use_thumbnail = use_thumbnail
