@@ -23,8 +23,11 @@ class Sqed
   # initial image which is an instance of ImageMagick::Image, containing background and stage, or just stage
   attr_accessor :image
 
-  # the particular arrangement of the content, a symbol taken from SqedConfig::EXTRACTION_PATTERNS
+  # pointer to a combined boundary_finder, layout, and metadata_map pattern, a symbol taken from SqedConfig::EXTRACTION_PATTERNS
   attr_accessor :pattern
+
+  # Provide a specific layout, overrides layout metadata taken from pattern
+  attr_accessor :layout
 
   # the image that is the cropped content for parsing
   attr_accessor :stage_image
@@ -44,16 +47,13 @@ class Sqed
   # Boolean, whether to do the boundary detection (not stage detection at present) against a thumbnail version of the passed image (faster, less accurate, true be default) 
   attr_accessor :use_thumbnail
 
-  # Provide a specific layout, overrides metadata taken from pattern
-  attr_accessor :layout
-
   # Provide a metadata map, overrides metadata taken from pattern
   attr_accessor :metadata_map
 
   # Provide a boundary_finder, overrides metadata taken from pattern
   attr_accessor :boundary_finder 
    
-  def initialize(target_image: image, target_pattern: pattern, has_border: true, boundary_color: :green, use_thumbnail: true, boundary_finder: nil, target_layout: nil, metadata_map: nil)
+  def initialize(target_image: nil, target_pattern: :cross, target_layout: nil, has_border: true, boundary_color: :green, use_thumbnail: true, boundary_finder: nil, metadata_map: nil)
     raise 'extraction pattern not defined' if target_pattern && !SqedConfig::EXTRACTION_PATTERNS.keys.include?(target_pattern) 
 
     # data, and stubs for results
@@ -63,9 +63,10 @@ class Sqed
 
     # extraction metadata
     @pattern = (target_pattern || :cross)
+
     @has_border = has_border
     @boundary_finder = boundary_finder.constantize if boundary_finder
-    @layout = target_layout
+    @layout = target_layout || SqedConfig::EXTRACTION_PATTERNS[pattern][:layout]
     @metadata_map = metadata_map
     @boundary_color = boundary_color
     @use_thumbnail = use_thumbnail
@@ -78,12 +79,12 @@ class Sqed
   def extraction_metadata
     data = SqedConfig::EXTRACTION_PATTERNS[pattern]
     
-    data.merge!(boundary_color: boundary_color) 
-    data.merge!(boundary_finder: @boundary_finder) if boundary_finder
-    data.merge!(has_border: has_border) 
-    data.merge!(target_layout: layout) if layout 
-    data.merge!(target_metadata_map: metadata_map) if metadata_map
-    data.merge!(use_thumbnail: use_thumbnail) 
+    data[:boundary_color] = boundary_color 
+    data[:boundary_finder]  = @boundary_finder if boundary_finder
+    data[:has_border] = has_border 
+    data[:target_layout] = layout if layout 
+    data[:target_metadata_map] = metadata_map if metadata_map
+    data[:use_thumbnail] = use_thumbnail 
     data
   end
 
@@ -135,6 +136,7 @@ class Sqed
   def result
     # pattern.nil? is no longer true -> must have values for all extraction_metadata keys
     return false if image.nil? || pattern.nil? 
+
     extractor = Sqed::Extractor.new(
       target_boundaries: boundaries,
       target_metadata_map: extraction_metadata[:metadata_map],
