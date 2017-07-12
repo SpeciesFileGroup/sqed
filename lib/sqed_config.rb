@@ -115,43 +115,43 @@ module SqedConfig
     right_t: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :right_t,
-      metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
+      target_metadata_map: {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
     },
 
     vertical_offset_cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :vertical_offset_cross,
-      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
+      target_metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
     },
   
    equal_cross: {
      boundary_finder: Sqed::BoundaryFinder::CrossFinder,
      layout: :equal_cross,
-     metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
+     target_metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
    },
 
     cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :cross, 
-      metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
+      target_metadata_map: {0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
     },
 
     stage: {
       boundary_finder: Sqed::BoundaryFinder::StageFinder,
       layout: :internal_box, 
-      metadata_map: {0 => :stage}
+      target_metadata_map: {0 => :stage}
     },
     
     seven_slot: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :seven_slot,
-      metadata_map: {0 => :collecting_event_labels, 1 => :determination_labels, 2 => :other_labels, 3 => :image_registration, 4 => :curator_metadata, 5 => :identifier, 6 => :specimen }
+      target_metadata_map: {0 => :collecting_event_labels, 1 => :determination_labels, 2 => :other_labels, 3 => :image_registration, 4 => :curator_metadata, 5 => :identifier, 6 => :specimen }
     }
   }
 
   DEFAULT_TMP_DIR = "/tmp"
 
   def self.index_for_section_type(pattern, section_type)
-    EXTRACTION_PATTERNS[pattern][:metadata_map].invert[section_type]
+    EXTRACTION_PATTERNS[pattern][:target_metadata_map].invert[section_type]
   end
 end

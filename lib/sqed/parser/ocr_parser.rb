@@ -107,9 +107,29 @@ class Sqed::Parser::OcrParser < Sqed::Parser
   #   the ocr text 
   def text(section_type: :default)
     img = @image 
+ 
+    # resample if an image 4"x4" is less than 300dpi 
+    if img.columns * img.rows < 144000
+      img = img.resample(300)
+    end
+    
     params = SECTION_PARAMS[:default].merge(SECTION_PARAMS[section_type])
     r = RTesseract.new(img, params) 
-    @text = r.to_s.strip 
+    @text = r.to_s.strip
+
+    if @text == ""
+      img = img.white_threshold(245)
+      r = RTesseract.new(img, params) 
+      @text = r.to_s.strip
+    end
+
+    if @text == ""
+      img = img.quantize(256,Magick::GRAYColorspace)
+      r = RTesseract.new(img, params) 
+      @text = r.to_s.strip
+    end
+
+    @text
   end
 
 

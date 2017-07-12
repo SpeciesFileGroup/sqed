@@ -5,6 +5,11 @@ describe Sqed do
   let(:s) {Sqed.new}
 
   context 'attributes' do
+
+    specify '#metadata_map' do
+      expect(s).to respond_to(:metadata_map)
+    end
+
     specify '#image' do
       expect(s).to respond_to(:image)
     end
