@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'rake', '~> 11.1.2'
+  spec.add_dependency 'rake', '~> 12.0'
   spec.add_dependency 'rmagick', '~> 2.16'  
   spec.add_dependency 'rtesseract', '~> 2.1.0'
 
