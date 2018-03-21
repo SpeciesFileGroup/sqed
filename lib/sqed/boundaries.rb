@@ -19,7 +19,8 @@ class Sqed
   #   :right_t
   attr_accessor :layout
 
-  # Boolean, whether or not the last method to populate this object passed fully
+  # @return [Boolean] whether or not the last method to populate this object
+  # executed to completion
   attr_accessor :complete
 
   def initialize(layout = nil)
@@ -37,15 +38,17 @@ class Sqed
     end
   end
 
+  # @return [Sqed::Boundaries instance]
+  #   the idea here is to create a deep copy of self, offsetting by boundary
+  #   as we go
   def offset(boundary)
-    b = Sqed::Boundaries.new # the idea here is to create a deep copy of self, offsetting by boundary as we go
+    b = Sqed::Boundaries.new
     (0..coordinates.length - 1).each do |i|
       b.set(i,
             [(x_for(i) + boundary.x_for(0)),
              (y_for(i) + boundary.y_for(0)),
              width_for(i),
-             height_for(i)]
-      )
+             height_for(i)])
     end
     b.complete = complete
     b

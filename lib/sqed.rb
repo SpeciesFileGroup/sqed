@@ -39,20 +39,25 @@ class Sqed
   # the image that is the cropped content for parsing
   attr_accessor :stage_image
 
-  # a Sqed::Boundaries instance that stores the coordinates of the stage
+  # @return [Sqed::Boundaries instance]
+  #   stores the coordinates of the stage
   attr_accessor :stage_boundary
 
-  # a Sqed::Boundaries instances that contains the coordinates of the internal stage sections
+  # @return [Sqed::Boundaries instance]
+  #   contains the coordinates of the internal stage sections
   attr_accessor :boundaries
 
-  # @return [Boolean]
-  #   whether to detect the border on initialization, i.e. new()
+  # @return [Boolean] defaults to `true`
+  #   when true detects border on initialization
   attr_accessor :has_border
 
-  # @param boundary_color [Symbol] like `:red`, `:green`, `:blue`, describing the boundary color within the stage
+  # @param boundary_color [Symbol] like `:red`, `:green`, `:blue`, describing
+  # the boundary color within the stage, defaults to `:green`
   attr_accessor :boundary_color
 
-  # Boolean, whether to do the boundary detection (not stage detection at present) against a thumbnail version of the passed image (faster, less accurate, true be default)
+  # @return [Boolean] defaults to `true` (faster, less accurate)
+  #  if `true` do the boundary detection (not stage detection at present)
+  # against a thumbnail version of the passed image
   attr_accessor :use_thumbnail
 
   # Provide a metadata map, overrides metadata taken from pattern.
@@ -74,8 +79,13 @@ class Sqed
     configure_layout(opts)
 
     @has_border = opts[:has_border]
+    @has_border = true if @has_border.nil?
+
     @metadata_map = opts[:metadata_map]
+
     @boundary_color = opts[:boundary_color]
+    @boundary_color ||= :green
+
     @use_thumbnail = opts[:use_thumbnail]
     @use_thumbnail = true if @use_thumbnail.nil?
 
