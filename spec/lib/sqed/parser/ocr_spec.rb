@@ -9,8 +9,8 @@ describe Sqed::Parser::OcrParser do
     expect(p).to respond_to(:image)
   end
 
-  specify '#text returns some text' do
-    expect(p.text).to eq('README.md')
+  specify '#get_text returns some text' do
+    expect(p.get_text).to eq('README.md')
   end
 
 end 

@@ -1,11 +1,10 @@
 # Given an image, return an ordered array of detectable barcodes
-# 
+#
+# !! DOES NOTHING !!
 #
 class Sqed::Parser::BarcodeParser < Sqed::Parser
 
   TYPE = :barcode
-
-  attr_accessor :image
 
   attr_accessor :barcode
 
@@ -28,15 +27,16 @@ class Sqed::Parser::BarcodeParser < Sqed::Parser
   # try a bunch of options, organized by most common,  give the first hit
   def get_barcode
     [get_code_128].compact.first
-  end 
+  end
 
  #def get_datamatrix
  #  https://github.com/srijan/ruby-dmtx
  #end
 
   # alias to a universal method
-  def text(section_type: :default) 
+  def get_text(section_type: :default)
     barcode
   end
+
 
 end

@@ -12,13 +12,13 @@ describe 'handling 7 slot stages' do
   end
 
   let(:m) do
-    { '0' => 'collecting_event_labels',
-      '1' => 'determination_labels',
-      '2' => 'other_labels',
-      '3' => 'image_registration',
-      '4' => 'curator_metadata',
-      '5' => 'identifier',
-      '6' => 'specimen' }
+    { 0 => 'collecting_event_labels',
+      1 => 'determination_labels',
+      2 => 'other_labels',
+      3 => 'image_registration',
+      4 => 'curator_metadata',
+      5 => 'identifier',
+      6 => 'specimen' }
   end
 
   context 'parses' do
@@ -50,7 +50,8 @@ describe 'handling 7 slot stages' do
       c = s.boundaries.coordinates 
       c.each do |section, values|
         c[section].each_with_index do |v, i|
-          expect(v > -1).to be_truthy, message: "section #{section}, index #{i} has a bad value '#{v}'"
+          msg = "section #{section}, index #{i} has a bad value '#{v}'"
+          expect(v > -1).to be_truthy, msg
         end
       end
     end

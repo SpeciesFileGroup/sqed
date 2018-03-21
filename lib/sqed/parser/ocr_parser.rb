@@ -1,3 +1,5 @@
+require 'rtesseract'
+
 # encoding: UTF-8
 #
 # Given a single image return all text in that image.
@@ -17,44 +19,46 @@
 # Below an x-height of 10 pixels, you have very little chance of accurate results, 
 # and below about 8 pixels, most of the text will be "noise removed". 
 #
-require 'rtesseract' 
-
 class Sqed::Parser::OcrParser < Sqed::Parser
 
   TYPE = :text
+
+  # Other experimented with default params
+  #      classify_debug_level: 5,
+  #      lang: 'eng',
+  #      load_system_dawg: 0,
+  #      load_unambig_dawg: 0,
+  #      load_freq_dawg: 0,
+  #      load_fixed_length_dawgs: 0,
+  #      load_number_dawg: 0,
+  #      load_punc_dawg: 1, ## important
+  #      load_unambig_dawg: 1,
+  #      chop_enable: 0,
+  #     enable_new_segsearch: 1,
+  #     tessedit_debug_quality_metrics: 1,
+  #     tessedit_write_params_to_file: 'tmp/ocr_config_file.txt',
+  #     tessedit_write_images: 1,
+  #     equationdetect_save_merged_image: 1,
+  #     tessedit_dump_pageseg_images: 1,
+  #     equationdetect_save_bi_image: 1
 
   # Tesseract parameters default/specific to section type, 
   # default is merged into the type
   SECTION_PARAMS = {
     default: {
-      psm: 3,
-#      classify_debug_level: 5,
-#      lang: 'eng', 
-#      load_system_dawg: 0,
-#      load_unambig_dawg: 0,
-#      load_freq_dawg: 0,
-#      load_fixed_length_dawgs: 0,
-#      load_number_dawg: 0,
-#      load_punc_dawg: 1, ## important
-#      load_unambig_dawg: 1,
-#      chop_enable: 0,
-#     enable_new_segsearch: 1,
-#     tessedit_debug_quality_metrics: 1,
-#     tessedit_write_params_to_file: 'tmp/ocr_config_file.txt',
-#     tessedit_write_images: 1,
-#     equationdetect_save_merged_image: 1,
-#     tessedit_dump_pageseg_images: 1,
-#     equationdetect_save_bi_image: 1
+      psm: 3
     },
     annotated_specimen: {
-      edges_children_count_limit: 3000 # was 45, significantly improves annotated_specimen for odontates
+      # was 45, significantly improves annotated_specimen for odontates
+      edges_children_count_limit: 3000 
     },
     identifier: {
       psm: 1,
       # tessedit_char_whitelist: '0123456789'
       #  edges_children_count_limit: 4000
-    }, 
+    },
     curator_metadata: {
+      psm: 3
     },
     labels: {
       psm: 3, # may need to be 6
@@ -68,10 +72,7 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     collecting_event_labels: {
       psm: 3
     }
-  }
-
-  # the text extracted from the image
-  attr_accessor :text
+  }.freeze
 
   # future consideration 
   # def enhance_image(img)
@@ -100,36 +101,36 @@ class Sqed::Parser::OcrParser < Sqed::Parser
   # img = img.white_threshold(245)
   # img
   # end
- 
+
   # @return [String]
-  #   the ocr text 
-  def text(section_type: :default)
-    img = image 
- 
+  #   the ocr text
+  def get_text(section_type: :default)
+    img = image
+
     # resample if an image 4"x4" is less than 300dpi 
     if img.columns * img.rows < 144000
       img = img.resample(300)
     end
 
-    params = SECTION_PARAMS[:default]
+    params = SECTION_PARAMS[:default].dup
     params.merge!(SECTION_PARAMS[section_type])
 
-    r = RTesseract.new(img, params) 
-    @text = r.to_s.strip
+    r = RTesseract.new(img, params)
+    @extracted_text = r.to_s.strip
 
-    if @text == ""
+    if @extracted_text == ''
       img = img.white_threshold(245)
-      r = RTesseract.new(img, params) 
-      @text = r.to_s.strip
+      r = RTesseract.new(img, params)
+      @extracted_text = r.to_s.strip
     end
 
-    if @text == ""
+    if @extracted_text == ''
       img = img.quantize(256,Magick::GRAYColorspace)
-      r = RTesseract.new(img, params) 
-      @text = r.to_s.strip
+      r = RTesseract.new(img, params)
+      @extracted_text = r.to_s.strip
     end
 
-    @text
+    @extracted_text
   end
 
 end

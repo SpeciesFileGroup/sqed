@@ -1,19 +1,21 @@
 require 'rmagick'
 
-# An Extractor takes Boundries object and a metadata_map and returns a Sqed::Result
-#
-class Sqed::Extractor
+class Sqed
+
+  # An Extractor takes Boundaries object and a metadata_map and returns a Sqed::Result
+  #
+  class Extractor
 
   class Error < StandardError; end;
 
   # a Sqed::Boundaries instance
   attr_accessor :boundaries
 
+  # @return [Hash] like `{0 => :annotated_specimen, 1 => :identifier, 2 => :image_registration }`
   # a metadata_map hash from EXTRACTION_PATTERNS like:
-  #   {0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
   attr_accessor :metadata_map
 
-  # a Magick::Image file
+  # @return [Magick::Image file]
   attr_accessor :image
 
   def initialize(**opts)
@@ -27,7 +29,7 @@ class Sqed::Extractor
   end
 
   def result
-    r = Sqed::Result.new()
+    r = Sqed::Result.new
 
     r.sections = metadata_map.values.sort
 
@@ -35,28 +37,23 @@ class Sqed::Extractor
     boundaries.each do |section_index, coords|
       section_type = metadata_map[section_index]
 
-      # TODO: raise this higher up the chain 
-      raise Error, "invalid section_type [#{section_type}]" if !SqedConfig::LAYOUT_SECTION_TYPES.include?(section_type)
-
       r.send("#{section_type}_image=", extract_image(coords))
       r.boundary_coordinates[section_type] = coords
-    end 
+    end
 
     # assign the metadata to the result
     metadata_map.each do |section_index, section_type|
       # only extract data if a parser exists
       if parsers = SqedConfig::SECTION_PARSERS[section_type]
-
         section_image = r.send("#{section_type}_image")
-
         updated = r.send(section_type)
 
         parsers.each do |p|
-          parsed_result = p.new(section_image).text(section_type: section_type)
-          updated.merge!(p::TYPE => parsed_result) if parsed_result
+          parsed_result = p.new(section_image).get_text(section_type: section_type)
+          updated[p::TYPE] = parsed_result if parsed_result && parsed_result.length > 0
         end
 
-        r.send("#{section_type}=", updated) 
+        r.send("#{section_type}=", updated)
       end
     end
 
@@ -65,7 +62,8 @@ class Sqed::Extractor
 
   # crop takes x, y, width, height
   def extract_image(coords)
-    i = @image.crop(*coords, true)
+    @image.crop(*coords, true)
   end
 
+  end
 end

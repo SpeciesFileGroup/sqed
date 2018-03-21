@@ -67,14 +67,14 @@ module SqedConfig
   # the Sqed::Boundaries instance.
   # TODO: deprecate for simpler breakdown (cross, split, t)
   LAYOUTS = {
-    cross: [0,1,2,3],
-    vertical_offset_cross: [0,1,2,3],
-    horizontal_split: [0,1],
-    vertical_split: [0,1],
-    right_t: [0,1,2],
-    left_t: [0,1,2],
+    cross: [0, 1, 2, 3],
+    vertical_offset_cross: [0, 1, 2, 3],
+    horizontal_split: [0, 1],
+    vertical_split: [0, 1],
+    right_t: [0, 1, 2],
+    left_t: [0, 1, 2],
     internal_box: [0],
-    seven_slot: [0,1,2,3,4,5,6]
+    seven_slot: [0, 1, 2, 3, 4, 5, 6]
   }.freeze
 
   # Each element of the layout is a "section".
@@ -111,7 +111,7 @@ module SqedConfig
     right_t: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :right_t,
-      metadata_map: { 0 => :annotated_specimen, 1 => :identifier, 2 =>:image_registration }
+      metadata_map: { 0 => :annotated_specimen, 1 => :identifier, 2 => :image_registration }
     },
 
     vertical_offset_cross: {
@@ -134,7 +134,7 @@ module SqedConfig
 
     stage: {
       boundary_finder: Sqed::BoundaryFinder::StageFinder,
-      layout: :internal_box, 
+      layout: :internal_box,
       metadata_map: { 0 => :stage}
     },
 
