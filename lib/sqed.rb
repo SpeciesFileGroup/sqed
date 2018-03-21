@@ -1,9 +1,9 @@
 # encoding: UTF-8
 
-recent_ruby = RUBY_VERSION >= '2.1.1'
-raise "IMPORTANT: sqed gem requires ruby >= 2.1.1" unless recent_ruby
+recent_ruby = RUBY_VERSION >= '2.4.3'
+raise 'IMPORTANT: sqed gem requires ruby >= 2.4.3' unless recent_ruby
 
-require "rmagick"
+require 'rmagick'
 
 # Instances take the following
 # 1) A base image @image
@@ -17,8 +17,8 @@ require "rmagick"
 class Sqed
 
   require_relative 'sqed_config'
-  require_relative "sqed/extractor"
-  require_relative "sqed/result"
+  require_relative 'sqed/extractor'
+  require_relative 'sqed/result'
 
   # initial image which is an instance of ImageMagick::Image, containing background and stage, or just stage
   attr_accessor :image
@@ -26,11 +26,14 @@ class Sqed
   # !optional! A lookup macro that if provided sets boundary_finder, layout, and metadata_map.  These can be individually overwritten.
   # Legal values are symbols taken from SqedConfig::EXTRACTION_PATTERNS.
   # DO NOT pass pattern outside of a sqed instance!
+
+  # @param pattern [Symbol] like `:seven_slot`, see Sqed::CONFIG for valid options
   #
-  # !! Always passed as an option :target_pattern, an persisted as :pattern
+  # not required if layout, metadata_map, and boundary_finder are provided
   attr_accessor :pattern
 
-  # Provide a specific layout, overrides layout metadata taken from pattern
+  # @return [Symbol] like `:cross`
+  # !! Provide a specific layout, passed as option :layout, overrides layout metadata taken from :pattern, defaults to `:cross`
   attr_accessor :layout
 
   # the image that is the cropped content for parsing
@@ -39,46 +42,73 @@ class Sqed
   # a Sqed::Boundaries instance that stores the coordinates of the stage
   attr_accessor :stage_boundary
 
-  # a Sqed::Boundaries instances that contains the coordinates of the interan stage sections
+  # a Sqed::Boundaries instances that contains the coordinates of the internal stage sections
   attr_accessor :boundaries
 
-  # Boolean, whether to detect the border on initialization, i.e. new()
+  # @return [Boolean]
+  #   whether to detect the border on initialization, i.e. new()
   attr_accessor :has_border
 
-  # a symbol, :red, :green, :blue, describing the boundary color within the stage
+  # @param boundary_color [Symbol] like `:red`, `:green`, `:blue`, describing the boundary color within the stage
   attr_accessor :boundary_color
 
   # Boolean, whether to do the boundary detection (not stage detection at present) against a thumbnail version of the passed image (faster, less accurate, true be default)
   attr_accessor :use_thumbnail
 
   # Provide a metadata map, overrides metadata taken from pattern.
-  # !! Always passed as an option :target_metadata_map, an persisted as :metadata_map
   attr_accessor :metadata_map
 
   # Provide a boundary_finder, overrides metadata taken from pattern
   attr_accessor :boundary_finder
 
-  def initialize(target_image: nil, target_pattern: nil, target_layout: nil, has_border: true, boundary_color: :green, use_thumbnail: true, boundary_finder: nil, target_metadata_map: nil)
-    raise 'extraction pattern not defined' if target_pattern && !SqedConfig::EXTRACTION_PATTERNS.keys.include?(target_pattern)
+  def initialize(**opts)
+    # image: nil, pattern: nil, layout: nil,
+    # has_border: true, boundary_color: :green,
+    # use_thumbnail: true, boundary_finder: nil, metadata_map: nil)
 
-    # data, and stubs for results
-    @image = target_image
+    # extraction metadata
+    @image = opts[:image]
+
+    configure_from_pattern(opts[:pattern])
+    configure_boundary_finder(opts)
+    configure_layout(opts)
+
+    @has_border = opts[:has_border]
+    @metadata_map = opts[:metadata_map]
+    @boundary_color = opts[:boundary_color]
+    @use_thumbnail = opts[:use_thumbnail]
+    @use_thumbnail = true if @use_thumbnail.nil?
+
+    # stubs for data and results
     @boundaries = nil
     @stage_boundary = Sqed::Boundaries.new(:internal_box)
 
-    # extraction metadata
-    @pattern = target_pattern  # not required if target_layout, target_metadata_map, and boundary_finder are provided
-
-    @has_border = has_border
-    @boundary_finder = boundary_finder.constantize if boundary_finder
-    @layout = target_layout
-    @layout ||= SqedConfig::EXTRACTION_PATTERNS[pattern][:layout] if pattern
-
-    @metadata_map = target_metadata_map
-    @boundary_color = boundary_color
-    @use_thumbnail = use_thumbnail
-
     set_stage_boundary if @image
+  end
+
+  def configure_from_pattern(value)
+    return if value.nil?
+    value = value.to_sym
+    raise "provided extraction pattern '#{value}' not defined" if !SqedConfig::EXTRACTION_PATTERNS.keys.include?(value)
+    @pattern = value
+    a = SqedConfig::EXTRACTION_PATTERNS[pattern]
+    @boundary_finder = a[:boundary_finder]
+    @layout = a[:layout]
+    @metadata_map = a[:metadata_map]
+    true
+  end
+
+  def configure_boundary_finder(opts)
+    @boundary_finder = opts[:boundary_finder].constantize if !opts[:boundary_finder].nil?
+    @boundary_finder ||= Sqed::BoundaryFinder::CrossFinder
+  end
+
+  def configure_layout(opts)
+    @layout = opts[:layout]
+    if p = opts[:pattern]
+      @layout ||= SqedConfig::EXTRACTION_PATTERNS[p][:layout]
+    end
+    @layout ||= :cross
   end
 
   # @return [Hash]
@@ -88,9 +118,9 @@ class Sqed
     data = SqedConfig::EXTRACTION_PATTERNS[pattern] if pattern
 
     # if pattern is not provided, these must be
-    data[:boundary_finder]  = @boundary_finder if boundary_finder
-    data[:target_layout] = layout if layout
-    data[:target_metadata_map] = metadata_map if metadata_map
+    data[:boundary_finder] = boundary_finder if boundary_finder
+    data[:layout] = layout if layout
+    data[:metadata_map] = metadata_map if metadata_map
 
     data[:boundary_color] = boundary_color
     data[:has_border] = has_border
@@ -117,11 +147,11 @@ class Sqed
   end
 
   def stage_image
-   crop_image if @stage_image.nil?
-   @stage_image
+    crop_image if @stage_image.nil?
+    @stage_image
   end
 
-  # Return [Sqed::Boundaries instance]
+  # @return [Sqed::Boundaries instance]
   #   a boundaries instance that has the original image (prior to cropping stage) coordinates
   def native_boundaries
     # check for @boundaries.complete first? OR handle partial detections  ?!
@@ -132,7 +162,7 @@ class Sqed
     end
   end
 
-  # return [Image]
+  # @return [Image]
   #   crops the stage if not done, then sets/returns @stage_image
   def crop_image
     if has_border
@@ -148,16 +178,17 @@ class Sqed
     return false if pattern.nil? && (metadata_map.nil? && layout.nil? && boundary_finder.nil?)
 
     extractor = Sqed::Extractor.new(
-      target_boundaries: boundaries,
-      target_metadata_map: extraction_metadata[:target_metadata_map],
-      target_image: stage_image)
+      boundaries: boundaries,
+      metadata_map: extraction_metadata[:metadata_map],
+      image: stage_image
+    )
     extractor.result
   end
 
   # @return [Hash]
   #   an overview of data/metadata, for debugging purposes only
   def attributes
-    { target_image: image,
+    { image: image,
       boundaries: boundaries,
       stage_boundary: stage_boundary
     }.merge!(extraction_metadata)
@@ -167,7 +198,7 @@ class Sqed
 
   def set_stage_boundary
     if has_border
-      boundary = Sqed::BoundaryFinder::StageFinder.new(target_image: image).boundaries
+      boundary = Sqed::BoundaryFinder::StageFinder.new(image: image).boundaries
       if boundary.populated?
         @stage_boundary.set(0, boundary.for(0))
       else
@@ -179,11 +210,16 @@ class Sqed
   end
 
   def get_section_boundaries
-    options = {target_image: stage_image, use_thumbnail: use_thumbnail}
-    options.merge!( target_layout: extraction_metadata[:target_layout] ) unless extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::CrossFinder'
-    options.merge!( boundary_color: boundary_color) if extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::ColorLineFinder'
+    options = {
+        image: stage_image,
+        use_thumbnail: use_thumbnail,
+        layout: layout,
+        boundary_color: boundary_color
+    }
+#   options.merge!( layout: extraction_metadata[:layout] ) unless extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::CrossFinder'
+#   options.merge!( boundary_color: boundary_color) if extraction_metadata[:boundary_finder].name == 'Sqed::BoundaryFinder::ColorLineFinder'
 
-    extraction_metadata[:boundary_finder].new(options).boundaries
+    boundary_finder.new(options).boundaries
   end
 
 end

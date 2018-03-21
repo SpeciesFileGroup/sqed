@@ -1,12 +1,12 @@
 require 'rmagick'
 
 # An Extractor takes Boundries object and a metadata_map and returns a Sqed::Result
-# 
+#
 class Sqed::Extractor
 
   class Error < StandardError; end;
 
-  # a Sqed::Boundaries instance 
+  # a Sqed::Boundaries instance
   attr_accessor :boundaries
 
   # a metadata_map hash from EXTRACTION_PATTERNS like:
@@ -16,25 +16,25 @@ class Sqed::Extractor
   # a Magick::Image file
   attr_accessor :image
 
-  def initialize(target_boundaries: nil, target_metadata_map: nil, target_image: nil)
-    raise Error, 'target_boundaries not provided or provided boundary is not a Sqed::Boundaries' if target_boundaries.nil? || !target_boundaries.class == Sqed::Boundaries
-    raise Error, 'target_metadata_map not provided or target_metadata_map not a Hash' if target_metadata_map.nil? || !target_metadata_map.class == Hash
-    raise Error, 'target_image not provided' if target_image.nil? || !target_image.class.name == 'Magick::Image'
+  def initialize(**opts)
+    @metadata_map = opts[:metadata_map]
+    @boundaries = opts[:boundaries]
+    @image = opts[:image]
 
-    @metadata_map = target_metadata_map
-    @boundaries = target_boundaries
-    @image = target_image
+    raise Error, 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class == Sqed::Boundaries
+    raise Error, 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class == Hash
+    raise Error, 'image not provided' if image.nil? || !image.class.name == 'Magick::Image'
   end
 
   def result
     r = Sqed::Result.new()
 
     r.sections = metadata_map.values.sort
-      
+
     # assign the images to the result
     boundaries.each do |section_index, coords|
       section_type = metadata_map[section_index]
-     
+
       # TODO: raise this higher up the chain 
       raise Error, "invalid section_type [#{section_type}]" if !SqedConfig::LAYOUT_SECTION_TYPES.include?(section_type)
 

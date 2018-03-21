@@ -38,10 +38,10 @@ class Sqed::Result
   #   a map of layout_section_type => value (if there is a value), 
   #   i.e. all possible parsed text values returned from the parser
   def text
-    result = {} 
+    result = {}
     SqedConfig::LAYOUT_SECTION_TYPES.each do |k|
-      v = self.send(k)
-      result.merge!(k => v) if v[:barcode] || v[:text] 
+      v = send(k)
+      result.merge!(k => v) if v[:barcode] || v[:text]
     end
     result
   end
@@ -51,14 +51,14 @@ class Sqed::Result
   def images
     result = {} 
     SqedConfig::LAYOUT_SECTION_TYPES.each do |k|
-      image = self.send("#{k}_image")
+      image = send("#{k}_image")
       result.merge!(k => image) if image
     end
     result
   end
 
   # return [True]
-  #   write the images in #images to tmp/ 
+  #   write the images in #images to tmp/
   def write_images
     images.each do |k, img|
       img.write("tmp/#{k}.jpg")

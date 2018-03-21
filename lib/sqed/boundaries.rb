@@ -1,8 +1,11 @@
-# An Sqed::Boundaries is a simple wrapper for a hash that contains the co-ordinates for each section of a layout.
 
-# Layouts are Hashes defined in EXTRACTION_PATTERNS[<pattern>][<layout>]
-# 
-class Sqed::Boundaries 
+class Sqed
+
+  # An Sqed::Boundaries is a simple wrapper for a hash that contains the co-ordinates for each section of a layout.
+  #
+  # Layouts are Hashes defined in EXTRACTION_PATTERNS[<pattern>][<layout>]
+  #
+  class Boundaries
   include Enumerable
 
   # stores a hash
@@ -12,7 +15,7 @@ class Sqed::Boundaries
   #   0 => [10,10,40,40]
   attr_reader :coordinates
 
-  # A symbol from Sqed::Config::LAYOUTS.keys 
+  # A symbol from Sqed::Config::LAYOUTS.keys
   #   :right_t
   attr_accessor :layout
 
@@ -35,16 +38,16 @@ class Sqed::Boundaries
   end
 
   def offset(boundary)
-    b = Sqed::Boundaries.new()    # the idea here is to create a deep copy of self, offsetting by boundary as we go
-    (0..self.coordinates.length - 1).each do |i|
-      b.set(i, 
-            [(self.x_for(i) + boundary.x_for(0)),
-             (self.y_for(i) + boundary.y_for(0)),
-             self.width_for(i),
-             self.height_for(i)]
-           )
+    b = Sqed::Boundaries.new # the idea here is to create a deep copy of self, offsetting by boundary as we go
+    (0..coordinates.length - 1).each do |i|
+      b.set(i,
+            [(x_for(i) + boundary.x_for(0)),
+             (y_for(i) + boundary.y_for(0)),
+             width_for(i),
+             height_for(i)]
+      )
     end
-    b.complete = self.complete
+    b.complete = complete
     b
   end
 
@@ -84,25 +87,24 @@ class Sqed::Boundaries
   end
 
   def populated?
-    self.each do |index, coords|
+    each do |index, coords|
       coords.each do |c|
         return false if c.nil?
       end
     end
-    true 
+    true
   end
 
   def zoom(width_factor, height_factor)
     coordinates.keys.each do |i|
-      set(i, [   
-        (x_for(i).to_f * width_factor).to_i,
-        (y_for(i).to_f * height_factor).to_i,
-        (width_for(i).to_f * width_factor).to_i,
-        (height_for(i).to_f * height_factor).to_i
+      set(i, [
+          (x_for(i).to_f * width_factor).to_i,
+          (y_for(i).to_f * height_factor).to_i,
+          (width_for(i).to_f * width_factor).to_i,
+          (height_for(i).to_f * height_factor).to_i
       ])
-    
-    end  
+    end
   end
 
-
+  end
 end

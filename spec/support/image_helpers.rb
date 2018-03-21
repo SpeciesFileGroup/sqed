@@ -1,6 +1,6 @@
 module ImageHelpers
 
-  BASE_PATH = '../files/'
+  BASE_PATH = '../files/'.freeze
 
   class << self
 
@@ -33,6 +33,10 @@ module ImageHelpers
 
     def inhs_stage_7_slot
       get_image 'stage_images/inhs_7_slot.jpg'
+    end
+
+    def inhs_stage_7_slot2
+      get_image 'stage_images/inhs_7_slot2.jpg'
     end
 
     def crossy_green_line_specimen
@@ -84,16 +88,16 @@ module ImageHelpers
       get_image 'label_iamges/label_images/black_stage_green_line_specimen_label.jpg'
     end
 
-    def readme_text 
-      get_image 'label_images/readme.png' 
+    def readme_text
+      get_image 'label_images/readme.png'
     end
 
     def basic_text_image1
-      get_image 'label_images/basic1.png' 
+      get_image 'label_images/basic1.png'
     end
 
     def basic_text_image2
-      get_image 'label_images/basic2.png' 
+      get_image 'label_images/basic2.png'
     end
 
     # Real life, black border, no internal boundaries
@@ -111,8 +115,5 @@ module ImageHelpers
     def slide_scan_image
       get_image 'misc_images/types_8.jpg'
     end
-
-
-  end 
-
+  end
 end

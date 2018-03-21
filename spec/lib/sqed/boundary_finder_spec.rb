@@ -7,7 +7,7 @@ describe Sqed::BoundaryFinder do
   end
 
   context 'when initiated with an image' do
-    let(:b) {Sqed::BoundaryFinder.new(target_image: ImageHelpers.cross_green, target_layout: :vertical_offset_cross)}
+    let(:b) {Sqed::BoundaryFinder.new(image: ImageHelpers.cross_green, layout: :vertical_offset_cross)}
 
     context 'attributes' do
       specify '#image' do
@@ -20,16 +20,16 @@ describe Sqed::BoundaryFinder do
     end
   end
 
-  context '.color_boundary_finder(target_image: image)' do
+  context '.color_boundary_finder(image: image)' do
     context 'with sample_subdivision_size: 10' do
       specify 'finds the vertical dividing line in a standard cross, with border still present' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.cross_green, sample_subdivision_size: 10 )[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.cross_green, sample_subdivision_size: 10 )[1]
         expect(center).to be > 492
         expect(center).to be < 504
       end
       
       specify 'finds the vertical dividing line in a right t green cross, with border still present' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.right_t_green, sample_subdivision_size: 10)[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.right_t_green, sample_subdivision_size: 10)[1]
         expect(center).to be > 695
         expect(center).to be < 705 
       end
@@ -37,59 +37,59 @@ describe Sqed::BoundaryFinder do
 
     context 'with sample_subdivision_size auto set' do
       specify 'finds the vertical dividing line in a standard cross, with border still present, when more precise' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.cross_green, sample_cutoff_factor: 0.7)[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.cross_green, sample_cutoff_factor: 0.7)[1]
         expect(center).to be > 492
         expect(center).to be < 504
       end
 
       specify 'finds the vertical dividing line a real image, with border still present' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.crossy_green_line_specimen)[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.crossy_green_line_specimen)[1]
         expect(center).to be > 2452
         expect(center).to be < 2495 
       end
 
       specify 'finds the vertical dividing line a real image, with border still present, with 10x fewer subsamples' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.crossy_green_line_specimen, sample_subdivision_size: 100 )[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.crossy_green_line_specimen, sample_subdivision_size: 100 )[1]
         expect(center).to be > 2452
         expect(center).to be < 2495 
       end
 
       specify 'finds the vertical dividing line a real image, with border still present, with 50x fewer subsamples' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.crossy_green_line_specimen, sample_subdivision_size: 500 )[1]
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.crossy_green_line_specimen, sample_subdivision_size: 500 )[1]
         expect(center).to be > 2452
         expect(center).to be < 2495 
       end
 
       specify 'FAILS to find the vertical dividing line a real image, with border still present, with 200x fewer subsamples' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.crossy_green_line_specimen, sample_subdivision_size: 2000 )
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.crossy_green_line_specimen, sample_subdivision_size: 2000 )
         expect(center).to be nil
       end
 
       specify 'finds the vertical dividing line another real image, with border still present' do
-        center = Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.greenline_image)[1]
+        center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image)[1]
         expect(center).to be > 2445
         expect(center).to be < 2495
       end
 
       specify 'finds the vertical dividing line another real image, with border still present, and 20x fewer subsamples' do
-        center = Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.greenline_image, sample_subdivision_size: 200)[1]
+        center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image, sample_subdivision_size: 200)[1]
         expect(center).to be > 2445
         expect(center).to be < 2495
       end
 
       specify 'finds the vertical dividing line another real image, with border still present, and 50x fewer subsamples' do
-        center = Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.greenline_image, sample_subdivision_size: 500)[1]
+        center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image, sample_subdivision_size: 500)[1]
         expect(center).to be > 2445
         expect(center).to be < 2495
       end
 
       specify 'FAILS to find the vertical dividing line in a standard cross, with border still present, when even more precise' do
-        center =  Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.cross_green, sample_cutoff_factor: 1)
+        center =  Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.cross_green, sample_cutoff_factor: 1)
         expect(center).to be nil
       end
 
       specify 'finds the horizontal dividing line another real image, with border still present' do
-        center = Sqed::BoundaryFinder.color_boundary_finder(target_image: ImageHelpers.greenline_image, scan: :columns)[1]
+        center = Sqed::BoundaryFinder.color_boundary_finder(image: ImageHelpers.greenline_image, scan: :columns)[1]
         expect(center).to be > 1282
         expect(center).to be < 1332 
       end
@@ -104,26 +104,25 @@ describe Sqed::BoundaryFinder do
     end
 
     specify 'returns estimated borders if only one hit greater than samples taken' do
-      expect( Sqed::BoundaryFinder.frequency_stats(i, 15)).to eq([2,3,4])
+      expect( Sqed::BoundaryFinder.frequency_stats(i, 15)).to eq([2, 3, 4])
     end
 
     specify 'returns nil if no count is greater than samples taken' do
       expect( Sqed::BoundaryFinder.frequency_stats(i, 20)).to eq(nil)
     end
- 
 
   end
 
   context 'offset boundaries from crossy_black_line_specimen image ' do
-    before(:all) {
-      @s = Sqed.new(target_image: ImageHelpers.crossy_black_line_specimen, target_pattern: :vertical_offset_cross, boundary_color: :black)
+    before(:all) do
+      @s = Sqed.new(image: ImageHelpers.crossy_black_line_specimen, pattern: :vertical_offset_cross, boundary_color: :black)
       @s.crop_image
       @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
       true
-    }
+    end
 
     ##**** actually fails (?!)
-    specify "offset and size should match internal found areas " do     
+    specify "offset and size should match internal found areas " do
       sbx = @s.stage_boundary.x_for(0)
       sby = @s.stage_boundary.y_for(0)
 
@@ -144,12 +143,12 @@ describe Sqed::BoundaryFinder do
   end
 
   context 'offset boundaries from black_green_line_specimen image ' do
-    before(:all) {
-      @s = Sqed.new(target_image: ImageHelpers.black_stage_green_line_specimen, target_pattern: :vertical_offset_cross)
+    before(:all) do
+      @s = Sqed.new(image: ImageHelpers.black_stage_green_line_specimen, pattern: :vertical_offset_cross)
       @s.crop_image
       @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
-      true 
-    }
+      true
+    end
 
     specify "offset and size should match internal found areas " do
       sbx = @s.stage_boundary.x_for(0)
@@ -173,7 +172,7 @@ describe Sqed::BoundaryFinder do
 
   context 'offset boundaries from original red_line image ' do
     before(:all) {
-      @s = Sqed.new(target_image: ImageHelpers.vertical_offset_cross_red, target_pattern: :right_t, boundary_color: :red)
+      @s = Sqed.new(image: ImageHelpers.vertical_offset_cross_red, pattern: :right_t, boundary_color: :red)
       @s.crop_image
       @offset_boundaries = @s.boundaries.offset(@s.stage_boundary)
     }

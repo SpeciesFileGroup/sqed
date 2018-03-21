@@ -75,7 +75,7 @@ describe Sqed do
   context 'all together, without border' do
     let(:image) { ImageHelpers.frost_stage }
     let(:pattern) { :vertical_offset_cross }
-    let(:s) { Sqed.new(target_image: image, target_pattern: pattern, has_border: false)  }
+    let(:s) { Sqed.new(image: image, pattern: pattern, has_border: false)  }
 
     specify '#boundaries returns a Sqed::Boundaries instance' do
       expect(s.boundaries.class.name).to eq('Sqed::Boundaries')
@@ -120,7 +120,7 @@ describe Sqed do
   context 'all together, with border' do
     let(:image) { ImageHelpers.greenline_image }
     let(:pattern) { :right_t }
-    let(:s) { Sqed.new(target_image: image, target_pattern: pattern, has_border: true)  }
+    let(:s) { Sqed.new(image: image, pattern: pattern, has_border: true)  }
 
     specify '#boundaries returns a Sqed::Boundaries instance' do
       expect(s.boundaries.class.name).to eq('Sqed::Boundaries')

@@ -15,8 +15,13 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   attr_reader :x0, :y0, :x1, :y1, :min_width, :min_height, :rows, :columns
 
-  def initialize(target_image: image, is_border_proc: nil, min_ratio: MIN_CROP_RATIO)
-    super(target_image: target_image, target_layout: :internal_box) 
+  def initialize(**opts)
+    image = opts[:image]
+    is_border_proc = opts[:is_border_proc]
+    min_ratio = opts[:min_ratio]
+    min_ratio ||= MIN_CROP_RATIO
+
+    super(image: image, layout: :internal_box)
 
     @min_ratio = min_ratio
 
@@ -26,7 +31,7 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
     @min_width, @min_height = image.columns * @min_ratio, image.rows * @min_ratio # minimum resultant area
     @columns, @rows = image.columns, image.rows
 
-    
+
     # We need a border finder proc. Provide one if none was given.
     @is_border = is_border_proc || self.class.default_border_finder(image) # if no proc specified, use default below
 

@@ -59,7 +59,7 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     labels: {
       psm: 3, # may need to be 6
     },
-    deterimination_labels: {
+    determination_labels: {
       psm: 3
     },
     other_labels: {
@@ -68,8 +68,6 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     collecting_event_labels: {
       psm: 3
     }
-
-
   }
 
   # the text extracted from the image
@@ -106,14 +104,16 @@ class Sqed::Parser::OcrParser < Sqed::Parser
   # @return [String]
   #   the ocr text 
   def text(section_type: :default)
-    img = @image 
+    img = image 
  
     # resample if an image 4"x4" is less than 300dpi 
     if img.columns * img.rows < 144000
       img = img.resample(300)
     end
-    
-    params = SECTION_PARAMS[:default].merge(SECTION_PARAMS[section_type])
+
+    params = SECTION_PARAMS[:default]
+    params.merge!(SECTION_PARAMS[section_type])
+
     r = RTesseract.new(img, params) 
     @text = r.to_s.strip
 
@@ -131,6 +131,5 @@ class Sqed::Parser::OcrParser < Sqed::Parser
 
     @text
   end
-
 
 end

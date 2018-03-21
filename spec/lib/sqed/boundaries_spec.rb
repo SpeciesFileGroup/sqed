@@ -33,7 +33,7 @@ describe Sqed::Boundaries do
   end
 
   context '#offset' do
-    let(:s) { Sqed.new(target_image: ImageHelpers.crossy_green_line_specimen, target_pattern: :vertical_offset_cross) }
+    let(:s) { Sqed.new(image: ImageHelpers.crossy_green_line_specimen, pattern: :vertical_offset_cross) }
     let(:offset_boundaries) { 
       s.crop_image
       s.boundaries.offset(s.stage_boundary) 
