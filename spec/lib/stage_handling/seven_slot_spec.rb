@@ -36,7 +36,7 @@ describe 'handling 7 slot stages' do
 
     specify 'boundaries are reasonable' do
       s.result
-      c = s.boundaries.coordinates 
+      c = s.boundaries.coordinates
       c.each do |section, values|
         c[section].each_with_index do |v, i|
           msg = "section #{section}, index #{i} has a bad value '#{v}'"
@@ -49,9 +49,10 @@ describe 'handling 7 slot stages' do
   context 'trickier boundaries - with_thumbnail' do
     let(:s) { Sqed.new(image: ImageHelpers.inhs_stage_7_slot2, use_thumbnail: true, pattern: :seven_slot, boundary_color: :red, has_border: false ) }
 
+
     specify 'boundaries are reasonable' do
       s.result
-      c = s.boundaries.coordinates 
+      c = s.boundaries.coordinates
       c.each do |section, values|
         c[section].each_with_index do |v, i|
           msg = "section #{section}, index #{i} has a bad value '#{v}'"

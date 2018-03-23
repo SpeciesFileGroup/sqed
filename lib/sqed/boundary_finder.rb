@@ -223,19 +223,44 @@ class Sqed
     end
 
     # @return [Array]
-    #  like [0,1,2]
+    #    like `[0,1,2]`
     # If median-min or max-median * width_factor are different from one another (by more than width_factor) then replace the larger wth the median +/- 1/2 the smaller
     # Given [10, 12, 20] and width_factor 2 the result will be [10, 12, 13]
     #
-    def corrected_frequency(frequency_stats, width_factor = 3.0)
+    def corrected_frequency(frequency_stats, width_factor = 3.0, max_width = nil)
       v0 = frequency_stats[0]
       m = frequency_stats[1]
       v2 = frequency_stats[2]
 
-      a = m - v0
-      b = v2 - m
+      width_pct = nil
 
-      largest = (a > b ? a : b)
+      # If the width of the detected line is > 5 percent then
+      # assume the center is good measure, and use an arbitrary percentage width.
+      if !max_width.nil?
+        width_pct = (v2 - v0).to_f / max_width.to_f
+      end
+
+      if !width_pct.nil? && width_pct >= 0.05
+        half_width = max_width * 0.025
+        z = [m - half_width, m, m + half_width]
+        return z
+      end
+
+      #  a = m - v0
+      #  b = v2 - m
+
+      #  largest = (a > b ? a : b)
+
+      #  c = a * width_factor
+      #  d = b * width_factor
+
+      #  if c > largest || d > largest
+      #    e = c > largest ? ((m - b) / 2).to_i : v0
+      #    f = d > largest ? ((m + a) / 2).to_i : v2
+      #    [e, m, f]
+      #  else
+      #    frequency_stats
+      #  end
 
       if a * width_factor > largest
         [(m - (v2 - m) / 2).to_i, m, v2]

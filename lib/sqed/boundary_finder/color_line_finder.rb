@@ -41,19 +41,18 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       right_top_image = image.crop( left_right_split[2], 0, image.columns - left_right_split[2], top_bottom_split[0] , true) # sections 1,2
       right_bottom_image = image.crop(left_right_split[2], top_bottom_split[2], image.columns - left_right_split[2], image.rows - top_bottom_split[2], true)  # sections 3,4,5
 
-      right_top_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_top_image, boundary_color: boundary_color)) # vertical line b/w 1 & 2, use "corrected_frequency" to account for color bleed from previous crop
+      right_top_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_top_image, boundary_color: boundary_color), 1.8, right_top_image.columns) # vertical line b/w 1 & 2, use "corrected_frequency" to account for color bleed from previous crop
 
-      boundaries.set(1, [left_right_split[2], 0, right_top_split[0], top_bottom_split[0] ])
+      boundaries.set(1, [left_right_split[2], 0, right_top_split[0], top_bottom_split[0]] )
       boundaries.set(2, [left_right_split[2] + right_top_split[2], 0, right_top_image.columns - right_top_split[2], top_bottom_split[0]])
 
-      right_bottom_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_bottom_image, scan: :columns, sample_subdivision_size: 2, boundary_color: boundary_color)) # horizontal line b/w (5,3) & 4, use "corrected_frequency" to account for color bleed from previous crop
+      right_bottom_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_bottom_image, scan: :columns, sample_subdivision_size: 2, boundary_color: boundary_color), 1.8, right_bottom_image.rows) # horizontal line b/w (5,3) & 4, use "corrected_frequency" to account for color bleed from previous crop
 
       bottom_right_top_image = right_bottom_image.crop(0,0, image.columns - left_right_split[2], right_bottom_split[0], true) # 3,5
 
-      boundaries.set(3, [ left_right_split[2] + right_top_split[2], top_bottom_split[2], left_right_split[2] + right_top_split[2], bottom_right_top_image.rows ])
-      boundaries.set(5, [ left_right_split[2], top_bottom_split[2], right_top_split[0], bottom_right_top_image.rows])
+      boundaries.set(3, [left_right_split[2] + right_top_split[2], top_bottom_split[2], left_right_split[2] + right_top_split[2], bottom_right_top_image.rows ])
+      boundaries.set(5, [left_right_split[2], top_bottom_split[2], right_top_split[0], bottom_right_top_image.rows])
 
-      # ! not high enough
       boundaries.set(4, [left_right_split[2], top_bottom_split[2] + right_bottom_split[2], image.columns - left_right_split[2], right_bottom_image.rows ])
 
     when :vertical_split 
