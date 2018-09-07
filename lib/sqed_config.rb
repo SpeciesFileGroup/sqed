@@ -1,5 +1,7 @@
 # require 'zxing'
 
+require_relative 'sqed_utils'
+
 require_relative 'sqed/parser'
 require_relative 'sqed/parser/ocr_parser'
 require_relative 'sqed/parser/barcode_parser'
@@ -62,6 +64,11 @@ module SqedConfig
   #    6 |--------
   #      |   4
   #
+  #    0 | 1 | 2
+  #   ------------
+  #      | 5 |      :lep_stage
+  #    6 |---- 3  
+  #      | 4 |
   #
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
@@ -74,7 +81,8 @@ module SqedConfig
     right_t: [0, 1, 2],
     left_t: [0, 1, 2],
     internal_box: [0],
-    seven_slot: [0, 1, 2, 3, 4, 5, 6]
+    seven_slot: [0, 1, 2, 3, 4, 5, 6],
+    lep_stage: [0, 1, 2, 3, 4, 5, 6]
   }.freeze
 
   # Each element of the layout is a "section".
@@ -142,6 +150,12 @@ module SqedConfig
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :seven_slot,
       metadata_map: { 0 => :collecting_event_labels, 1 => :determination_labels, 2 => :other_labels, 3 => :image_registration, 4 => :curator_metadata, 5 => :identifier, 6 => :specimen }
+    },
+
+    lep_stage: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :lep_stage,
+      metadata_map: { 0 => :curator_metadata, 1 => :collecting_event_labels, 2 => :image_registration, 3 => :identifier, 4 => :other_labels, 5 => :determination_labels, 6 => :specimen }
     }
   }.freeze
 

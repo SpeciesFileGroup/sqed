@@ -4,6 +4,7 @@ recent_ruby = RUBY_VERSION >= '2.4.1'
 raise 'IMPORTANT: sqed gem requires ruby >= 2.4.1' unless recent_ruby
 
 require 'rmagick'
+require 'sqed_utils'
 
 # Instances take the following
 # 1) An :image @image

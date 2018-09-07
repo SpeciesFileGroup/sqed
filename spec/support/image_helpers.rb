@@ -35,6 +35,10 @@ module ImageHelpers
       get_image 'stage_images/inhs_7_slot.jpg'
     end
 
+    def lep_stage
+      get_image 'stage_images/lep_stage.jpg'
+    end
+
     def inhs_stage_7_slot2
       get_image 'stage_images/inhs_7_slot2.jpg'
     end

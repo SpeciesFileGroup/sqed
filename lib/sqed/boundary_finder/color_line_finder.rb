@@ -30,7 +30,57 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
   def find_bands
     case layout    # boundaries.coordinates are referenced from stage image
 
-      # No specs for this yet
+    # No specs for this yet
+    when :lep_stage
+      top_bottom_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, scan: :columns, boundary_color: boundary_color)              # detect vertical division [array]
+      left_right_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, sample_subdivision_size: 2, boundary_color: boundary_color)  # detect horizontal division [array]
+
+      boundaries.set(6, [0, top_bottom_split[2], left_right_split[0], image.rows - top_bottom_split[2]] )
+
+      left_top_image = image.crop( 0, 0, left_right_split[0], top_bottom_split[0], true) 
+
+      left_top_split = 
+        SqedUtils.corrected_frequency(
+          Sqed::BoundaryFinder.color_boundary_finder(image: left_top_image, boundary_color: boundary_color),
+          max_width: left_top_image.columns,
+          width_factor: 1.8
+      )
+
+      boundaries.set(0, [0, 0, left_top_split[1], top_bottom_split[0]] ) # keep as 1 for safety
+     
+      boundaries.set(1, [left_top_split[2], 0, left_top_image.columns - left_top_split[2], top_bottom_split[0]] ) # <
+
+      boundaries.set(2, [left_right_split[2], 0, image.columns - left_right_split[0], top_bottom_split[0]] )
+
+      bottom_right_image =  image.crop(left_right_split[2], top_bottom_split[2], image.columns - left_right_split[2], image.rows - top_bottom_split[2], true)
+
+      bottom_right_split =
+        SqedUtils.corrected_frequency(
+          Sqed::BoundaryFinder.color_boundary_finder(image: bottom_right_image, boundary_color: boundary_color, scan: :rows),
+          max_width: bottom_right_image.columns,
+          width_factor: 1.8
+      )
+
+      boundaries.set(3, [left_right_split[2] + bottom_right_split[2], top_bottom_split[2], image.columns - bottom_right_split[2], image.rows - top_bottom_split[2] ] )
+
+      bottom_right_left_image = image.crop(left_right_split[2], top_bottom_split[2], bottom_right_split[0], image.rows - top_bottom_split[2], true)  
+
+      bottom_right_left_split =
+        SqedUtils.corrected_frequency(
+          Sqed::BoundaryFinder.color_boundary_finder(image: bottom_right_left_image, scan: :columns, boundary_color: boundary_color),
+          max_width: bottom_right_left_image.columns,
+          width_factor: 1.8
+      )
+
+      boundaries.set(4, [left_right_split[2], top_bottom_split[2], bottom_right_image.columns - bottom_right_left_image.columns, bottom_right_left_split[0] ] )
+
+      boundaries.set(5, [
+        left_right_split[2], 
+        top_bottom_split[2] + bottom_right_left_split[2],
+        bottom_right_image.columns - bottom_right_left_image.columns,
+        bottom_right_left_image.rows - bottom_right_left_split[2]  
+      ])
+
     when :seven_slot
       top_bottom_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, scan: :columns, boundary_color: boundary_color)              # detect vertical division [array]
       left_right_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, sample_subdivision_size: 2, boundary_color: boundary_color)  # detect horizontal division [array]
@@ -41,12 +91,19 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       right_top_image = image.crop( left_right_split[2], 0, image.columns - left_right_split[2], top_bottom_split[0] , true) # sections 1,2
       right_bottom_image = image.crop(left_right_split[2], top_bottom_split[2], image.columns - left_right_split[2], image.rows - top_bottom_split[2], true)  # sections 3,4,5
 
-      right_top_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_top_image, boundary_color: boundary_color), 1.8, right_top_image.columns) # vertical line b/w 1 & 2, use "corrected_frequency" to account for color bleed from previous crop
+      right_top_split = ::SqedUtils.corrected_frequency(
+        Sqed::BoundaryFinder.color_boundary_finder(image: right_top_image, boundary_color: boundary_color),
+        width_factor: 1.8,
+        max_width: right_top_image.columns
+      ) # vertical line b/w 1 & 2, use "corrected_frequency" to account for color bleed from previous crop
 
       boundaries.set(1, [left_right_split[2], 0, right_top_split[0], top_bottom_split[0]] )
       boundaries.set(2, [left_right_split[2] + right_top_split[2], 0, right_top_image.columns - right_top_split[2], top_bottom_split[0]])
 
-      right_bottom_split = corrected_frequency(Sqed::BoundaryFinder.color_boundary_finder(image: right_bottom_image, scan: :columns, sample_subdivision_size: 2, boundary_color: boundary_color), 1.8, right_bottom_image.rows) # horizontal line b/w (5,3) & 4, use "corrected_frequency" to account for color bleed from previous crop
+      right_bottom_split = SqedUtils.corrected_frequency(
+        Sqed::BoundaryFinder.color_boundary_finder(image: right_bottom_image, scan: :columns, sample_subdivision_size: 2, boundary_color: boundary_color),
+        width_factor: 1.8,
+        max_width: right_bottom_image.rows) # horizontal line b/w (5,3) & 4, use "corrected_frequency" to account for color bleed from previous crop
 
       bottom_right_top_image = right_bottom_image.crop(0,0, image.columns - left_right_split[2], right_bottom_split[0], true) # 3,5
 
