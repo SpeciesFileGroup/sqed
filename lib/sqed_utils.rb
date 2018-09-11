@@ -1,4 +1,4 @@
-require 'byebug'
+# require 'byebug'
 
 # Functions that don't belong in Sqed proper
 #
