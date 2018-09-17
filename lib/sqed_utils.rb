@@ -11,6 +11,9 @@ module SqedUtils
   # @param frequency_stats [Array]
   #   like [1,2,3]
   #
+  # @param width_factor [Float]
+  #    
+  #  
   # @param max_width [Integer]
   #   required, the width of the image in question
   #
@@ -33,9 +36,6 @@ module SqedUtils
     a = (m - v0).abs
     b = (v2 - m).abs
 
-    c = a * width_factor
-    d = b * width_factor
-
     largest = (a > b ? a : b)
 
     l = (m - b / 2) 
@@ -44,17 +44,15 @@ module SqedUtils
     r = (m + a / 2)
     r = max_width if r > max_width
 
-    x = a * width_factor
-    y = b * width_factor
+    c = a * width_factor
+    d = b * width_factor
 
     [
-      x > largest ? l : v0,
+      c > largest ? l : v0,
       m,
-      y > largest ? r : v2
+      d > largest ? r : v2
     ]
 
   end
-
-
 
 end

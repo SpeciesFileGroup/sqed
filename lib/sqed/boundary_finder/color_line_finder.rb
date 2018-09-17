@@ -30,7 +30,6 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
   def find_bands
     case layout    # boundaries.coordinates are referenced from stage image
 
-    # No specs for this yet
     when :lep_stage
       top_bottom_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, scan: :columns, boundary_color: boundary_color)              # detect vertical division [array]
       left_right_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, sample_subdivision_size: 2, boundary_color: boundary_color)  # detect horizontal division [array]
@@ -48,8 +47,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
       boundaries.set(0, [0, 0, left_top_split[1], top_bottom_split[0]] ) # keep as 1 for safety
      
-      boundaries.set(1, [left_top_split[2], 0, left_top_image.columns - left_top_split[2], top_bottom_split[0]] ) # <
-
+      boundaries.set(1, [left_top_split[2], 0, left_top_image.columns - left_top_split[2], top_bottom_split[0]] ) 
       boundaries.set(2, [left_right_split[2], 0, image.columns - left_right_split[0], top_bottom_split[0]] )
 
       bottom_right_image =  image.crop(left_right_split[2], top_bottom_split[2], image.columns - left_right_split[2], image.rows - top_bottom_split[2], true)
@@ -92,10 +90,12 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       right_bottom_image = image.crop(left_right_split[2], top_bottom_split[2], image.columns - left_right_split[2], image.rows - top_bottom_split[2], true)  # sections 3,4,5
 
       right_top_split = ::SqedUtils.corrected_frequency(
-        Sqed::BoundaryFinder.color_boundary_finder(image: right_top_image, boundary_color: boundary_color),
+        Sqed::BoundaryFinder.color_boundary_finder(image: right_top_image, boundary_color: boundary_color, scan: :rows),
         width_factor: 1.8,
         max_width: right_top_image.columns
       ) # vertical line b/w 1 & 2, use "corrected_frequency" to account for color bleed from previous crop
+
+
 
       boundaries.set(1, [left_right_split[2], 0, right_top_split[0], top_bottom_split[0]] )
       boundaries.set(2, [left_right_split[2] + right_top_split[2], 0, right_top_image.columns - right_top_split[2], top_bottom_split[0]])

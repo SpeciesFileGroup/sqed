@@ -60,5 +60,14 @@ describe 'handling 7 slot stages' do
         end
       end
     end
+  end
+
+  context 'another image' do
+    let(:s) { Sqed.new(image: ImageHelpers.frost_seven_slot, use_thumbnail: true, pattern: :seven_slot, boundary_color: :red, has_border: false ) }
+
+    specify '#result' do
+      expect(s.result).to be_truthy
+    end
   end 
+
 end

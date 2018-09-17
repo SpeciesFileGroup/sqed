@@ -19,6 +19,10 @@ module ImageHelpers
       get_image 'stage_images/boundary_cross_green.jpg'
     end
 
+    def frost_seven_slot
+      get_image 'stage_images/frost_7_slot.jpg'
+    end
+
     def frost_stage
       get_image 'stage_images/frost_stage.jpg'
     end

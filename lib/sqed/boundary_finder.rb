@@ -130,8 +130,31 @@ class Sqed
 
       image_width = image.send(scan)
       sample_subdivision_size = get_subdivision_size(image_width) if sample_subdivision_size.nil?
-      samples_to_take = (image_width / sample_subdivision_size).to_i - 1
 
+      attempts = 0
+      while attempts < 5 do
+        samples_to_take = (image_width / sample_subdivision_size).to_i - 1
+        border_hits = sample_border(image, boundary_color, samples_to_take, sample_subdivision_size, scan)
+        
+        break if border_hits.select{|k,v| v > 1}.size > 2 || sample_subdivision_size == 1
+
+        sample_subdivision_size = (sample_subdivision_size.to_f / 2.0).to_i
+        attempts += 1
+      end
+
+      return nil if border_hits.length < 2
+
+      if sample_cutoff_factor.nil?
+        cutoff = max_difference(border_hits.values)
+        cutoff = border_hits.values.first - 1 if cutoff == 0 # difference of two identical things is 0
+      else
+        cutoff = (samples_to_take * sample_cutoff_factor).to_i
+      end
+
+      frequency_stats(border_hits, cutoff)
+    end
+
+    def self.sample_border(image, boundary_color, samples_to_take, sample_subdivision_size, scan)
       border_hits = {}
 
       (0..samples_to_take).each do |s|
@@ -160,17 +183,7 @@ class Sqed
         end
       end
 
-      return nil if border_hits.length < 2
-
-      if sample_cutoff_factor.nil?
-        cutoff = max_difference(border_hits.values)
-
-        cutoff = border_hits.values.first - 1 if cutoff == 0 # difference of two identical things is 0
-      else
-        cutoff = (samples_to_take * sample_cutoff_factor).to_i
-      end
-
-      frequency_stats(border_hits, cutoff)
+      border_hits
     end
 
     def self.is_green?(pixel)
