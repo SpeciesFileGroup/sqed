@@ -16,6 +16,8 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
     super(image: image, layout: layout, use_thumbnail: use_thumbnail)
 
     raise 'No layout provided.' if @layout.nil?
+
+    # !@#? why this
     @boundary_color = boundary_color
 
     if use_thumbnail
@@ -94,8 +96,6 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
         width_factor: 1.8,
         max_width: right_top_image.columns
       ) # vertical line b/w 1 & 2, use "corrected_frequency" to account for color bleed from previous crop
-
-
 
       boundaries.set(1, [left_right_split[2], 0, right_top_split[0], top_bottom_split[0]] )
       boundaries.set(2, [left_right_split[2] + right_top_split[2], 0, right_top_image.columns - right_top_split[2], top_bottom_split[0]])

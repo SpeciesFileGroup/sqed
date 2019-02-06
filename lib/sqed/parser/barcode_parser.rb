@@ -18,7 +18,7 @@ class Sqed::Parser::BarcodeParser < Sqed::Parser
     @barcode
   end
 
-  # Uses the same enging as zbarimg that you can install with brew (zbarimg)
+  # Uses the same engine as zbarimg that you can install with brew (zbarimg)
   #
   def get_code_128
     nil # ZXing.decode @image.filename
@@ -29,9 +29,9 @@ class Sqed::Parser::BarcodeParser < Sqed::Parser
     [get_code_128].compact.first
   end
 
- #def get_datamatrix
- #  https://github.com/srijan/ruby-dmtx
- #end
+  #def get_datamatrix
+  #  https://github.com/srijan/ruby-dmtx
+  #end
 
   # alias to a universal method
   def get_text(section_type: :default)

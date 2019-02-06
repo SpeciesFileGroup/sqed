@@ -1,5 +1,9 @@
 require 'rtesseract'
 
+# We use tempfile because Rtesseract doesn't work directly with ImageMagic::Image (any longer... apparently, maybe)
+# https://ruby-doc.org/stdlib-2.6.1/libdoc/tempfile/rdoc/Tempfile.html
+require 'tempfile'
+
 # encoding: UTF-8
 #
 # Given a single image return all text in that image.
@@ -115,19 +119,42 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     params = SECTION_PARAMS[:default].dup
     params.merge!(SECTION_PARAMS[section_type])
 
-    r = RTesseract.new(img, params)
-    @extracted_text = r.to_s.strip
-
-    if @extracted_text == ''
-      img = img.white_threshold(245)
-      r = RTesseract.new(img, params)
-      @extracted_text = r.to_s.strip
+    # May be able to overcome this hacky kludge messe with providing `processor:` to new
+    file = Tempfile.new('foo1')
+    begin
+      file.write(image.to_blob)
+      file.rewind
+      @extracted_text = RTesseract.new(file.path, params).to_s&.strip
+      file.close
+    ensure
+      file.close
+      file.unlink   # deletes the temp file
     end
 
     if @extracted_text == ''
-      img = img.quantize(256,Magick::GRAYColorspace)
-      r = RTesseract.new(img, params)
-      @extracted_text = r.to_s.strip
+      file = Tempfile.new('foo2')
+      begin
+        file.write(img.dup.white_threshold(245).to_blob)
+        file.rewind
+        @extracted_text = RTesseract.new(file.path, params).to_s&.strip
+        file.close
+      ensure
+        file.close
+        file.unlink   # deletes the temp file
+      end
+    end
+
+    if @extracted_text == ''
+      file = Tempfile.new('foo3')
+      begin
+        file.write(img.dup.quantize(256,Magick::GRAYColorspace).to_blob)
+        file.rewind
+        @extracted_text = RTesseract.new(file.path, params).to_s&.strip
+        file.close
+      ensure
+        file.close
+        file.unlink   # deletes the temp file
+      end
     end
 
     @extracted_text

@@ -113,7 +113,7 @@ describe Sqed do
       end
 
       specify '#text_for a :curator_metadata section' do
-        expect(rz.text_for(:curator_metadata)).to match('Frost Entomological Museum')
+        expect(rz.text_for(:curator_metadata)).to match(/Frost\s*Entomological\s*Museum/)
       end
     end
   end

@@ -20,15 +20,15 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'rake', '~> 12.3'
   spec.add_dependency 'rmagick', '~> 2.16'  
-  spec.add_dependency 'rtesseract', '~> 2.2.0'
+  spec.add_dependency 'rtesseract', '~> 3.0.2'
 
   # A qrcode reader, too many problems with compiling, dependencies
   # spec.add_dependency 'zxing_cpp', '~> 0.1.0'
 
   spec.add_development_dependency 'rspec', '~> 3.8'
-  spec.add_development_dependency 'bundler', '~> 1.5'
+  spec.add_development_dependency 'bundler', '~> 2.0'
   # spec.add_development_dependency 'did_you_mean', '~> 0.9'
-  spec.add_development_dependency 'byebug', '~> 10.0.0'
+  spec.add_development_dependency 'byebug', '~> 10.0'
   spec.add_development_dependency 'awesome_print', '~> 1.8'
 end
 

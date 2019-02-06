@@ -4,7 +4,7 @@ describe Sqed::Extractor do
   let(:metadata_map) { 
     {0 => :specimen, 1 => :identifier, 2 => :nothing, 3 => :image_registration }
   } 
- 
+
   let(:image) { ImageHelpers.crossy_green_line_specimen }
 
   let(:boundaries) { 
@@ -29,7 +29,7 @@ describe Sqed::Extractor do
     specify '#metadata_map' do
       expect(e).to respond_to(:metadata_map)
     end
- 
+
     specify '#boundaries' do
       expect(e).to respond_to(:boundaries)
     end
@@ -37,7 +37,7 @@ describe Sqed::Extractor do
 
   context 'extracting to a #result' do
     let(:r) { e.result }
-    
+
     specify '#result retuns a Sqed::Result' do
       expect(r.class.name).to eq('Sqed::Result')
     end
@@ -52,7 +52,7 @@ describe Sqed::Extractor do
     end
 
     specify '#sections is populated with section_types' do
-      expect(r.sections).to eq( [ :identifier, :image_registration, :nothing, :specimen ] )
+      expect(r.sections).to eq( [ :specimen, :identifier, :nothing, :image_registration ] )
     end
 
     specify '#boundary_coordinates is populated with coordinates' do

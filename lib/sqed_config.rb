@@ -106,7 +106,7 @@ module SqedConfig
     collecting_event_labels: [Sqed::Parser::OcrParser],
     curator_metadata: [Sqed::Parser::OcrParser],
     determination_labels: [Sqed::Parser::OcrParser],
-    identifier: [Sqed::Parser::BarcodeParser, Sqed::Parser::OcrParser],
+    identifier: [Sqed::Parser::OcrParser, Sqed::Parser::BarcodeParser],
     image_registration: [],
     labels: [Sqed::Parser::OcrParser],
     nothing: [],
@@ -123,15 +123,15 @@ module SqedConfig
     },
 
     vertical_offset_cross: {
-        boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-        layout: :vertical_offset_cross,
-        metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :vertical_offset_cross,
+      metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
     },
 
     equal_cross: {
-        boundary_finder: Sqed::BoundaryFinder::CrossFinder,
-        layout: :equal_cross,
-        metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
+      boundary_finder: Sqed::BoundaryFinder::CrossFinder,
+      layout: :equal_cross,
+      metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
     },
 
     cross: {
@@ -159,9 +159,23 @@ module SqedConfig
     }
   }.freeze
 
+
+  BOUNDARY_COLORS = [:red, :green, :blue, :black].freeze
+
   DEFAULT_TMP_DIR = '/tmp'.freeze
 
   def self.index_for_section_type(pattern, section_type)
     EXTRACTION_PATTERNS[pattern][:metadata_map].invert[section_type]
+  end
+
+  # Format to return JSON
+  def self.metadata
+    return {
+      boundary_colors: BOUNDARY_COLORS,
+      extraction_patterns: EXTRACTION_PATTERNS,
+      section_parsers: SECTION_PARSERS,
+      layout_section_types: LAYOUT_SECTION_TYPES,
+      layouts: LAYOUTS
+    }
   end
 end
