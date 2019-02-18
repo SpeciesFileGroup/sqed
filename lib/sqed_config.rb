@@ -21,34 +21,46 @@ module SqedConfig
   # in a clockwise position.  For example:
   #
   #    0  | 1
-  #   ----|----  :equal_cross (always perfectly divided through the center)
-  #    3  | 2
-  #
-  #
-  #    0  | 1
-  #   ----|----  :cross - height of [0, 1], [2,3] same, width of [0,1], [2,3] same, otherwise variable, i.e. height(0) != height(3)
+  #   ----|----  :cross (any cross pattern)
   #       |
   #    3  | 2
-  #
+  # 
   #
   #    0  |  1
   #       |
   #   ---------  :horizontal_offset_cross 
-  #    3   | 2
+  #    3    | 2
+  # 
   #
+  #        0
+  #    --------  :horizontal_split
+  #        1
+  # 
   #
-  #    0  |  1
-  #       |____
-  #   ----|      :vertical_offset_cross 
-  #    3  |  2
+  #    0 | 1 | 2
+  #   ------------
+  #      | 5 |      :lep_stage
+  #    6 |---- 3  
+  #      | 4 |
+  #
   #
   #       | 1
   #    0  |----  :right_t
   #       | 2
   #
-  #        0
-  #    --------  :horizontal_split
-  #        1
+  #
+  #    0 | 1 | 2
+  #   ------------
+  #      | 5 | 3    :seven_slot
+  #    6 |--------
+  #      |   4
+  #
+  # 
+  #    0  |  1
+  #       |____
+  #   ----|      :vertical_offset_cross 
+  #    3  |  2
+  #  
   #
   #        |
   #      0 | 1  :vertical_split
@@ -57,32 +69,19 @@ module SqedConfig
   #   -----
   #   | 0 |  :internal_box
   #   -----
-  #
-  #    0 | 1 | 2
-  #   ------------
-  #      | 5 | 3    :seven_slot
-  #    6 |--------
-  #      |   4
-  #
-  #    0 | 1 | 2
-  #   ------------
-  #      | 5 |      :lep_stage
-  #    6 |---- 3  
-  #      | 4 |
-  #
+  #  
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
-  # TODO: deprecate for simpler breakdown (cross, split, t)
   LAYOUTS = {
     cross: [0, 1, 2, 3],
-    vertical_offset_cross: [0, 1, 2, 3],
+    horizontal_offset_cross: [0, 1, 2, 3],
     horizontal_split: [0, 1],
-    vertical_split: [0, 1],
+    lep_stage: [0, 1, 2, 3, 4, 5, 6],
     right_t: [0, 1, 2],
-    left_t: [0, 1, 2],
-    internal_box: [0],
     seven_slot: [0, 1, 2, 3, 4, 5, 6],
-    lep_stage: [0, 1, 2, 3, 4, 5, 6]
+    vertical_offset_cross: [0, 1, 2, 3],
+    vertical_split: [0, 1],
+    internal_box: [0]
   }.freeze
 
   # Each element of the layout is a "section".
@@ -116,34 +115,40 @@ module SqedConfig
   }.freeze
 
   EXTRACTION_PATTERNS = {
-    right_t: {
-      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-      layout: :right_t,
-      metadata_map: { 0 => :annotated_specimen, 1 => :identifier, 2 => :image_registration }
-    },
-
-    vertical_offset_cross: {
-      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-      layout: :vertical_offset_cross,
-      metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
-    },
-
-    equal_cross: {
-      boundary_finder: Sqed::BoundaryFinder::CrossFinder,
-      layout: :equal_cross,
-      metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
-    },
-
     cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :cross,
       metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
     },
 
+    horizontal_split: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :horizontal_split,
+      metadata_map: { 0 => :annotated_specimen, 1 => :identifier }
+    },
+
+    horizontal_offset_cross: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :horizontal_offset_cross,
+      metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
+    },
+
+    lep_stage: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :lep_stage,
+      metadata_map: { 0 => :curator_metadata, 1 => :collecting_event_labels, 2 => :image_registration, 3 => :identifier, 4 => :other_labels, 5 => :determination_labels, 6 => :specimen }
+    },
+
+    right_t: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :right_t,
+      metadata_map: { 0 => :annotated_specimen, 1 => :identifier, 2 => :image_registration }
+    },
+
     stage: {
       boundary_finder: Sqed::BoundaryFinder::StageFinder,
       layout: :internal_box,
-      metadata_map: { 0 => :stage}
+      metadata_map: { 0 => :stage }
     },
 
     seven_slot: {
@@ -152,13 +157,18 @@ module SqedConfig
       metadata_map: { 0 => :collecting_event_labels, 1 => :determination_labels, 2 => :other_labels, 3 => :image_registration, 4 => :curator_metadata, 5 => :identifier, 6 => :specimen }
     },
 
-    lep_stage: {
+    vertical_offset_cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-      layout: :lep_stage,
-      metadata_map: { 0 => :curator_metadata, 1 => :collecting_event_labels, 2 => :image_registration, 3 => :identifier, 4 => :other_labels, 5 => :determination_labels, 6 => :specimen }
+      layout: :vertical_offset_cross,
+      metadata_map: { 0 => :curator_metadata, 1 => :identifier, 2 => :image_registration, 3 => :annotated_specimen }
+    },
+
+    vertical_split: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :vertical_split,
+      metadata_map: { 0 => :annotated_specimen, 1 => :identifier }
     }
   }.freeze
-
 
   BOUNDARY_COLORS = [:red, :green, :blue, :black].freeze
 
@@ -168,14 +178,14 @@ module SqedConfig
     EXTRACTION_PATTERNS[pattern][:metadata_map].invert[section_type]
   end
 
-  # Format to return JSON
+  # Format to return JSON that is externaly exposed
   def self.metadata
     return {
       boundary_colors: BOUNDARY_COLORS,
-      extraction_patterns: EXTRACTION_PATTERNS,
+      extraction_patterns: EXTRACTION_PATTERNS.select{|k,v| k != :stage},
       section_parsers: SECTION_PARSERS,
       layout_section_types: LAYOUT_SECTION_TYPES,
-      layouts: LAYOUTS
+      layouts: LAYOUTS.select{|k,v| k != :internal_box }
     }
   end
 end
