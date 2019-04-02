@@ -108,8 +108,9 @@ class Sqed::Parser::OcrParser < Sqed::Parser
 
   # @return [String]
   #   the ocr text
+  # TODO: very kludge
   def get_text(section_type: :default)
-    img = image
+    img = image.dup
 
     # resample if an image 4"x4" is less than 300dpi 
     if img.columns * img.rows < 144000
@@ -120,7 +121,7 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     params.merge!(SECTION_PARAMS[section_type])
 
     # May be able to overcome this hacky kludge messe with providing `processor:` to new
-    file = Tempfile.new('foo1')
+    file = Tempfile.new('foo1', encoding: 'ascii-8bit')
     begin
       file.write(image.to_blob)
       file.rewind
@@ -140,20 +141,20 @@ class Sqed::Parser::OcrParser < Sqed::Parser
         file.close
       ensure
         file.close
-        file.unlink   # deletes the temp file
+        file.unlink
       end
     end
 
     if @extracted_text == ''
       file = Tempfile.new('foo3')
       begin
-        file.write(img.dup.quantize(256,Magick::GRAYColorspace).to_blob)
+        file.write(img.dup.quantize(256, Magick::GRAYColorspace).to_blob)
         file.rewind
         @extracted_text = RTesseract.new(file.path, params).to_s&.strip
         file.close
       ensure
         file.close
-        file.unlink   # deletes the temp file
+        file.unlink
       end
     end
 
