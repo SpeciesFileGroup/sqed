@@ -50,8 +50,8 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       itop = image.crop(*horizontal.for(0), true) 
       ibottom = image.crop(*horizontal.for(1), true)
 
-      top = self.class.new(image: ilt, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
-      bottom = self.class.new(image: irt, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+      top = self.class.new(image: itop, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+      bottom = self.class.new(image: ibottom, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
 
       boundaries.set(0, [0, 0, top.width_for(0), top.height_for(0) ]) 
       boundaries.set(1, [top.x_for(1), 0, top.width_for(1), top.height_for(1) ]) 

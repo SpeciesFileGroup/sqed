@@ -63,6 +63,10 @@ module ImageHelpers
       get_image 'stage_images/boundary_offset_cross_red.jpg'
     end
 
+    def horizontal_offset_cross_red
+      get_image 'stage_images/horizontal_offset_cross.png'
+    end
+
     def right_t_green
       get_image 'stage_images/boundary_right_t_green.jpg'
     end
