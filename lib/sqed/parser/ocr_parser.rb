@@ -110,7 +110,7 @@ class Sqed::Parser::OcrParser < Sqed::Parser
   #   the ocr text
   # TODO: very kludge
   def get_text(section_type: :default)
-    img = image.dup
+    img = image
 
     # resample if an image 4"x4" is less than 300dpi 
     if img.columns * img.rows < 144000
@@ -121,9 +121,9 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     params.merge!(SECTION_PARAMS[section_type])
 
     # May be able to overcome this hacky kludge messe with providing `processor:` to new
-    file = Tempfile.new('foo1', encoding: 'ascii-8bit')
+    file = Tempfile.new('foo1', encoding: 'utf-8')
     begin
-      file.write(image.to_blob)
+      file.write(image.to_blob.force_encoding('utf-8'))
       file.rewind
       @extracted_text = RTesseract.new(file.path, params).to_s&.strip
       file.close
@@ -133,9 +133,9 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     end
 
     if @extracted_text == ''
-      file = Tempfile.new('foo2')
+      file = Tempfile.new('foo2', encoding: 'utf-8')
       begin
-        file.write(img.dup.white_threshold(245).to_blob)
+        file.write(img.dup.white_threshold(245).to_blob.force_encoding('utf-8'))
         file.rewind
         @extracted_text = RTesseract.new(file.path, params).to_s&.strip
         file.close
@@ -146,9 +146,9 @@ class Sqed::Parser::OcrParser < Sqed::Parser
     end
 
     if @extracted_text == ''
-      file = Tempfile.new('foo3')
+      file = Tempfile.new('foo3', encoding: 'utf-8')
       begin
-        file.write(img.dup.quantize(256, Magick::GRAYColorspace).to_blob)
+        file.write(img.dup.quantize(256, Magick::GRAYColorspace).to_blob.force_encoding('utf-8'))
         file.rewind
         @extracted_text = RTesseract.new(file.path, params).to_s&.strip
         file.close
@@ -162,3 +162,4 @@ class Sqed::Parser::OcrParser < Sqed::Parser
   end
 
 end
+
