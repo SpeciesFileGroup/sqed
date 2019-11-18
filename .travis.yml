@@ -12,6 +12,8 @@ rvm:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq tesseract-ocr tesseract-ocr-nld
+  - sudo sed -i 's/name="disk" value="1GiB"/name="disk" value="8GiB"/' /etc/ImageMagick-6/policy.xml
+  - identify -list resource | grep Disk | grep 8GiB # Check ImageMagick setting is actually working.
 branches:
   only:
     - master
