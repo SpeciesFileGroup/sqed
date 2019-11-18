@@ -3,7 +3,7 @@
 language: ruby
 dist: xenial
 rvm:
-  - 2.4.3
+  - 2.6.3
 #before_install:
 #  - sudo add-apt-repository -y ppa:moti-p/cc
 #  - sudo apt-get update
