@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe Sqed do
 
-  let(:s) { Sqed.new }
+  let(:s) { Sqed.new(
+    pattern: :cross
+  )
+  }
 
   context 'attributes' do
 
@@ -41,19 +44,14 @@ describe Sqed do
     specify '#use_thumbnail defaults to `true`' do
       expect(s.use_thumbnail).to eq(true)
     end
-
   end
 
-  context 'initialization' do 
-    specify 'without providing a pattern assigns nil' do
-      expect(s.pattern).to eq(nil)
-    end
+  specify 'raises without pattern or boundary_finder provided' do
+    expect{Sqed.new}.to raise_error Sqed::Error
   end
 
-  context '#result' do
-    specify 'without providing an image returns false' do
-      expect(s.result).to eq(false)
-    end
+  specify '#result without image returns false' do
+    expect(s.result).to eq(false)
   end
 
   # Intent is to just test wrapping functionality, see

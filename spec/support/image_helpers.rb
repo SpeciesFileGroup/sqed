@@ -36,15 +36,19 @@ module ImageHelpers
     end
 
     def inhs_stage_7_slot
-      get_image 'stage_images/inhs_7_slot.jpg'
+      get_image 'stage_images/inhs_7_slot3.jpg'
+    end
+
+    def inhs_stage_7_slot2
+      get_image 'stage_images/inhs_7_slot2.jpg'
     end
 
     def lep_stage
       get_image 'stage_images/lep_stage.jpg'
     end
 
-    def inhs_stage_7_slot2
-      get_image 'stage_images/inhs_7_slot2.jpg'
+    def lep_stage2
+      get_image 'stage_images/lep_stage2.jpg'
     end
 
     def crossy_green_line_specimen

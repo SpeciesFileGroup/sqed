@@ -1,21 +1,24 @@
 require 'spec_helper'
 
-describe 'handling 7 slot stages' do
+describe 'handling lep stage images' do
 
-  let(:image) { ImageHelpers.horizontal_offset_cross_red }
+  let(:image) { ImageHelpers.lep_stage2 }
   let(:sqed) do
     Sqed.new(
       image: image,
-      pattern: :horizontal_offset_cross,
+      pattern: :lep_stage,
       boundary_color: :red,
       has_border: false )
   end
 
   let(:m) do
-    { 0 => 'curator_metadata',
-      1 => 'identifier',
-      2 => 'image_registration',
-      3 => 'annotated_specimen'
+    { 0 => :curator_metadata,
+      1 => :collecting_event_labels,
+      2 => :image_registration,
+      3 => :identifier,
+      4 => :other_labels,
+      5 => :determination_labels,
+      6 => :specimen 
     }
   end
 
@@ -29,10 +32,8 @@ describe 'handling 7 slot stages' do
     end
   end
 
-  context 'simple boundaries - without thumbnail' do
-    let(:s) { Sqed.new(image: image, metadata_map: m, use_thumbnail: false, layout: :horizontal_offset_cross, 
-                       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-                       boundary_color: :red, has_border: false ) }
+  context 'trickier boundaries - without thumbnail' do
+    let(:s) { Sqed.new(image: ImageHelpers.lep_stage2, use_thumbnail: false, pattern: :lep_stage2, boundary_color: :red, has_border: false ) }
 
     specify 'boundaries are reasonable' do
       s.result
@@ -46,8 +47,8 @@ describe 'handling 7 slot stages' do
     end
   end
 
-  context 'boundaries - with_thumbnail' do
-    let(:s) { Sqed.new(image: ImageHelpers.horizontal_offset_cross_red, use_thumbnail: true, pattern: :horizontal_offset_cross, boundary_color: :red, has_border: false ) }
+  context 'trickier boundaries - with_thumbnail' do
+    let(:s) { Sqed.new(image: ImageHelpers.lep_stage2, use_thumbnail: true, pattern: :lep_stage2, boundary_color: :red, has_border: false ) }
 
     specify 'boundaries are reasonable' do
       s.result
@@ -59,7 +60,5 @@ describe 'handling 7 slot stages' do
         end
       end
     end
-  end
-
-
+  end 
 end

@@ -6,6 +6,7 @@ class Sqed
   #
   class BoundaryFinder
 
+    # Problemantic (e.g. seven slot) seem to resolve at ~360
     THUMB_SIZE = 100
     COLOR_DELTA = 1.3 # color (e.g. red) must be this much be *COLOR_DELTA > than other values (e.g. blue/green)
 
@@ -18,7 +19,8 @@ class Sqed
     # A Sqed::Boundaries instance, stores the coordinates of all of the layout sections
     attr_reader :boundaries
 
-    # Whether to compress the original image to a thumbnail when finding boundaries
+    # @return Boolean
+    # Whether to compress the original image to a thumbnail when finding boundaries at certain steps of the processing
     attr_reader :use_thumbnail
 
     # when we compute using a derived thumbnail we temporarily store the full size image here
@@ -135,7 +137,7 @@ class Sqed
       while attempts < 5 do
         samples_to_take = (image_width / sample_subdivision_size).to_i - 1
         border_hits = sample_border(image, boundary_color, samples_to_take, sample_subdivision_size, scan)
-        
+
         break if border_hits.select{|k,v| v > 1}.size > 2 || sample_subdivision_size == 1
 
         sample_subdivision_size = (sample_subdivision_size.to_f / 2.0).to_i
@@ -207,7 +209,7 @@ class Sqed
     #   the start, mid, endpoint position of all (pixel) positions that have a count greater than the cutoff
     def self.frequency_stats(frequency_hash, sample_cutoff = 0)
 
-      return nil if sample_cutoff.nil? ||  sample_cutoff < 1
+      return nil if sample_cutoff.nil? || sample_cutoff < 1
       hit_ranges = []
 
       frequency_hash.each do |position, count|
@@ -236,6 +238,11 @@ class Sqed
       [hit_ranges.first, hit_ranges[(hit_ranges.length / 2).to_i], hit_ranges.last]
     end
 
+    def self.max_difference(array)
+      array.max - array.min
+    end
+
+    # Usused
 
     # Returns an Integer, the maximum of the pairwise differences of the values in the array
     # For example, given
@@ -246,10 +253,6 @@ class Sqed
     #   6
     def self.max_pairwise_difference(array)
       (0..array.length - 2).map{|i| (array[i] - array[i + 1]).abs }.max
-    end
-
-    def self.max_difference(array)
-      array.max - array.min
     end
 
     def self.derivative_signs(array)

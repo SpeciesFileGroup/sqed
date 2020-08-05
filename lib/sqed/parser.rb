@@ -9,8 +9,9 @@ class Sqed::Parser
   attr_accessor :extracted_text
 
   def initialize(image)
+    raise Sqed::Error, 'no image passed to parser' if image.nil?
+    raise Sqed::Error, 'image is not a Magick::Image' if !(image.class.name == 'Magick::Image')
     @image = image
-    raise 'no image provided to parser' if @image && !(@image.class.name == 'Magick::Image')
   end
 
 end

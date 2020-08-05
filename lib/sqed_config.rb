@@ -17,31 +17,38 @@ require_relative 'sqed/boundary_finder/color_line_finder'
 module SqedConfig
 
   # Layouts refer to the arrangement of the divided stage.
-  # Windows are enumerated from the top left, moving around the border 
+  # Windows are enumerated from the top left, moving around the border
   # in a clockwise position.  For example:
   #
   #    0  | 1
   #   ----|----  :cross (any cross pattern)
   #       |
   #    3  | 2
-  # 
+  #
   #
   #    0  |  1
   #       |
-  #   ---------  :horizontal_offset_cross 
+  #   ---------  :horizontal_offset_cross
   #    3    | 2
-  # 
+  #
   #
   #        0
   #    --------  :horizontal_split
   #        1
-  # 
+  #
   #
   #    0 | 1 | 2
   #   ------------
   #      | 5 |      :lep_stage
-  #    6 |---- 3  
+  #    6 |---- 3
   #      | 4 |
+  #
+  #
+  #    0 | 1 |  2
+  #   --------------
+  #          | 5 |      :lep_stage2
+  #      6   |---- 3
+  #          | 4 |
   #
   #
   #       | 1
@@ -55,21 +62,21 @@ module SqedConfig
   #    6 |--------
   #      |   4
   #
-  # 
+  #
   #    0  |  1
   #       |____
-  #   ----|      :vertical_offset_cross 
+  #   ----|      :vertical_offset_cross
   #    3  |  2
-  #  
   #
-  #        |
-  #      0 | 1  :vertical_split
-  #        |
+  #
+  #      |
+  #    0 | 1  :vertical_split
+  #      |
   #
   #   -----
   #   | 0 |  :internal_box
   #   -----
-  #  
+  #
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
   LAYOUTS = {
@@ -77,6 +84,7 @@ module SqedConfig
     horizontal_offset_cross: [0, 1, 2, 3],
     horizontal_split: [0, 1],
     lep_stage: [0, 1, 2, 3, 4, 5, 6],
+    lep_stage2: [0, 1, 2, 3, 4, 5, 6],
     right_t: [0, 1, 2],
     seven_slot: [0, 1, 2, 3, 4, 5, 6],
     vertical_offset_cross: [0, 1, 2, 3],
@@ -93,7 +101,7 @@ module SqedConfig
     :identifier,              # the section contains an identifier (e.g. barcode or unique number)
     :image_registration,      # the section contains only image registration information,
     :labels,                  # the section contains collecting event and other non-determination labels
-    :nothing,                 # section is empty 
+    :nothing,                 # section is empty
     :other_labels,            # the section that contains text that misc.
     :specimen,                # the specimen only, no metadata should be present
     :stage,                   # the image contains the full stage
@@ -136,6 +144,12 @@ module SqedConfig
     lep_stage: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :lep_stage,
+      metadata_map: { 0 => :curator_metadata, 1 => :collecting_event_labels, 2 => :image_registration, 3 => :identifier, 4 => :other_labels, 5 => :determination_labels, 6 => :specimen }
+    },
+
+    lep_stage2: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :lep_stage2,
       metadata_map: { 0 => :curator_metadata, 1 => :collecting_event_labels, 2 => :image_registration, 3 => :identifier, 4 => :other_labels, 5 => :determination_labels, 6 => :specimen }
     },
 

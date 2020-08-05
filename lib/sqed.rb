@@ -17,9 +17,11 @@ require 'sqed_utils'
 #
 class Sqed
 
+  require_relative 'sqed/error'
   require_relative 'sqed_config'
   require_relative 'sqed/extractor'
   require_relative 'sqed/result'
+
 
   # initial image which is an instance of ImageMagick::Image, containing background and stage, or just stage
   attr_accessor :image
@@ -68,6 +70,7 @@ class Sqed
   # Provide a metadata map, overrides metadata taken from pattern
   attr_accessor :metadata_map
 
+  # @return [Sqed::BoundaryFinder::<Klass>]
   # Provide a boundary_finder, overrides metadata taken from pattern
   attr_accessor :boundary_finder
 
@@ -165,6 +168,8 @@ class Sqed
     configure_layout(opts)
     configure_metadata_map(opts)
 
+    raise Sqed::Error, 'boundary_finder not provided' if @boundary_finder.nil?
+
     @has_border = opts[:has_border]
     @has_border = true if @has_border.nil?
 
@@ -184,12 +189,12 @@ class Sqed
     @boundary_finder = a[:boundary_finder]
     @layout = a[:layout]
     @metadata_map = a[:metadata_map]
+
     true
   end
 
   def configure_boundary_finder(opts)
-    @boundary_finder = opts[:boundary_finder].constantize if !opts[:boundary_finder].nil?
-    @boundary_finder ||= Sqed::BoundaryFinder::CrossFinder
+    @boundary_finder = opts[:boundary_finder] if !opts[:boundary_finder].nil?
   end
 
   def configure_layout(opts)
@@ -212,7 +217,7 @@ class Sqed
   end
 
   def get_section_boundaries
-    boundary_finder.new(section_params).boundaries
+    boundary_finder.new(**section_params).boundaries
   end
 
   # @return [Hash]

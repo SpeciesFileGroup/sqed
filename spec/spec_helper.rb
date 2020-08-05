@@ -5,7 +5,7 @@ Bundler.setup
 require 'sqed'
 require 'support/image_helpers'
 require 'byebug'
-require 'awesome_print'
+require 'amazing_print'
 require 'fileutils'
 require 'rmagick'
 
