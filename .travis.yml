@@ -16,7 +16,7 @@ before_install:
   - identify -list resource | grep Disk | grep 8GiB # Check ImageMagick setting is actually working.
 branches:
   only:
-    - master
+    - main 
 notifications:
   email:
     - diapriid@gmail.com 

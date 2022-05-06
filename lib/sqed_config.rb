@@ -46,7 +46,7 @@ module SqedConfig
   #
   #    0 | 1 |  2
   #   --------------
-  #          | 5 |      :lep_stage2
+  #          | 5 |    :lep_stage2
   #      6   |---- 3
   #          | 4 |
   #

@@ -51,6 +51,10 @@ module ImageHelpers
       get_image 'stage_images/lep_stage2.jpg'
     end
 
+    def lep_stage3
+      get_image 'stage_images/lep_stage3.jpg'
+    end
+
     def crossy_green_line_specimen
       get_image 'stage_images/CrossyGreenLinesSpecimen.jpg'
     end
