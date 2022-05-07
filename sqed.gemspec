@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   # A qrcode reader, too many problems with compiling, dependencies
   # spec.add_dependency 'zxing_cpp', '~> 0.1.0'
 
-  spec.add_development_dependency 'rspec', '~> 3.9'
+  spec.add_development_dependency 'rspec', '~> 3.11'
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'byebug', '~> 11.0'
   spec.add_development_dependency 'amazing_print', '~> 1.4'

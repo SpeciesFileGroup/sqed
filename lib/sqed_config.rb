@@ -74,12 +74,24 @@ module SqedConfig
   #      |
   #
   #   -----
-  #   | 0 |  :internal_box
+  #   | 0 |   :internal_box
   #   -----
+  #
+  #   0 | 1   :inverted_t
+  #   -----
+  #     2
+  #
+  #     0     :t
+  #   -----
+  #   2 | 1
+  #
+  #
   #
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
   LAYOUTS = {
+    t: [0,1,2],
+    inverted_t: [0, 1, 2],
     cross: [0, 1, 2, 3],
     horizontal_offset_cross: [0, 1, 2, 3],
     horizontal_split: [0, 1],
@@ -123,6 +135,18 @@ module SqedConfig
   }.freeze
 
   EXTRACTION_PATTERNS = {
+    t: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :t,
+      metadata_map: { 0 => :annotated_specimen, 1 => :identifier, 2 => :image_registration }
+    },
+
+    inverted_t: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :inverted_t,
+      metadata_map: { 0 => :identifier, 1 => :image_registration, 2 => :annotated_specimen }
+    },
+
     cross: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :cross,

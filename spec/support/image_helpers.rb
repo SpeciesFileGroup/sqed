@@ -9,12 +9,21 @@ module ImageHelpers
     end
 
     def of_size(width = 1024, height = 768)
-      Magick::Image.new(width, height) {
-        self.background_color = 'white'
+      Magick::Image.new(width, height) { |i|
+        i.background_color = 'white'
       }
     end
 
-    # Stage images 
+    # Stage images
+
+    def t_stage
+      get_image 'stage_images/t_stage.png'
+    end
+
+    def inverted_t_stage
+      get_image 'stage_images/inverted_t_stage.png'
+    end
+
     def cross_green
       get_image 'stage_images/boundary_cross_green.jpg'
     end
@@ -101,7 +110,7 @@ module ImageHelpers
       get_image 'barcode_images/osuc_datamatric_barcode.png'
     end
 
-    # label (text) images 
+    # label (text) images
 
     # NOT USED
     def black_stage_green_line_specimen_label
@@ -122,7 +131,7 @@ module ImageHelpers
 
     # Real life, black border, no internal boundaries
     def test3_image
-      get_image 'test3.jpg' 
+      get_image 'test3.jpg'
     end
 
     def foo3_image

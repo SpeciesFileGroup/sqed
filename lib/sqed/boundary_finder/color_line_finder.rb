@@ -37,7 +37,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
     # see config/sqed_config.rb
     case layout
 
-    when :cross # 4 zones, with perfectly intersected horizontal and vertical division
+    when :cross # 4 windows, with perfectly intersected horizontal and vertical division
       v = self.class.new(image: @image, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
       h = self.class.new(image: @image, layout: :horizontal_split, boundary_color: boundary_color, use_thumbnail: false).boundaries
 
@@ -170,6 +170,26 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
         bottom_right_left_image.columns,
         bottom_right_left_top_bottom_split[0],
       ])
+
+    when :t
+      horizontal = self.class.new(image: @image, layout: :horizontal_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+
+      bottom = image.crop(*horizontal.for(1), true)
+      btm_split = self.class.new(image: bottom, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+
+      boundaries.set(0, horizontal.for(0))
+      boundaries.set(1, [ btm_split.x_for(1), horizontal.height_for(0), btm_split.width_for(1), btm_split.height_for(1) ] )
+      boundaries.set(2, [ 0, horizontal.height_for(0), btm_split.width_for(0), btm_split.height_for(0) ] )
+
+    when :inverted_t
+      horizontal = self.class.new(image: @image, layout: :horizontal_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+
+      top = image.crop(*horizontal.for(0), true)
+      top_split = self.class.new(image: top, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+
+      boundaries.set(0, [ 0,0, top_split.width_for(0), top_split.height_for(0)] )
+      boundaries.set(1, [ top_split.width_for(0), 0, top_split.width_for(1), top_split.height_for(1)] )
+      boundaries.set(2, horizontal.for(1))
 
     when :right_t
       vertical = self.class.new(image: @image, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
