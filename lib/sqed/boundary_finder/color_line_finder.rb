@@ -15,7 +15,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
 
     super(image: image, layout: layout, use_thumbnail: use_thumbnail)
 
-    raise 'No layout provided.' if @layout.nil?
+    raise Sqed::Error, 'No layout provided.' if @layout.nil?
 
     # !@#? why this
     @boundary_color = boundary_color

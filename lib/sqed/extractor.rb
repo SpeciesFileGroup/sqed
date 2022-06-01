@@ -23,9 +23,9 @@ class Sqed
       @boundaries = opts[:boundaries]
       @image = opts[:image]
 
-      raise Error, 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class.name == 'Sqed::Boundaries'
-      raise Error, 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class.name == 'Hash'
-      raise Error, 'image not provided' if image.nil? || !image.class.name == 'Magick::Image'
+      raise Sqed::Error, 'boundaries not provided or provided boundary is not a Sqed::Boundaries' if boundaries.nil? || !boundaries.class.name == 'Sqed::Boundaries'
+      raise Sqed::Error, 'metadata_map not provided or metadata_map not a Hash' if metadata_map.nil? || !metadata_map.class.name == 'Hash'
+      raise Sqed::Error, 'image not provided' if image.nil? || !image.class.name == 'Magick::Image'
     end
 
     def result

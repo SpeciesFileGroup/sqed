@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 recent_ruby = RUBY_VERSION >= '2.4.1'
-raise 'IMPORTANT: sqed gem requires ruby >= 2.4.1' unless recent_ruby
+raise Sqed::Error, 'IMPORTANT: sqed gem requires ruby >= 2.4.1' unless recent_ruby
 
 require 'rmagick'
 require 'sqed_utils'
@@ -183,7 +183,7 @@ class Sqed
   def configure_from_pattern(value)
     return if value.nil?
     value = value.to_sym
-    raise "provided extraction pattern '#{value}' not defined" if !SqedConfig::EXTRACTION_PATTERNS.keys.include?(value)
+    raise Sqed::Error, "provided extraction pattern '#{value}' not defined" if !SqedConfig::EXTRACTION_PATTERNS.keys.include?(value)
     @pattern = value
     a = SqedConfig::EXTRACTION_PATTERNS[pattern]
     @boundary_finder = a[:boundary_finder]
@@ -237,7 +237,7 @@ class Sqed
       if boundary.populated?
         @stage_boundary.set(0, boundary.for(0))
       else
-        raise 'error detecting stage'
+        raise Sqed::Error, 'error detecting stage'
       end
     else
       @stage_boundary.set(0, [0, 0, image.columns, image.rows])

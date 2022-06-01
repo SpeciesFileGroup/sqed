@@ -24,7 +24,7 @@ class Sqed
   attr_accessor :complete
 
   def initialize(layout = nil)
-    raise 'unrecognized layout' if layout && !SqedConfig::LAYOUTS.include?(layout)
+    raise Sqed::Error, 'unrecognized layout' if layout && !SqedConfig::LAYOUTS.include?(layout)
     @complete = false
 
     @layout = layout

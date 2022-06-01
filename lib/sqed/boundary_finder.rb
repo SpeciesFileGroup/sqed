@@ -33,8 +33,8 @@ class Sqed
       @layout = opts[:layout]
       @image = opts[:image]
 
-      raise 'No layout provided.' if layout.nil?
-      raise 'No image provided.' if image.nil? || image.class.name != 'Magick::Image'
+      raise Sqed::Error, 'No layout provided.' if layout.nil?
+      raise Sqed::Error, 'No image provided.' if image.nil? || image.class.name != 'Magick::Image'
 
       true
     end
@@ -166,7 +166,7 @@ class Sqed
         elsif scan == :columns
           j = image.crop(s * sample_subdivision_size, 0, 1, image.rows, true)
         else
-          raise
+          raise Sqed::Error
         end
 
         j.each_pixel do |pixel, c, r|
