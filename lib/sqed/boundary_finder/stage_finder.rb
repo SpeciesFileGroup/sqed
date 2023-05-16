@@ -46,11 +46,11 @@ class Sqed::BoundaryFinder::StageFinder < Sqed::BoundaryFinder
 
   # Returns a Proc that, given a set of pixels (an edge of the image) decides
   # whether that edge is a border or not.
-  # 
-  # (img, samples = 5, threshold = 0.95, fuzz_factor = 0.5)  # initially 
+  #
+  # (img, samples = 5, threshold = 0.95, fuzz_factor = 0.5)  # initially
   # (img, samples = 50, threshold = 0.9, fuzz_factor = 0.1)   # semi-working on synthetic images 08-dec-2014 (x)
   # (img, samples = 20, threshold = 0.8, fuzz_factor = 0.2)   # WORKS with synthetic images and changes to x0, y0, width, height
-  # 
+  #
   # appears to assume sharp transition will occur in 5 pixels x/y
   #
   # how is threshold defined?

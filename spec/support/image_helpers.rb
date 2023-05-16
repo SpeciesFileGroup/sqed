@@ -16,12 +16,20 @@ module ImageHelpers
 
     # Stage images
 
+    def stage
+      get_image 'stage_images/stage.png'
+    end
+
     def t_stage
       get_image 'stage_images/t_stage.png'
     end
 
     def inverted_t_stage
       get_image 'stage_images/inverted_t_stage.png'
+    end
+
+    def left_t_stage
+      get_image 'stage_images/left_t_stage.png'
     end
 
     def cross_green

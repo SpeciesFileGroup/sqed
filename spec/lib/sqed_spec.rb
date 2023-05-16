@@ -2,10 +2,7 @@ require 'spec_helper'
 
 describe Sqed do
 
-  let(:s) { Sqed.new(
-    pattern: :cross
-  )
-  }
+  let(:s) { Sqed.new( pattern: :cross) }
 
   context 'attributes' do
 

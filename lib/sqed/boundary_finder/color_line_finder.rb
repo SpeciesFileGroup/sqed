@@ -201,6 +201,16 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       boundaries.set(1, [ vertical.x_for(1), 0, right.width_for(0), right.height_for(0) ] )
       boundaries.set(2, [ vertical.x_for(1), right.y_for(1), right.width_for(1), right.height_for(1)] )
 
+    when :left_t
+      vertical = self.class.new(image: @image, layout: :vertical_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+
+      ilft = image.crop(*vertical.for(0), true)
+      left = self.class.new(image: ilft, layout: :horizontal_split, boundary_color: boundary_color, use_thumbnail: false ).boundaries
+
+      boundaries.set(0, vertical.for(1))
+      boundaries.set(1, [ vertical.x_for(0), 0, left.width_for(0), left.height_for(0) ] )
+      boundaries.set(2, [ vertical.x_for(0), left.y_for(1), left.width_for(1), left.height_for(1)] )
+
     when :seven_slot
       top_bottom_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, scan: :columns, boundary_color: boundary_color)              # detect vertical division [array]
       left_right_split = Sqed::BoundaryFinder.color_boundary_finder(image: image, sample_subdivision_size: 1, boundary_color: boundary_color)  # detect horizontal division [array]
@@ -263,7 +273,7 @@ class Sqed::BoundaryFinder::ColorLineFinder < Sqed::BoundaryFinder
       boundaries.set(0, [0, 0, image.columns, t[0]])  # upper section of image
       boundaries.set(1, [0, t[2], image.columns, image.rows - t[2]])  # lower section of image
 
-    else # no @layout provided !?
+    else # Hits :stage
       boundaries.set(0, [0, 0, image.columns, image.rows])   # totality of image as default
     end
 

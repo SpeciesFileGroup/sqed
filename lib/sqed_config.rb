@@ -50,12 +50,7 @@ module SqedConfig
   #      6   |---- 3
   #          | 4 |
   #
-  #
-  #       | 1
-  #    0  |----  :right_t
-  #       | 2
-  #
-  #
+  #  #
   #    0 | 1 | 2
   #   ------------
   #      | 5 | 3    :seven_slot
@@ -73,35 +68,50 @@ module SqedConfig
   #    0 | 1  :vertical_split
   #      |
   #
-  #   -----
-  #   | 0 |   :internal_box
-  #   -----
-  #
-  #   0 | 1   :inverted_t
-  #   -----
-  #     2
+  #    -------
+  #    |-----|
+  #    || 0 ||  :internal_box
+  #    |-----|
+  #    -------
   #
   #     0     :t
   #   -----
   #   2 | 1
   #
   #
+  #   0 | 1   :inverted_t
+  #   -----
+  #     2
+  #
+  #    0 |
+  #   ---| 1   : left_t
+  #    2 |
+  #
+  #      | 1
+  #    0 |---  :right_t
+  #      | 2
+  #
+  #    -----
+  #    | 0 |  :stage
+  #    -----
   #
   # Hash values are used to stub out
   # the Sqed::Boundaries instance.
   LAYOUTS = {
     t: [0,1,2],
     inverted_t: [0, 1, 2],
+    right_t: [0, 1, 2],
+    left_t: [0, 1, 2],
     cross: [0, 1, 2, 3],
     horizontal_offset_cross: [0, 1, 2, 3],
     horizontal_split: [0, 1],
     lep_stage: [0, 1, 2, 3, 4, 5, 6],
     lep_stage2: [0, 1, 2, 3, 4, 5, 6],
-    right_t: [0, 1, 2],
     seven_slot: [0, 1, 2, 3, 4, 5, 6],
     vertical_offset_cross: [0, 1, 2, 3],
     vertical_split: [0, 1],
-    internal_box: [0]
+    internal_box: [0],
+    stage: [0]
   }.freeze
 
   # Each element of the layout is a "section".
@@ -175,6 +185,12 @@ module SqedConfig
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
       layout: :lep_stage2,
       metadata_map: { 0 => :curator_metadata, 1 => :collecting_event_labels, 2 => :image_registration, 3 => :identifier, 4 => :other_labels, 5 => :determination_labels, 6 => :specimen }
+    },
+
+    left_t: {
+      boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
+      layout: :right_t,
+      metadata_map: { 0 => :annotated_specimen, 1 => :identifier, 2 => :image_registration }
     },
 
     right_t: {

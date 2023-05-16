@@ -23,8 +23,32 @@ class Sqed
   require_relative 'sqed/result'
 
 
-  # initial image which is an instance of ImageMagick::Image, containing background and stage, or just stage
+  # @return [Sqed::Boundaries instance, nil]
+  #   Contains the coordinates of the internal stage sections. Calculates when set.
+  attr_accessor :boundaries
+
+  # @return [Symbol] like `:red`, `:green`, `:blue`, defaults to `:green`
+  # describing the boundary color within the stage
+  attr_accessor :boundary_color
+
+  # @return [Sqed::BoundaryFinder::<Klass>]
+  # Provide a boundary_finder, overrides metadata taken from pattern
+  attr_accessor :boundary_finder
+
+  # @return [Boolean] defaults to `true`
+  #   when true detects border on initialization
+  attr_accessor :has_border
+
+  # initial image which is an instance of Magick::Image, containing background and stage, or just stage
   attr_accessor :image
+
+  # @return [Symbol] like `:cross`
+  # !! Provide a specific layout, passed as option :layout, overrides layout metadata taken from :pattern, defaults to `:cross`
+  attr_accessor :layout
+
+  # Provide a metadata map, overrides metadata taken from pattern.
+  # No calculations are done here.
+  attr_accessor :metadata_map
 
   # !optional! A lookup macro that if provided sets boundary_finder, layout, and metadata_map.
   # These can be individually overwritten.
@@ -39,40 +63,19 @@ class Sqed
   #   not required if layout, metadata_map, and boundary_finder are provided
   attr_accessor :pattern
 
-  # @return [Symbol] like `:cross`
-  # !! Provide a specific layout, passed as option :layout, overrides layout metadata taken from :pattern, defaults to `:cross`
-  attr_accessor :layout
-
-  # the image that is the cropped content for parsing
+  # The image that is the cropped content for parsing
+  # !! Does not require `metadata_map` or `layout`
   attr_accessor :stage_image
 
   # @return [Sqed::Boundaries instance]
   #   stores the coordinates of the stage
+  # !! Does not require `metadata_map` or `layout`
   attr_accessor :stage_boundary
-
-  # @return [Sqed::Boundaries instance]
-  #   contains the coordinates of the internal stage sections
-  attr_accessor :boundaries
-
-  # @return [Boolean] defaults to `true`
-  #   when true detects border on initialization
-  attr_accessor :has_border
-
-  # @return [Symbol] like `:red`, `:green`, `:blue`, defaults to `:green`
-  # describing the boundary color within the stage
-  attr_accessor :boundary_color
 
   # @return [Boolean] defaults to `true` (faster, less accurate)
   #  if `true` do the boundary detection (not stage detection at present)
   # against a thumbnail version of the passed image
   attr_accessor :use_thumbnail
-
-  # Provide a metadata map, overrides metadata taken from pattern
-  attr_accessor :metadata_map
-
-  # @return [Sqed::BoundaryFinder::<Klass>]
-  # Provide a boundary_finder, overrides metadata taken from pattern
-  attr_accessor :boundary_finder
 
   def initialize(**opts)
     # extraction metadata
@@ -86,37 +89,91 @@ class Sqed
   #   federate extraction options
   def extraction_metadata
     {
-        boundary_finder: boundary_finder,
-        layout: layout,
-        metadata_map: metadata_map,
-        boundary_color: boundary_color,
-        has_border: has_border,
-        use_thumbnail: use_thumbnail
+      boundary_finder: boundary_finder,
+      layout: layout,
+      metadata_map: metadata_map,
+      boundary_color: boundary_color,
+      has_border: has_border,
+      use_thumbnail: use_thumbnail
     }
   end
 
-  # @return [ImageMagick::Image]
+  # @return [Magick::Image]
   #   set the image if it's not set during initialize(), not commonly used
   def image=(value)
-    @image = value
-    set_stage_boundary
-    @image
-  end
-
-  def boundaries(force = false)
-    @boundaries = get_section_boundaries if @boundaries.nil? || force
-    @boundaries
+    @image = value if value.kind_of?(::Magick::Image)
   end
 
   def stage_boundary
-    set_stage_boundary if !@stage_boundary.populated?
+    compute_stage_boundary if !@stage_boundary.populated?
     @stage_boundary
   end
 
   def stage_image
-    crop_image if @stage_image.nil?
-    @stage_image
+    @stage_image ||= crop_image
   end
+
+  # @return [Image]
+  #   crops the stage if not done, then sets/returns @stage_image
+  def crop_image
+
+    begin
+
+      if has_border && image
+        @stage_image = image.crop(*stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)), true)
+      elsif image
+        @stage_image = image
+      end
+      @stage_image
+
+    rescue Sqed::Error
+      raise
+    rescue
+      raise Sqed::Error, 'error cropping image'
+    end
+
+  end
+
+  def boundaries(force = false)
+    begin
+
+      if force
+        @boundaries = get_section_boundaries
+      else
+        @boundaries ||= get_section_boundaries
+      end
+
+      @boundaries
+
+    rescue Sqed::Error
+      raise
+    rescue # XXXX
+      raise Sqed::Error, 'error processing boundaries'
+    end
+  end
+
+  # @return [Boolean]
+  #   `true` if all boundary detection and image processing
+  #   has been calculated with error
+  #
+  def extractable?
+    stage_image && metadata_map && boundaries
+  end
+
+  # @return [Sqed::Result, false]
+  def result
+    return false unless extractable?
+
+    extractor = Sqed::Extractor.new(
+      boundaries: boundaries,
+      metadata_map: metadata_map,
+      image: stage_image
+    )
+
+    extractor.result
+  end
+
+  private
 
   # @return [Sqed::Boundaries instance, nil]
   #   a boundaries instance that has the original image (prior to cropping stage) coordinates
@@ -128,29 +185,6 @@ class Sqed
     end
   end
 
-  # @return [Image]
-  #   crops the stage if not done, then sets/returns @stage_image
-  def crop_image
-    if has_border
-      @stage_image = image.crop(*stage_boundary.for(SqedConfig.index_for_section_type(:stage, :stage)), true)
-    else
-      @stage_image = image
-    end
-    @stage_image
-  end
-
-  def result
-    return false if image.nil?
-
-    extractor = Sqed::Extractor.new(
-      boundaries: boundaries,
-      metadata_map: metadata_map, #  extraction_metadata[:metadata_map],
-      image: stage_image
-    )
-
-    extractor.result
-  end
-
   # @return [Hash]
   #   an overview of data/metadata, for debugging purposes only
   def attributes
@@ -159,8 +193,6 @@ class Sqed
       stage_boundary: stage_boundary
     }.merge!(extraction_metadata)
   end
-
-  protected
 
   def configure(opts)
     configure_from_pattern(opts[:pattern])
@@ -213,28 +245,31 @@ class Sqed
   def stub_results
     @boundaries = nil
     @stage_boundary = Sqed::Boundaries.new(:internal_box)
-    set_stage_boundary if @image
+    compute_stage_boundary if @image
   end
 
+  # @return [Boundaries, nil]
   def get_section_boundaries
+
     boundary_finder.new(**section_params).boundaries
+
   end
 
   # @return [Hash]
   #   variables for the isolated stage image
   def section_params
     {
-       image: stage_image,
-       use_thumbnail: use_thumbnail,
-       layout: layout,
-       boundary_color: boundary_color
+      image: stage_image,
+      use_thumbnail: use_thumbnail,
+      layout: layout,
+      boundary_color: boundary_color
     }
   end
 
-  def set_stage_boundary
+  def compute_stage_boundary
     if has_border
       boundary = Sqed::BoundaryFinder::StageFinder.new(image: image).boundaries
-      if boundary.populated?
+      if boundary&.populated?
         @stage_boundary.set(0, boundary.for(0))
       else
         raise Sqed::Error, 'error detecting stage'
