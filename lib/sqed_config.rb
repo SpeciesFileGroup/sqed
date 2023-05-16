@@ -189,7 +189,7 @@ module SqedConfig
 
     left_t: {
       boundary_finder: Sqed::BoundaryFinder::ColorLineFinder,
-      layout: :right_t,
+      layout: :left_t,
       metadata_map: { 0 => :annotated_specimen, 1 => :identifier, 2 => :image_registration }
     },
 
