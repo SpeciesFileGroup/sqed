@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'rake', '~> 13.0'
-  spec.add_dependency 'rmagick', '~> 4.2'
+  spec.add_dependency 'rmagick', '~> 5.2'
   spec.add_dependency 'rtesseract', '~> 3.1'
 
   # A qrcode reader, too many problems with compiling, dependencies
